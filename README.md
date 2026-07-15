@@ -22,7 +22,7 @@ git clone https://github.com/danvega/skills.git
 cp -R skills/skills/spring-boot-4/http-interface-clients ~/.claude/skills/
 
 # or just for one project
-cp -R skills/skills/blogging/seo-optimize my-project/.claude/skills/
+cp -R skills/skills/blog/seo-optimize my-project/.claude/skills/
 ```
 
 Symlinking instead of copying keeps them updated when you pull:
@@ -86,16 +86,16 @@ current idiom, and the gotchas) and triggers on the task, not the feature name.
 - **[spring-security-mfa](./skills/spring-boot-4/spring-security-mfa/SKILL.md)**: `@EnableMultiFactorAuthentication` + one-time tokens
 - **[modular-auto-config](./skills/spring-boot-4/modular-auto-config/SKILL.md)**: the split-up auto-configuration breaking change
 
-### blogging
+### blog
 
 The workflow behind [danvega.dev](https://www.danvega.dev) — from "what should I
 write?" to a published, optimized post with a cover image. These are tuned to my site
 and voice, but the structure is easy to adapt.
 
-- **[seo-opportunities](./skills/blogging/seo-opportunities/SKILL.md)**: find what to write or fix next, ranked by Search Console evidence
-- **[new-blog-post](./skills/blogging/new-blog-post/SKILL.md)**: scaffold and draft a new post with correct frontmatter, in my voice
-- **[seo-optimize](./skills/blogging/seo-optimize/SKILL.md)**: keyword research + on-page optimization for an existing post
-- **[post-cover](./skills/blogging/post-cover/SKILL.md)**: render the site's terminal-style cover image to PNG
+- **[seo-opportunities](./skills/blog/seo-opportunities/SKILL.md)**: find what to write or fix next, ranked by Search Console evidence
+- **[new-blog-post](./skills/blog/new-blog-post/SKILL.md)**: scaffold and draft a new post with correct frontmatter, in my voice
+- **[seo-optimize](./skills/blog/seo-optimize/SKILL.md)**: keyword research + on-page optimization for an existing post
+- **[post-cover](./skills/blog/post-cover/SKILL.md)**: render the site's terminal-style cover image to PNG
 
 ### youtube
 

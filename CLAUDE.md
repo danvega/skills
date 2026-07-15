@@ -7,7 +7,7 @@ follow these rules.
 
 - **Knowledge skills** (`skills/spring-boot-4/`, future `spring-ai/`, `java/`) are
   auto-discovered by description match. They encode framework/language deltas.
-- **Workflow skills** (`skills/blogging/`, `skills/youtube/`) are processes that drive
+- **Workflow skills** (`skills/blog/`, `skills/youtube/`) are processes that drive
   a repeatable task end to end (drafting a post, generating video ideas).
 - Don't mix the two in one folder; their descriptions optimize for different things.
 
