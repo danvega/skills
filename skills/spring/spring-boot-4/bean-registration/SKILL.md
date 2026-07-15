@@ -3,16 +3,17 @@ name: bean-registration
 description: >-
   Register beans programmatically in Spring Framework 7 with the BeanRegistrar interface — pick or
   configure beans at startup from properties/environment/conditions, with a clean lambda API and AOT
-  support. Use when a Boot 4 / FW 7 task needs DYNAMIC bean definitions: "register a bean based on a
-  property", conditional wiring the @Conditional annotations can't express, plugin/strategy
-  selection, or the user reaches for BeanDefinitionRegistryPostProcessor / BeanFactoryPostProcessor /
-  ImportBeanDefinitionRegistrar. Do NOT use for ordinary static beans (just use @Bean/@Component) or
+  support. Use when a task in a Boot 4 / FW 7 project needs DYNAMIC bean definitions — "register a
+  bean based on a property", conditional wiring the @Conditional annotations can't express,
+  plugin/strategy selection, or the user reaches for BeanDefinitionRegistryPostProcessor /
+  BeanFactoryPostProcessor / ImportBeanDefinitionRegistrar — even if the user never mentions a
+  version (check the build file). Do NOT use for ordinary static beans (just use @Bean/@Component) or
   for simple on/off toggles that @ConditionalOnProperty already handles.
 ---
 
 # Programmatic bean registration — BeanRegistrar (Framework 7)
 
-**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 25+.
+**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 17+ (25 recommended).
 
 Framework 7 adds the `BeanRegistrar` interface: a clean, AOT-friendly way to register beans in code,
 with access to the `Environment`. It replaces the verbose `BeanDefinitionRegistryPostProcessor` /

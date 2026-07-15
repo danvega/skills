@@ -3,15 +3,16 @@ name: jackson-3
 description: >-
   Work with Jackson 3 JSON in Spring Boot 4 — the new tools.jackson packages, auto-configured
   JsonMapper, ISO-8601 date defaults, immutable builder config, and @JsonView hierarchies for
-  response shaping. Use whenever a Boot 4 task touches JSON serialization/deserialization config:
-  customizing the mapper, date/enum formatting, filtering fields per endpoint, fixing
-  com.fasterxml.jackson imports, or "different fields for summary vs detail". Do NOT use for choosing
+  response shaping. Use whenever a task in a Boot 4 project touches JSON serialization/deserialization
+  config — customizing the mapper, date/enum formatting, filtering fields per endpoint, fixing
+  com.fasterxml.jackson imports, or "different fields for summary vs detail" — even if the user never
+  mentions a version (check the build file). Do NOT use for choosing
   REST client vs server code, or for Boot 3.x Jackson 2 setups (that is the legacy this replaces).
 ---
 
 # Jackson 3 (Spring Boot 4)
 
-**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 17+.
+**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 17+ (25 recommended).
 
 Boot 4 ships **Jackson 3**. Two things Claude gets wrong: (1) it imports
 `com.fasterxml.jackson.*` and configures a mutable `ObjectMapper` — Jackson 3 moved to the
@@ -36,8 +37,8 @@ Spring **auto-configures a `JsonMapper` bean** — inject it; don't `new` one. C
 `spring.jackson.*` properties or a `JsonMapper.Builder` customizer bean.
 
 ```properties
-spring.jackson.use-jackson2-defaults=false      # opt into Jackson 3 defaults (ISO dates, etc.)
 spring.jackson.serialization.indent-output=true
+# Migrating? use-jackson2-defaults=true restores Jackson 2 behavior (default is false = Jackson 3 defaults)
 ```
 
 ## Response shaping with @JsonView (avoid DTO sprawl)

@@ -3,15 +3,16 @@ name: rest-test-client
 description: >-
   Test REST APIs with Spring Framework 7's RestTestClient — one fluent client for every level, via
   bindToController (unit), bindTo(MockMvc), bindToApplicationContext, bindToServer (E2E), and
-  bindToRouterFunction. Use when writing or migrating tests for Boot 4 / FW 7 HTTP endpoints and you
-  want a single consistent API instead of switching between MockMvc, WebTestClient, and
+  bindToRouterFunction. Use when writing or migrating tests for HTTP endpoints in a Boot 4 / FW 7
+  project (check the build file — users rarely state the version) and you want a single consistent
+  API instead of switching between MockMvc, WebTestClient, and
   TestRestTemplate. Do NOT use when the user specifically wants AssertJ-style server-side assertions
   or to compare the two testing tools (see mock-vs-rest), nor for non-HTTP unit tests.
 ---
 
 # RestTestClient (Spring Framework 7)
 
-**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 25+.
+**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 17+ (25 recommended).
 
 `RestTestClient` is FW 7's unified REST testing client: the **same fluent API** (`.get().uri(...)
 .exchange().expectStatus()...`) from isolated unit tests up to full E2E — only the `bindTo*` factory
@@ -61,7 +62,7 @@ class TodoControllerTest {
 @WebMvcTest(TodoController.class)
 class TodoControllerMvcTest {
     @Autowired MockMvc mockMvc;
-    @MockBean TodoService service;
+    @MockitoBean TodoService service;   // @MockBean was removed in Boot 4
     @Test void rejectsInvalid() {
         RestTestClient.bindTo(mockMvc).build()
             .post().uri("/api/todos").contentType(MediaType.APPLICATION_JSON)
@@ -87,6 +88,8 @@ class TodoIntegrationTest {
 
 ## Gotchas
 
+- Mock beans in slices with **`@MockitoBean`** (`org.springframework.test.context.bean.override.mockito`) —
+  Boot 4 removed the deprecated `@MockBean`/`@SpyBean`.
 - `expectBody()` chains `jsonPath(...)` assertions; `expectBody(MyDto.class)` deserializes a typed
   body. Use the typed form when you want to assert on fields as objects.
 - It works with **any** `HttpMessageConverter` (XML, etc.), not just JSON — an edge where it beats

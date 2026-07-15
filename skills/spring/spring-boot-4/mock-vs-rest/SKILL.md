@@ -2,20 +2,21 @@
 name: mock-vs-rest
 description: >-
   Decide between MockMvcTester and RestTestClient for controller tests in Spring Framework 7, and use
-  MockMvcTester's AssertJ-native server-side assertions. Use when a Boot 4 / FW 7 testing task is a
-  CHOICE between the two tools, or specifically wants MockMvcTester — AssertJ assertThat(...) on
-  responses, handler/exception inspection, multipart/file-upload tests, or HttpServletRequest access.
+  MockMvcTester's AssertJ-native server-side assertions. Use when a testing task in a Boot 4 / FW 7
+  project (check the build file — users rarely state the version) is a CHOICE between the two tools,
+  or specifically wants MockMvcTester — AssertJ assertThat(...) on responses, handler/exception
+  inspection, multipart/file-upload tests, or HttpServletRequest access.
   Do NOT use for a deep how-to on RestTestClient's bind modes (see rest-test-client) — this skill is
   the comparison + the MockMvcTester side.
 ---
 
 # MockMvcTester vs RestTestClient — which to use (Framework 7)
 
-**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 25+.
+**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 17+ (25 recommended).
 
-FW 7 gives you two modern controller-test tools. `MockMvcTester` is server-side testing with
-**native AssertJ** integration and handler inspection; `RestTestClient` is the unified client that
-runs the same API against mock or real HTTP. Claude gets this wrong by defaulting to raw
+Boot 4 gives you two modern controller-test tools: `MockMvcTester` (since FW 6.2) is server-side
+testing with **native AssertJ** integration and handler inspection; `RestTestClient` (new in FW 7)
+is the unified client that runs the same API against mock or real HTTP. Claude gets this wrong by defaulting to raw
 `MockMvc` + `andExpect(...)` matchers; both replacements read far better. This skill is the **decision
 guide** plus the `MockMvcTester` how-to — for RestTestClient's bind modes see `rest-test-client`.
 

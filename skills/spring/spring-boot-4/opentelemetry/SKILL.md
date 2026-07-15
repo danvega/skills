@@ -3,15 +3,16 @@ name: opentelemetry
 description: >-
   Add production observability to Spring Boot 4 with the official spring-boot-starter-opentelemetry —
   automatic tracing of HTTP/JDBC, trace/span IDs in logs, and OTLP export to Grafana/Jaeger/Zipkin,
-  plus @Observed for custom spans. Use when a Boot 4 task is about observability/telemetry: tracing,
-  distributed traces, metrics export, log-trace correlation, OpenTelemetry/OTLP, or wiring to an LGTM
-  stack. Do NOT use for plain Actuator health/info endpoints, or for app logging config unrelated to
+  plus @Observed for custom spans. Use when a task in a Boot 4 project is about
+  observability/telemetry — tracing, distributed traces, metrics export, log-trace correlation,
+  OpenTelemetry/OTLP, or wiring to an LGTM stack — even if the user never mentions a version (check
+  the build file). Do NOT use for plain Actuator health/info endpoints, or for app logging config unrelated to
   trace correlation.
 ---
 
 # OpenTelemetry starter (Spring Boot 4)
 
-**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 25+.
+**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 17+ (25 recommended).
 
 Boot 4 adds an **official** `spring-boot-starter-opentelemetry`: one dependency gives automatic
 instrumentation (HTTP server/client, JDBC), trace/span IDs injected into logs, and OTLP export.
@@ -44,10 +45,12 @@ spring:
 management:
   tracing:
     sampling:
-      probability: 1.0         # 100% in dev; lower in prod to control volume
-  otlp:
+      probability: 1.0         # dev only — the default samples just 10%
+  opentelemetry:
     tracing:
-      endpoint: http://localhost:4318/v1/traces
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/traces
 ```
 
 **3. Log correlation is automatic** — trace context appears in each line:
@@ -77,15 +80,16 @@ log trace/span injection.
 
 - `@Observed` needs an `ObservedAspect` — the starter provides it; if custom spans don't appear,
   confirm AOP is on the classpath and the bean is proxied (no self-invocation).
-- Set `management.tracing.sampling.probability` **below 1.0 in production** — 100% sampling is for dev
-  only or you'll flood the backend.
-- The OTLP **traces** endpoint is `/v1/traces` (port 4318 for HTTP); metrics/logs have their own
-  paths. Point each signal at the right endpoint.
+- Sampling defaults to **10%** (`management.tracing.sampling.probability=0.1`) — set 1.0 in dev to
+  see every trace, but keep it well below that in production or you'll flood the backend.
+- Trace export config lives under **`management.opentelemetry.tracing.export.otlp.*`** — the Boot 3.x
+  `management.otlp.tracing.*` prefix no longer applies. The OTLP **traces** endpoint is `/v1/traces`
+  (port 4318 for HTTP); metrics/logs have their own paths — point each signal at the right endpoint.
 - Always set `spring.application.name` — it's the `service.name` that lets the backend group your
   traces.
 
 ```bash
-docker-compose up -d          # Grafana LGTM stack
+docker-compose up -d          # Grafana LGTM stack (compose file in the demo repo)
 ./mvnw spring-boot:run
 open http://localhost:3000    # view traces
 ```

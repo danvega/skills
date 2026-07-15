@@ -3,15 +3,16 @@ name: spring-security-mfa
 description: >-
   Require multi-factor authentication in Spring Security 7 (Boot 4) with
   @EnableMultiFactorAuthentication — declare required factors (password + one-time token), let Spring
-  route users through each, and plug in a custom OneTimeTokenService. Use when a Boot 4 task involves
-  MFA / 2FA / step-up auth, one-time tokens (OTT), magic links, or factor-based authorization with
-  Spring Security 7. Do NOT use for basic single-factor form/HTTP-Basic login, OAuth2/OIDC client or
+  route users through each, and plug in a custom OneTimeTokenService. Use when a task in a Boot 4 /
+  Security 7 project involves MFA / 2FA / step-up auth, one-time tokens (OTT), magic links, or
+  factor-based authorization — even if the user never mentions a version (check the build file).
+  Do NOT use for basic single-factor form/HTTP-Basic login, OAuth2/OIDC client or
   resource-server setup, or method-level @PreAuthorize rules unrelated to factors.
 ---
 
 # Multi-factor authentication — Spring Security 7 (Boot 4)
 
-**Baseline:** Spring Boot 4.0+, Spring Security 7.0+, Java 25+.
+**Baseline:** Spring Boot 4.0+, Spring Security 7.0+, Java 17+ (25 recommended).
 
 Security 7 adds `@EnableMultiFactorAuthentication`: you **declare** the required factors and Spring
 automatically routes a user through any factor they haven't satisfied before granting access. Claude
@@ -58,10 +59,11 @@ missing one — you don't write that routing.
 @Component
 public class CustomOneTimeTokenService implements OneTimeTokenService {
     private final Map<String, OneTimeToken> tokens = new ConcurrentHashMap<>();
+    private final SecureRandom random = new SecureRandom();   // never java.util.Random for tokens
 
     @Override
     public OneTimeToken generate(GenerateOneTimeTokenRequest request) {
-        String token = String.format("%05d", new Random().nextInt(100000));
+        String token = String.format("%05d", random.nextInt(100_000));
         Instant expiresAt = Instant.now().plus(5, ChronoUnit.MINUTES);
         var ott = new DefaultOneTimeToken(token, request.getUsername(), expiresAt);
         tokens.put(token, ott);

@@ -5,14 +5,15 @@ description: >-
   interfaces — zero boilerplate, no manual RestClient/proxy-factory wiring. Use whenever a Boot 4
   app needs to CALL another HTTP/REST service (third-party API, another microservice): the user says
   "client for service X", "consume this API", "fetch from an endpoint", or reaches for RestTemplate /
-  WebClient / RestClientAdapter / HttpServiceProxyFactory. Do NOT use for defining your OWN server
+  WebClient / RestClientAdapter / HttpServiceProxyFactory — even if the user never mentions a version
+  (check the build file). Do NOT use for defining your OWN server
   endpoints (that is plain @RestController), for versioning endpoints you expose (see api-versioning),
   or for adding retries to the calls (see resilience).
 ---
 
 # HTTP Interface Clients (Spring Boot 4)
 
-**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 25+.
+**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 17+ (25 recommended).
 
 Boot 4 adds `@ImportHttpServices`, which registers `@HttpExchange` interfaces as beans for you. You
 define the client as an **interface**; Spring generates the implementation. This is what Claude gets
@@ -67,8 +68,10 @@ class TodoFacade {
 - The HTTP client backing the proxy comes from auto-config. Under modular auto-config you must have a
   client starter on the classpath (e.g. `spring-boot-starter-restclient`) — without it the proxy
   can't be built. See the `modular-auto-config` skill if this fails to wire.
-- To point clients at different base URLs / add auth headers, configure the underlying
-  `RestClient.Builder` (group-based config) rather than baking everything into the `url` attribute.
+- Prefer configuring the base URL per group over baking it into the `url` attribute:
+  `spring.http.serviceclient.<group>.base-url=...` properties (group defaults to `"default"`;
+  same prefix covers timeouts/headers), or a `RestClientHttpServiceGroupConfigurer` bean for
+  programmatic control (auth headers, etc.).
 - Return records/DTOs, not raw `String` — the converter deserializes for you, and records keep it
   type-safe.
 - `@GetExchange`/`@PostExchange` etc. are shorthand for `@HttpExchange(method = ...)`; use the

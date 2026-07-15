@@ -3,15 +3,16 @@ name: api-versioning
 description: >-
   Version REST endpoints with Spring Framework 7's first-class API versioning — the `version`
   attribute on @GetMapping/@RequestMapping plus ApiVersionConfigurer, instead of manual path routing
-  or separate controllers. Use when a Boot 4 / FW 7 task is about evolving an API you EXPOSE while
-  keeping old clients working: "v1 vs v2 endpoint", "version this response", header/media-type/path
-  versioning, deprecation/Sunset headers. Do NOT use for choosing a client to CALL a versioned API
+  or separate controllers. Use when a task in a Boot 4 / FW 7 project is about evolving an API you
+  EXPOSE while keeping old clients working — "v1 vs v2 endpoint", "version this response",
+  header/media-type/path versioning, deprecation/Sunset headers — even if the user never mentions a
+  version (check the build file). Do NOT use for choosing a client to CALL a versioned API
   (see http-interface-clients), or for general request mapping unrelated to versions.
 ---
 
 # API versioning (Spring Framework 7)
 
-**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 25+.
+**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 17+ (25 recommended).
 
 Framework 7 adds a `version` attribute to request-mapping annotations plus an `ApiVersionConfigurer`
 to pick the versioning strategy. Claude gets this wrong by hand-rolling version routing — separate
@@ -33,9 +34,11 @@ routing, ordinary `@GetMapping` is fine.
 public class ApiVersioningConfig implements WebMvcConfigurer {
     @Override
     public void configureApiVersioning(ApiVersionConfigurer configurer) {
-        configurer.useMediaTypeParameterVersioning();   // Accept: application/json;version=1.0
-        // alternatives: .useRequestHeaderVersioning("X-API-Version")
-        //               .usePathSegmentVersioning(...) / .useQueryParameterVersioning("version")
+        configurer
+            .useMediaTypeParameter(MediaType.APPLICATION_JSON, "version")  // Accept: application/json;version=1.0
+            // alternatives: .useRequestHeader("X-API-Version")
+            //               .usePathSegment(1) / .useQueryParam("version")
+            .setDefaultVersion("1.0");   // requests without a version still resolve
     }
 }
 ```
@@ -68,8 +71,8 @@ curl -H "Accept: application/json;version=2.0" http://localhost:8080/api/users/1
   is interpreted according to it.
 - `version = "1.1+"` matches "1.1 or higher" — handy for "current and forward" handlers so you don't
   re-tag every minor bump.
-- Configure a baseline/default version so requests with no version header still resolve, rather than
-  404-ing.
+- Set `setDefaultVersion(...)` so requests with no version still resolve rather than erroring —
+  versions are required by default (`setVersionRequired(true)` is the default).
 - Pair with RFC-compliant `Deprecation`, `Sunset`, and `Link` response headers to signal v1 retirement
   — versioning is the routing half; the headers are how clients learn to migrate.
 

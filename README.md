@@ -19,7 +19,7 @@ skills. For Claude Code that's:
 git clone https://github.com/danvega/skills.git
 
 # available in every session
-cp -R skills/skills/spring-boot-4/http-interface-clients ~/.claude/skills/
+cp -R skills/skills/spring/spring-boot-4/http-interface-clients ~/.claude/skills/
 
 # or just for one project
 cp -R skills/skills/blog/seo-optimize my-project/.claude/skills/
@@ -28,7 +28,15 @@ cp -R skills/skills/blog/seo-optimize my-project/.claude/skills/
 Symlinking instead of copying keeps them updated when you pull:
 
 ```bash
-ln -s "$(pwd)/skills/skills/spring-boot-4/null-safety" ~/.claude/skills/null-safety
+ln -s "$(pwd)/skills/skills/spring/spring-boot-4/null-safety" ~/.claude/skills/null-safety
+```
+
+The `spring-boot-4` skills cross-reference each other (e.g. `http-interface-clients`
+points at `modular-auto-config` when a client won't wire), so they work best installed
+as a set:
+
+```bash
+cp -R skills/skills/spring/spring-boot-4/* ~/.claude/skills/
 ```
 
 ## Why these exist
@@ -45,7 +53,7 @@ on Boot 3.x, so without help they reach for the old way:
 | --- | --- | --- |
 | A client for another service | `RestTemplate` boilerplate | `@HttpExchange` + `@ImportHttpServices` |
 | Versioned endpoints | Manual path routing | Built-in API versioning |
-| Error responses | Ad-hoc JSON maps | RFC 9457 `ProblemDetail` |
+| Retrying a flaky call | `spring-retry` dependency | Built-in `@Retryable` |
 | JSON config | `com.fasterxml.jackson` | Jackson 3 (`tools.jackson`) |
 | Null handling | Nullable-by-default assumptions | JSpecify non-null defaults |
 
@@ -58,33 +66,43 @@ Two kinds of skills, kept deliberately separate:
 - **Workflow skills** are processes that drive a repeatable task end to end — my
   actual blogging and YouTube workflows.
 
-### spring-boot-4
+### spring
 
-One focused skill per feature. Each encodes the delta (what changed in 4.x/7.x, the
-current idiom, and the gotchas) and triggers on the task, not the feature name.
+Spring skills live under `skills/spring/`, one folder per release or product — today
+that's `spring-boot-4`, with room for `spring-ai` and friends as siblings.
+
+**spring-boot-4** is one focused skill per feature. Each encodes the delta (what changed
+in 4.x/7.x, the current idiom, and the gotchas) and triggers on the task, not the
+feature name.
 
 **APIs & web**
-- **[http-interface-clients](./skills/spring-boot-4/http-interface-clients/SKILL.md)**: `@ImportHttpServices` + `@HttpExchange` declarative clients
-- **[api-versioning](./skills/spring-boot-4/api-versioning/SKILL.md)**: the `version` attribute + `ApiVersionConfigurer`
-- **[jackson-3](./skills/spring-boot-4/jackson-3/SKILL.md)**: `tools.jackson`, auto-configured `JsonMapper`, ISO-8601 defaults, `@JsonView`
+- **[http-interface-clients](./skills/spring/spring-boot-4/http-interface-clients/SKILL.md)**: `@ImportHttpServices` + `@HttpExchange` declarative clients
+- **[api-versioning](./skills/spring/spring-boot-4/api-versioning/SKILL.md)**: the `version` attribute + `ApiVersionConfigurer`
+- **[jackson-3](./skills/spring/spring-boot-4/jackson-3/SKILL.md)**: `tools.jackson`, auto-configured `JsonMapper`, ISO-8601 defaults, `@JsonView`
 
 **Messaging & resilience**
-- **[jms-client](./skills/spring-boot-4/jms-client/SKILL.md)**: the fluent `JmsClient` (send, QoS, request-reply)
-- **[resilience](./skills/spring-boot-4/resilience/SKILL.md)**: built-in `@Retryable` + `@ConcurrencyLimit`, no Spring Retry
+- **[jms-client](./skills/spring/spring-boot-4/jms-client/SKILL.md)**: the fluent `JmsClient` (send, QoS, request-reply)
+- **[resilience](./skills/spring/spring-boot-4/resilience/SKILL.md)**: built-in `@Retryable` + `@ConcurrencyLimit`, no Spring Retry
 
 **Core & data**
-- **[null-safety](./skills/spring-boot-4/null-safety/SKILL.md)**: JSpecify `@NullMarked` / `@Nullable`
-- **[bean-registration](./skills/spring-boot-4/bean-registration/SKILL.md)**: the `BeanRegistrar` interface
-- **[spring-data-aot](./skills/spring-boot-4/spring-data-aot/SKILL.md)**: build-time repositories + the validation gotcha
+- **[null-safety](./skills/spring/spring-boot-4/null-safety/SKILL.md)**: JSpecify `@NullMarked` / `@Nullable`
+- **[bean-registration](./skills/spring/spring-boot-4/bean-registration/SKILL.md)**: the `BeanRegistrar` interface
+- **[spring-data-aot](./skills/spring/spring-boot-4/spring-data-aot/SKILL.md)**: build-time repositories + the validation gotcha
 
 **Testing**
-- **[rest-test-client](./skills/spring-boot-4/rest-test-client/SKILL.md)**: `RestTestClient` across all five bind modes
-- **[mock-vs-rest](./skills/spring-boot-4/mock-vs-rest/SKILL.md)**: `MockMvcTester` vs `RestTestClient` decision guide
+- **[rest-test-client](./skills/spring/spring-boot-4/rest-test-client/SKILL.md)**: `RestTestClient` across all five bind modes
+- **[mock-vs-rest](./skills/spring/spring-boot-4/mock-vs-rest/SKILL.md)**: `MockMvcTester` vs `RestTestClient` decision guide
 
 **Observability, security & migration**
-- **[opentelemetry](./skills/spring-boot-4/opentelemetry/SKILL.md)**: the official `spring-boot-starter-opentelemetry`
-- **[spring-security-mfa](./skills/spring-boot-4/spring-security-mfa/SKILL.md)**: `@EnableMultiFactorAuthentication` + one-time tokens
-- **[modular-auto-config](./skills/spring-boot-4/modular-auto-config/SKILL.md)**: the split-up auto-configuration breaking change
+- **[opentelemetry](./skills/spring/spring-boot-4/opentelemetry/SKILL.md)**: the official `spring-boot-starter-opentelemetry`
+- **[spring-security-mfa](./skills/spring/spring-boot-4/spring-security-mfa/SKILL.md)**: `@EnableMultiFactorAuthentication` + one-time tokens
+- **[modular-auto-config](./skills/spring/spring-boot-4/modular-auto-config/SKILL.md)**: the split-up auto-configuration breaking change
+
+### dev
+
+General development workflow skills, not tied to any framework.
+
+- **[readme](./skills/dev/readme/SKILL.md)**: write a README that fits the project type — what to lead with for a CLI vs library vs service vs monorepo, plus honesty rules (verified commands, no hype, no aspirational features) and plain-language style rules (short sentences, no em dashes)
 
 ### blog
 

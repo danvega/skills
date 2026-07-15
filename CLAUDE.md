@@ -5,8 +5,10 @@ follow these rules.
 
 ## Two layers, kept separate
 
-- **Knowledge skills** (`skills/spring-boot-4/`, future `spring-ai/`, `java/`) are
-  auto-discovered by description match. They encode framework/language deltas.
+- **Knowledge skills** (`skills/spring/spring-boot-4/`, future `skills/spring/spring-ai/`,
+  `skills/java/`) are auto-discovered by description match. They encode framework/language
+  deltas. Framework families get a top-level folder (`spring/`) with one subfolder per
+  release or product.
 - **Workflow skills** (`skills/blog/`, `skills/youtube/`) are processes that drive
   a repeatable task end to end (drafting a post, generating video ideas).
 - Don't mix the two in one folder; their descriptions optimize for different things.
@@ -20,7 +22,7 @@ follow these rules.
   4.x/7.x and what the current idiom is. Don't re-explain a `@RestController`.
 - Put deprecated 3.x patterns in a collapsed `<details>` "Legacy" block so the
   current path stays clean and the skill doesn't rot on a date.
-- State the version baseline explicitly (Boot 4.0+, Framework 7.0+, Java 25+).
+- State the version baseline explicitly (Boot 4.0+, Framework 7.0+, Java 17+ (25 recommended)).
 - Include real gotchas (the exceptions you actually hit), not just happy-path code.
 
 ## The description field

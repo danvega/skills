@@ -12,7 +12,7 @@ description: >-
 
 # Modular auto-configuration (Spring Boot 4)
 
-**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 25+.
+**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 17+ (25 recommended).
 
 Boot 4 split the one giant `spring-boot-autoconfigure` JAR (it had grown to 2MB+ covering Kafka,
 Security, Mongo, Flyway, JPA, …) into **focused modules**. You now get auto-config **only for what's

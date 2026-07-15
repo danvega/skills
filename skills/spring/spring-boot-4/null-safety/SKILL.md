@@ -5,14 +5,15 @@ description: >-
   @NullMarked plus @Nullable for the exceptions, giving compile-time/IDE null checking and clean
   Kotlin interop. Use whenever working on a Boot 4 / FW 7 codebase and the task touches null
   handling, NPE prevention, "should this be Optional", method/field nullability, package-info.java,
-  or org.jspecify imports — even if the user doesn't say "JSpecify". Do NOT use for general Optional
+  or org.jspecify imports — even if the user doesn't say "JSpecify" or mention a version (check the
+  build file). Do NOT use for general Optional
   API design unrelated to Boot 4, or for Spring's old org.springframework.lang.@Nullable (that is
   the legacy pattern this skill replaces).
 ---
 
 # JSpecify null safety (Spring Boot 4 / Framework 7)
 
-**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 25+.
+**Baseline:** Spring Boot 4.0+, Spring Framework 7.0+, Java 17+ (25 recommended).
 
 Framework 7 standardized on **JSpecify** (`org.jspecify.annotations.*`) for null safety and
 re-annotated its own API with it. The idiom is *non-null by default, opt into nullable* — declared
