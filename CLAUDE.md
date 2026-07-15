@@ -1,6 +1,6 @@
 # CLAUDE.md — authoring conventions for this repo
 
-This is Dan Vega's personal skills repository. When creating or editing skills here,
+This is Dan Vega's personal skills' repository. When creating or editing skills here,
 follow these rules.
 
 ## Two layers, kept separate

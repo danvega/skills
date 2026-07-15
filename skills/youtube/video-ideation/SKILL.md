@@ -48,7 +48,7 @@ Drop anything scoring under 15. Keep the top 5–10.
 
 Fill in `assets/idea-brief-template.md` for the ranked ideas. Titles should be written like real YouTube titles — specific, benefit-forward, under ~65 characters. Pattern examples from what already works in this niche: "Build a ___ in Minutes", "___ Explained: ___", "I Tried ___. Here's What Happened", "Stop ___ (Do This Instead)".
 
-Save to the working folder as `ideas/YYYY-MM-DD-<topic-slug>-ideas.md` (e.g., `ideas/2026-07-08-spring-ai-ideas.md`, or `-general-` for a full sweep) — the slug prevents collisions when multiple briefs land on the same day. Present the file, leading the summary with the #1 idea and its one-line evidence.
+Save to the working folder as `ideas/YYYY-MM-DD-<topic-slug>-ideas.md` (e.g., `ideas/2026-07-08-spring-ai-ideas.md`, or `-general-` for a full sweep) — the slug prevents collisions when multiple briefs land on the same day. Present the file, leading the summary with the #1 idea and its one-line evidence. When Dan picks an idea to film, hand off to the `video-packaging` skill to develop its title, thumbnail concept, and intro as one congruent package.
 
 ## Principles
 

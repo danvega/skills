@@ -102,6 +102,7 @@ and voice, but the structure is easy to adapt.
 The same idea applied to my [YouTube channel](https://www.youtube.com/@DanVega).
 
 - **[video-ideation](./skills/youtube/video-ideation/SKILL.md)**: research-driven video ideas — fans out across channel data, YouTube outliers, community trends, and search demand, then returns a ranked brief where every idea cites evidence of real demand
+- **[video-packaging](./skills/youtube/video-packaging/SKILL.md)**: turn a chosen idea into a congruent package — title options, a thumbnail creative brief, and a scripted first-30-seconds intro that all tell the same story
 
 ## What's a skill?
 
