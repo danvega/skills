@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# IDEs / editors
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+
+# Logs / temp
+*.log
+.tmp/
+tmp/
