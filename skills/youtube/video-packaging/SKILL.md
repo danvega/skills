@@ -1,6 +1,6 @@
 ---
 name: video-packaging
-description: Turn one chosen video idea into a congruent package — final title, thumbnail concept, and first-30-seconds intro — for Dan Vega's YouTube channel. Use when Dan has decided what to film and wants it packaged, or mentions titles, thumbnails, hooks, intros, or "packaging" for a specific video. Works best fed an idea from a video-ideation brief (it carries the evidence and keyword), but a plain topic works too. Figuring out WHAT to make is `video-ideation`; this skill packages an idea that is already chosen.
+description: Turn one chosen video idea into a congruent package — final title, thumbnail concept, and first-30-seconds intro — for Dan Vega's YouTube channel. Use when Dan has decided what to film and wants it packaged, or mentions titles, thumbnails, hooks, intros, or "packaging" for a specific video. Input can be an idea from a video-ideation brief, a plain topic, or source material Dan hands over — code, a repo, a blog post, an article, release notes, or documentation the video will be based on. Figuring out WHAT to make is `video-ideation`; this skill packages an idea that is already chosen.
 ---
 
 # Video Packaging
@@ -9,13 +9,15 @@ The idea sets a video's ceiling; the packaging decides whether it gets there. A 
 
 ## The one rule: congruence
 
-The thumbnail makes a promise, the title confirms it, and the first 30 seconds start keeping it. Three strong pieces that tell three different stories lose to three decent pieces that tell one story — a mismatch reads as a bait-and-switch and the viewer clicks away feeling lied to. So never optimize a piece in isolation: a clever title that drifts from the thumbnail's promise gets cut, no matter how good it is on its own.
+The thumbnail makes a promise, the title confirms it, and the first 30 seconds start keeping it. Three strong pieces that tell three different stories lose to three decent pieces that tell one story — a mismatch reads as a bait-and-switch, and the viewer clicks away feeling lied to. So never optimize a piece in isolation: a clever title that drifts from the thumbnail's promise gets cut, no matter how good it is on its own.
 
 ## Workflow
 
-### Step 1 — Anchor on the core promise
+### Step 1 — Understand what the video is actually about
 
-Write the video's promise as one sentence: who it's for and what they walk away with. If the idea came from a brief in `ideas/`, pull its evidence, hook angle, and target keyword — the promise should be built around the demand signal that put the idea on the list. Every title, thumbnail concept, and intro line must trace back to this sentence.
+Dan often hands over source material with the idea: code or a whole project, a blog post, an article, release notes, or documentation the video is built on. Read it before writing anything — it is the ground truth for what the video contains, and it's where the specifics that make packaging land come from: the exact feature names, version numbers, before/after deltas, a surprising result, the gotcha that cost an afternoon. Mine it for concrete, quotable details; a title or intro built from them beats one built from the topic label alone. If the material is large (a repo, long docs), skim for what's demonstrable on camera — the parts of it the video will actually show.
+
+Then write the video's promise as one sentence: who it's for and what they walk away with. If the idea came from a brief in `ideas/`, also pull its evidence, hook angle, and target keyword — the promise should combine the demand signal (why people want this) with what the source material proves the video can deliver. Every title, thumbnail concept, and intro line must trace back to this sentence.
 
 ### Step 2 — Titles (8–10 options)
 
