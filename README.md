@@ -115,6 +115,12 @@ and voice, but the structure is easy to adapt.
 - **[seo-optimize](./skills/blog/seo-optimize/SKILL.md)**: keyword research + on-page optimization for an existing post
 - **[post-cover](./skills/blog/post-cover/SKILL.md)**: render the site's terminal-style cover image to PNG
 
+### newsletter
+
+The newsletter workflow — authored and sent in [Beehiiv](https://www.beehiiv.com), republished on the site.
+
+- **[publish-newsletter](./skills/newsletter/publish-newsletter/SKILL.md)**: republish a Beehiiv edition on the site — fetch via MCP, convert to site markdown (embeds, local images, house footer), light typo pass, validated save
+
 ### video
 
 The full pipeline for my [YouTube channel](https://www.youtube.com/@DanVega) — from

@@ -9,9 +9,9 @@ follow these rules.
   `skills/java/`) are auto-discovered by description match. They encode framework/language
   deltas. Framework families get a top-level folder (`spring/`) with one subfolder per
   release or product.
-- **Workflow skills** (`skills/blog/`, `skills/video/`) are processes that drive a
-  repeatable task end to end (drafting a post, generating video ideas, rough-cutting
-  a recording).
+- **Workflow skills** (`skills/blog/`, `skills/newsletter/`, `skills/video/`) are
+  processes that drive a repeatable task end to end (drafting a post, republishing a
+  newsletter, generating video ideas, rough-cutting a recording).
 - Don't mix the two in one folder; their descriptions optimize for different things.
 
 ## Every knowledge skill
