@@ -21,7 +21,7 @@ Then write the video's promise as one sentence: who it's for and what they walk 
 
 ### Step 2 — Titles (8–10 options)
 
-- Under ~65 characters, benefit-forward, target keyword early where it fits naturally.
+- Under ~65 characters, benefit-forward, target the keyword early where it fits naturally.
 - Write real YouTube titles, not descriptions. Patterns that work in this niche: "Build a ___ in Minutes", "___ Explained: ___", "I Tried ___. Here's What Happened", "Stop ___ (Do This Instead)", "___ Changed How I ___".
 - Vary the mechanism across options — curiosity, specificity (numbers, versions, named tools), contrarian take — then mark a top pick and say why, citing the evidence.
 
@@ -49,6 +49,16 @@ Before presenting anything, audit the recommended combination in a table: the co
 ### Output
 
 Save to `packaging/YYYY-MM-DD-<video-slug>.md` in the working folder: the promise, all title options with the pick marked, the thumbnail concepts, the intro scripts, and the congruence table. Present the recommended trio (one title + one thumbnail concept + one intro) first, then the alternatives.
+
+Then publish the package as an artifact (via the Artifact tool) so Dan has a shareable brief to reference while filming. Load the `artifact-design` skill first, write the HTML to the scratchpad, and publish with favicon 🎬. The artifact carries the same content as the markdown file, structured for scanning:
+
+- Header: video topic, date, target keyword, effort, source link — then the promise as a callout.
+- The recommended package as the lead card: the picked title, thumbnail Concept A, and the recommended intro. Render the thumbnail concept as a rough CSS layout mock at 16:9 (labeled "layout mock, not final art") alongside a 120px-wide copy as the shrink test — it proves legibility instead of asserting it.
+- Then the alternatives: remaining titles (each tagged with its mechanism), other thumbnail concepts with their risks, alternate intros, the congruence table, and the key facts/gotchas mined from the source material for building the demo.
+- Set intro scripts in a serif reading face so they read as spoken scripts; set titles and code in mono. Support light and dark themes.
+- Keep the artifact URL stable across revisions: republish the same HTML file path when iterating on a package in-session, or pass the existing URL when updating from a later conversation.
+
+The markdown file remains the source of truth; the artifact is the presentation layer.
 
 ## Principles
 

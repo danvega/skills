@@ -115,12 +115,14 @@ and voice, but the structure is easy to adapt.
 - **[seo-optimize](./skills/blog/seo-optimize/SKILL.md)**: keyword research + on-page optimization for an existing post
 - **[post-cover](./skills/blog/post-cover/SKILL.md)**: render the site's terminal-style cover image to PNG
 
-### youtube
+### video
 
-The same idea applied to my [YouTube channel](https://www.youtube.com/@DanVega).
+The full pipeline for my [YouTube channel](https://www.youtube.com/@DanVega) — from
+"what should I make?" through packaging to the first cut.
 
-- **[video-ideation](./skills/youtube/video-ideation/SKILL.md)**: research-driven video ideas — fans out across channel data, YouTube outliers, community trends, and search demand, then returns a ranked brief where every idea cites evidence of real demand
-- **[video-packaging](./skills/youtube/video-packaging/SKILL.md)**: turn a chosen idea into a congruent package — title options, a thumbnail creative brief, and a scripted first-30-seconds intro that all tell the same story
+- **[video-ideation](./skills/video/video-ideation/SKILL.md)**: research-driven video ideas — fans out across channel data, YouTube outliers, community trends, and search demand, then returns a ranked brief where every idea cites evidence of real demand
+- **[video-packaging](./skills/video/video-packaging/SKILL.md)**: turn a chosen idea into a congruent package — title options, a thumbnail creative brief, and a scripted first-30-seconds intro that all tell the same story
+- **[rough-cut](./skills/video/rough-cut/SKILL.md)**: raw recording → safe first pass — trims dead air, cuts fillers, resolves retakes; knows the difference between talking-head silence and screen-share "silence" while a build runs
 
 ## What's a skill?
 
