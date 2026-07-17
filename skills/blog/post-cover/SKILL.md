@@ -1,6 +1,6 @@
 ---
 name: post-cover
-description: Generate a terminal-theme cover image for a blog post — renders an on-brand HTML template to PNG with headless Chrome. Use when the user wants a cover image, thumbnail, or og-image for a post, or when a finished post is missing its cover. Scope is the site's terminal-style covers (dark green, $-prompt, terminal window); photo/YouTube-style thumbnails with Dan's face are made outside this repo and are NOT this skill.
+description: Generate a terminal-theme cover image for a blog post — renders an on-brand HTML template to PNG with headless Chrome. Use when the user wants a cover image, thumbnail, or og-image for a post, or when a finished post is missing its cover. Scope is the site's terminal-style covers (dark green, $-prompt, terminal window); photo/YouTube-style thumbnails with Dan's face are the video `thumbnail` skill, NOT this one.
 ---
 
 # Post Cover

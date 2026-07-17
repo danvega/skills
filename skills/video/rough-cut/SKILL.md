@@ -26,9 +26,11 @@ pause costs seconds in the edit; a clipped word costs a re-render and trust.
 
 `/tmp/rough-cut/<basename>/` — create at start, leave artifacts behind for cheap revisions.
 
-## Step 1 — Proxy + audio
+## Step 1 — Analysis proxy + audio
 
-Transcode to a working copy first; every later step runs against it, not the source:
+Make a 1080p working copy for the *analysis* steps (transcription, silence detection, scene
+checks) — it keeps them fast. The proxy is never the deliverable: the final render (Step 4) cuts
+the original source at its native resolution, so a 4K recording stays 4K.
 
 ```bash
 ffmpeg -y -hwaccel videotoolbox -i "$SRC" \
@@ -132,15 +134,22 @@ Pad every keep boundary: **0.15s before word onsets, 0.15s after word ends.** Ro
 deliberately loose — whisper's timing error must land inside the pad, never inside a word.
 
 Render with trim+concat, **not** the `select` filter (select desyncs audio). One trim/atrim pair
-per keep interval, written to a file:
+per keep interval, written to a file. **Cut the original source, not the proxy** — the timestamps
+transfer 1:1 (the proxy is a straight transcode), and the output keeps the source's native
+resolution. Never downscale:
 
 ```bash
-ffmpeg -y -hwaccel videotoolbox -i proxy.mp4 \
+ffmpeg -y -hwaccel videotoolbox -i "$SRC" \
   -filter_complex_script filter.txt \
   -map "[outv]" -map "[outa]" \
-  -c:v libx264 -preset fast -crf 20 -pix_fmt yuv420p -c:a aac -b:a 192k \
+  -c:v libx264 -preset fast -crf 18 -pix_fmt yuv420p -c:a aac -b:a 192k \
   /tmp/rough-cut/$NAME/rough.mp4
 ```
+
+On 4K/HEVC sources libx264 gets slow — `-c:v h264_videotoolbox -b:v 30M` renders minutes faster
+at quality that's fine for a cut that gets edited further. If ffprobe shows the source is VFR
+(variable frame rate — some phone/DJI footage), normalize it to a CFR mezzanine at native
+resolution first and cut that instead; VFR timing can drift against times measured on the proxy.
 
 ## Step 5 — Deliver
 
@@ -163,6 +172,17 @@ Append a dated line here every time a run burns you — this log is where the sk
 - (seed) `tiny.en` drops words and collapses retakes — `small.en` minimum.
 - (seed) A whisper "word" spanning 2s+ hides a pause or a retake inside it — re-window before
   cutting near it.
+- 2026-07-16: `whisper` CLI isn't installed on this machine — use `mlx_whisper` (miniforge, on
+  PATH) with `--model mlx-community/whisper-small.en-mlx --word-timestamps True`; same JSON output.
+- 2026-07-16: the screen-share activity check silently reports 0 scene changes if you pass
+  `-v error` — `metadata=print` writes at info level, so `-v error` swallows it and every window
+  looks static. Omit `-v error` (or use `-v info`) on the scene-change count; keep `-v error`
+  elsewhere. Sanity-check the mechanism against a known-active window before trusting a 0.
+- 2026-07-16: Dan edits in a **3840x2160** Premiere sequence, so the 1080p-proxy render drops in
+  upscaled 200%. Detect against the proxy (fast), but render the **final deliverable from the
+  original source at native resolution** — reuse the same `filter.txt` (cut timestamps are
+  resolution-independent), point `-i` at the source, drop the `scale`, and encode 4K with
+  `-c:v h264_videotoolbox -b:v 50M -maxrate 60M -bufsize 80M` (libx264 at 4K is far slower).
 
 ## What this skill does NOT do
 
