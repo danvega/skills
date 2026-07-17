@@ -20,3 +20,10 @@ Desktop.ini
 *.log
 .tmp/
 tmp/
+
+# Node (motion-graphics render deps)
+node_modules/
+package-lock.json
+
+# Rendered video output (shorts samples / deliverables) — not source
+/shorts/

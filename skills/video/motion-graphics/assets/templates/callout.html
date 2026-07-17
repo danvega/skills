@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<!--
+  callout: compact terminal chip for a URL / repo / version spoken on screen.
+  Contract (all templates in this library):
+    window.setParams({...})  — set text/content before rendering
+    window.seek(t, total)    — set the exact visual state for time t (seconds).
+                               ALL animation lives here; no CSS animations/transitions.
+  Canvas is 1920x1080, background transparent.
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; background: transparent; overflow: hidden; }
+
+  .chip {
+    position: absolute;
+    left: 72px;
+    bottom: 84px;
+    display: flex;
+    align-items: stretch;
+    max-width: 1100px;
+    border-radius: 12px;
+    background: rgba(13, 17, 10, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    opacity: 0;
+  }
+  .chip.right { left: auto; right: 72px; }
+
+  .accent { width: 5px; background: #8ce99a; flex: none; }
+
+  .inner { padding: 14px 22px 15px 20px; }
+  .label {
+    font: 600 13px/1 "SF Mono", Menlo, monospace;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #69db7c;
+  }
+  .value {
+    margin-top: 7px;
+    font: 500 27px/1.1 "SF Mono", Menlo, monospace;
+    color: #f4f7f2;
+    white-space: pre;
+  }
+  .cursor {
+    display: inline-block;
+    width: 12px; height: 25px;
+    background: #8ce99a;
+    vertical-align: -4px;
+    margin-left: 3px;
+  }
+</style>
+</head>
+<body>
+  <div class="chip" id="chip">
+    <div class="accent"></div>
+    <div class="inner">
+      <div class="label" id="label">REPO</div>
+      <div class="value"><span id="value"></span><span class="cursor" id="cursor"></span></div>
+    </div>
+  </div>
+
+<script>
+  let LABEL = "REPO";
+  let VALUE = "github.com/danvega/self-correcting-so";
+
+  window.setParams = function ({ label, value, side } = {}) {
+    if (label) { LABEL = label; document.getElementById("label").textContent = label; }
+    if (value) VALUE = value;
+    if (side === "right") document.getElementById("chip").classList.add("right");
+  };
+
+  const easeOutCubic = x => 1 - Math.pow(1 - x, 3);
+  const easeInCubic  = x => x * x * x;
+  const clamp01 = x => Math.max(0, Math.min(1, x));
+  const seg = (t, a, b) => clamp01((t - a) / (b - a));
+
+  window.seek = function (t, total) {
+    total = total || 5.0;
+    const chip   = document.getElementById("chip");
+    const value  = document.getElementById("value");
+    const cursor = document.getElementById("cursor");
+
+    // slide in from the left edge + fade;  slide back + fade at the end
+    const pIn  = easeOutCubic(seg(t, 0.0, 0.42));
+    const pOut = easeInCubic(seg(t, total - 0.50, total - 0.10));
+    chip.style.opacity   = (pIn * (1 - pOut)).toFixed(4);
+    chip.style.transform = `translateX(${(1 - pIn) * -34 + pOut * -18}px)`;
+
+    // type the value out, one char per tick
+    const typeDur = Math.min(1.1, VALUE.length * 0.045);
+    const nChars  = Math.floor(seg(t, 0.42, 0.42 + typeDur) * VALUE.length);
+    value.textContent = VALUE.slice(0, nChars);
+
+    // cursor: solid while typing, blinks otherwise
+    const typing  = t > 0.42 && nChars < VALUE.length;
+    const blinkOn = Math.floor(t / 0.45) % 2 === 0;
+    cursor.style.opacity = (typing || blinkOn) ? 1 : 0;
+  };
+
+  window.seek(0);
+</script>
+</body>
+</html>
