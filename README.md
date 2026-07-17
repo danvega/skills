@@ -128,6 +128,7 @@ The full pipeline for my [YouTube channel](https://www.youtube.com/@DanVega) —
 
 - **[video-ideation](./skills/video/video-ideation/SKILL.md)**: research-driven video ideas — fans out across channel data, YouTube outliers, community trends, and search demand, then returns a ranked brief where every idea cites evidence of real demand
 - **[video-packaging](./skills/video/video-packaging/SKILL.md)**: turn a chosen idea into a congruent package — title options, a thumbnail creative brief, and a scripted first-30-seconds intro that all tell the same story
+- **[thumbnail](./skills/video/thumbnail/SKILL.md)**: render the final thumbnail art — no AI image generation; composes real photo cutouts (Apple Vision subject lift) with HTML/CSS templates in the channel's design language, rendered via headless Chrome, verified with a 120px shrink test
 - **[rough-cut](./skills/video/rough-cut/SKILL.md)**: raw recording → safe first pass — trims dead air, cuts fillers, resolves retakes; knows the difference between talking-head silence and screen-share "silence" while a build runs
 
 ## What's a skill?

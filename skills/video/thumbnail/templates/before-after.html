@@ -1,0 +1,166 @@
+<!doctype html>
+<!--
+  BEFORE-AFTER: wordmark top-left, a code panel telling a red-X -> green-check
+  story below it, optional hook badge, Dan on the right third. For videos whose
+  pitch is "this broken thing becomes this fixed thing" (validation, error
+  handling, migration, refactoring).
+
+  The panel SHOWS the story so the badge can stay short — the two code lines
+  are texture (illegible at 120px is fine); the badge + wordmark + face must
+  survive the shrink test. The green check/code line is the ONE green accent;
+  keep the badge text white and its border in the muted chip green so red-vs-
+  green stays the only color tension.
+
+  Copy to the scratchpad, fill the FIVE marked sections, render at 1280x720 @2x.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 720px; overflow: hidden; }
+  body {
+    font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
+    background:
+      radial-gradient(ellipse 900px 700px at 78% 45%, rgba(70, 160, 90, 0.22), transparent 65%),
+      radial-gradient(ellipse 800px 600px at 15% 20%, rgba(40, 90, 55, 0.25), transparent 70%),
+      linear-gradient(135deg, #0c1a10 0%, #08120b 55%, #060d08 100%);
+    position: relative;
+  }
+
+  svg.plexus { position: absolute; inset: 0; opacity: 0.35; }
+
+  .content { position: absolute; left: 64px; top: 64px; z-index: 3; }
+
+  .wordmark { display: flex; align-items: center; gap: 28px; }
+  .wordmark .big {
+    font-size: 118px; font-weight: 900; color: #fff; letter-spacing: -2px;
+    text-shadow: 0 6px 30px rgba(0,0,0,0.55);
+  }
+  .ai-box {
+    width: 104px; height: 104px; border: 8px solid #fff; border-radius: 24px;
+    display: flex; align-items: flex-end; justify-content: center;
+    position: relative; margin-top: 12px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.45);
+  }
+  .ai-box .ai { font-size: 66px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 6px; }
+  .ai-box .sparkle { position: absolute; top: -32px; right: -32px; }
+
+  /* the story panel: bad row -> chevron -> good row */
+  .panel {
+    margin-top: 40px; width: 900px;
+    background: linear-gradient(180deg, rgba(18, 26, 20, 0.92), rgba(10, 16, 12, 0.92));
+    border: 2px solid rgba(255,255,255,0.10); border-radius: 26px;
+    padding: 40px 44px;
+    box-shadow: 0 12px 44px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .row { display: flex; align-items: center; gap: 30px; }
+  .mark {
+    width: 78px; height: 78px; border-radius: 50%; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.45);
+  }
+  .mark.bad { background: #d5382e; }
+  .mark.good { background: #35b558; }
+  .row .code {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    font-size: 46px; font-weight: 700; letter-spacing: -1px; white-space: nowrap;
+  }
+  .row.bad .code { color: #ff6b5e; }
+  .row.good .code { color: #6cd97e; }
+  .chevron { margin: 22px 0 22px 24px; }
+
+  /* optional hook badge, sits to the right of the panel gap */
+  .badge {
+    position: absolute; z-index: 3;
+    background: #06090714; background: rgba(5, 9, 6, 0.96);
+    border: 6px solid #4f9c60; border-radius: 34px;
+    padding: 28px 44px; text-align: center;
+    box-shadow: 0 14px 48px rgba(0,0,0,0.55);
+  }
+  .badge .line { font-size: 64px; font-weight: 900; color: #fff; letter-spacing: -1px; line-height: 1.08; }
+
+  .glow {
+    position: absolute; right: -60px; bottom: -120px; width: 720px; height: 780px;
+    background: radial-gradient(ellipse at center, rgba(90, 200, 115, 0.30), transparent 62%);
+    z-index: 1;
+  }
+  img.dan {
+    position: absolute; right: -40px; bottom: 0; height: 575px; z-index: 2;
+    filter: drop-shadow(-18px 0 40px rgba(0,0,0,0.55));
+  }
+</style>
+</head>
+<body>
+  <svg class="plexus" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+    <g stroke="#3a6b46" stroke-width="1">
+      <path d="M40 620 L210 520 L390 610 L340 700"/><path d="M210 520 L180 400 L330 340"/>
+      <path d="M330 340 L390 610"/><path d="M180 400 L40 430"/>
+      <path d="M900 120 L1050 60 L1180 150 L1240 80"/><path d="M1050 60 L1100 190"/>
+      <path d="M60 90 L170 150 L300 80"/><path d="M170 150 L150 250"/>
+    </g>
+    <g fill="#4b8a58">
+      <circle cx="40" cy="620" r="4"/><circle cx="210" cy="520" r="5"/><circle cx="390" cy="610" r="4"/>
+      <circle cx="330" cy="340" r="4"/><circle cx="180" cy="400" r="5"/><circle cx="900" cy="120" r="4"/>
+      <circle cx="1050" cy="60" r="5"/><circle cx="1180" cy="150" r="4"/><circle cx="60" cy="90" r="4"/>
+      <circle cx="170" cy="150" r="5"/><circle cx="300" cy="80" r="4"/>
+    </g>
+  </svg>
+
+  <div class="content">
+    <!-- 1. WORDMARK ROW: subject at max size. Must end by x~880 so the badge
+         and Dan's head stay clear. -->
+    <div class="wordmark">
+      <span class="big">SPRING</span>
+      <div class="ai-box">
+        <span class="ai">AI</span>
+        <svg class="sparkle" width="68" height="68" viewBox="0 0 72 72">
+          <path d="M36 2 C39 20 44 27 62 32 C44 37 39 44 36 66 C33 44 28 37 10 32 C28 27 33 20 36 2 Z" fill="#fff"/>
+          <path d="M58 44 C59.5 51 61.5 53.5 68 55 C61.5 56.5 59.5 59 58 66 C56.5 59 54.5 56.5 48 55 C54.5 53.5 56.5 51 58 44 Z" fill="#fff"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 2. STORY PANEL: one broken line (red), one fixed line (green). Keep
+         each code line under ~24 chars so it never runs under the cutout;
+         truncate with … rather than shrinking the font. Panel width is 900px —
+         narrow it if the cutout needs more room. -->
+    <div class="panel">
+      <div class="row bad">
+        <div class="mark bad">
+          <svg width="40" height="40" viewBox="0 0 40 40"><path d="M8 8 L32 32 M32 8 L8 32" stroke="#fff" stroke-width="8" stroke-linecap="round"/></svg>
+        </div>
+        <span class="code">{ "json": "movies": … }</span>
+      </div>
+      <div class="chevron">
+        <svg width="56" height="34" viewBox="0 0 56 34"><path d="M4 4 L28 28 L52 4" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </div>
+      <div class="row good">
+        <div class="mark good">
+          <svg width="42" height="42" viewBox="0 0 42 42"><path d="M8 22 L18 32 L34 10" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </div>
+        <span class="code">.validateSchema()</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. HOOK BADGE (optional — delete if the panel says it all): 1-2 short
+       lines, <=3 words total, WHITE 900-weight. This is the element that must
+       read at 120px. Position it in the gap between wordmark and cutout;
+       nudge left/top so it never touches the face. -->
+  <div class="badge" style="left: 760px; top: 210px;">
+    <div class="line">ONE</div>
+    <div class="line">LINE</div>
+  </div>
+
+  <div class="glow"></div>
+  <!-- 4. CUTOUT: absolute path into the library (see cutouts/manifest.md).
+       High-emotion expressions (shock, frustration, sly grin) fit this
+       layout best — the story panel supplies the "why". Tune height
+       (500-620) + right offset; head must clear the badge. -->
+  <img class="dan" src="/Users/vega/youtube/shared-assets/thumbnail/cutouts/smile-neutral.png">
+
+  <!-- 5. BACKGROUND (optional): tweak gradient/plexus intensity. Keep it dark
+       — the red X only lands if everything else stays calm. -->
+</body>
+</html>

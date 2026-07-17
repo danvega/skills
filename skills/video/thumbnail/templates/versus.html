@@ -1,0 +1,144 @@
+<!doctype html>
+<!--
+  VERSUS: wordmark up top, two outlined cards joined by a VS badge, Dan on the
+  right (thinking/skeptical cutout works best). For comparison videos
+  (matches the "ChatModel vs ChatClient" designer thumb).
+
+  Copy to the scratchpad, fill the FOUR marked sections, render at 1280x720 @2x.
+  Design rules live in SKILL.md.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 720px; overflow: hidden; }
+  body {
+    font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
+    background:
+      radial-gradient(ellipse 900px 700px at 75% 55%, rgba(70, 160, 90, 0.20), transparent 65%),
+      radial-gradient(ellipse 800px 600px at 20% 25%, rgba(40, 90, 55, 0.25), transparent 70%),
+      linear-gradient(135deg, #0c1a10 0%, #08120b 55%, #060d08 100%);
+    position: relative;
+  }
+
+  svg.plexus { position: absolute; inset: 0; opacity: 0.35; }
+
+  .wordmark {
+    position: absolute; left: 64px; top: 56px; z-index: 3;
+    display: flex; align-items: center; gap: 26px;
+  }
+  .wordmark .big {
+    font-size: 118px; font-weight: 900; color: #fff; letter-spacing: -2px;
+    text-shadow: 0 6px 30px rgba(0,0,0,0.55);
+  }
+  .wordmark .big.accent { color: #6cd97e; }
+  .ai-box {
+    width: 104px; height: 104px; border: 8px solid #fff; border-radius: 24px;
+    display: flex; align-items: flex-end; justify-content: center;
+    position: relative; margin-top: 12px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.45);
+  }
+  .ai-box .ai { font-size: 66px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 5px; }
+  .ai-box .sparkle { position: absolute; top: -30px; right: -30px; }
+
+  .duel {
+    position: absolute; left: 64px; top: 268px; z-index: 3;
+    display: flex; align-items: center; gap: 26px;
+  }
+  .card {
+    width: 252px; height: 340px; border-radius: 26px;
+    border: 3px solid #3f7a4d;
+    background: linear-gradient(180deg, rgba(26, 52, 32, 0.92), rgba(12, 26, 16, 0.92));
+    box-shadow: 0 14px 44px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 22px; text-align: center; padding: 24px;
+  }
+  .card .icon { width: 96px; height: 96px; }
+  .card .label { font-size: 46px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .card .sub { font-size: 20px; font-weight: 600; color: #9fc7a8; }
+
+  .vs-wrap { display: flex; align-items: center; }
+  .dots { width: 38px; border-top: 5px dotted #6cd97e; }
+  .vs {
+    width: 108px; height: 108px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(40, 80, 50, 0.9), rgba(10, 22, 14, 0.95));
+    border: 3px solid rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 52px; font-weight: 900; color: #fff;
+    box-shadow: 0 10px 36px rgba(0,0,0,0.55);
+  }
+
+  .glow {
+    position: absolute; right: -60px; bottom: -120px; width: 720px; height: 780px;
+    background: radial-gradient(ellipse at center, rgba(90, 200, 115, 0.28), transparent 62%);
+    z-index: 1;
+  }
+  img.dan {
+    position: absolute; right: -150px; bottom: 0; height: 560px; z-index: 2;
+    filter: drop-shadow(-18px 0 40px rgba(0,0,0,0.55));
+  }
+</style>
+</head>
+<body>
+  <svg class="plexus" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+    <g stroke="#3a6b46" stroke-width="1">
+      <path d="M40 620 L210 520 L390 610 L340 700"/><path d="M210 520 L180 400 L330 340"/>
+      <path d="M900 120 L1050 60 L1180 150 L1240 80"/><path d="M1050 60 L1100 190"/>
+      <path d="M60 90 L170 150 L300 80"/><path d="M170 150 L150 250"/>
+    </g>
+    <g fill="#4b8a58">
+      <circle cx="40" cy="620" r="4"/><circle cx="210" cy="520" r="5"/><circle cx="390" cy="610" r="4"/>
+      <circle cx="180" cy="400" r="5"/><circle cx="900" cy="120" r="4"/><circle cx="1050" cy="60" r="5"/>
+      <circle cx="1180" cy="150" r="4"/><circle cx="60" cy="90" r="4"/><circle cx="170" cy="150" r="5"/>
+    </g>
+  </svg>
+
+  <!-- 1. WORDMARK: the shared subject of the comparison. Keep it to one row;
+       .accent for the one green word/number if any. -->
+  <div class="wordmark">
+    <span class="big">SPRING</span>
+    <div class="ai-box">
+      <span class="ai">AI</span>
+      <svg class="sparkle" width="64" height="64" viewBox="0 0 72 72">
+        <path d="M36 2 C39 20 44 27 62 32 C44 37 39 44 36 66 C33 44 28 37 10 32 C28 27 33 20 36 2 Z" fill="#fff"/>
+        <path d="M58 44 C59.5 51 61.5 53.5 68 55 C61.5 56.5 59.5 59 58 66 C56.5 59 54.5 56.5 48 55 C54.5 53.5 56.5 51 58 44 Z" fill="#fff"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 2. THE TWO CARDS: label is the contender name (break long CamelCase
+       names across lines), sub is a 3-6 word qualifier, icon is a simple
+       green line SVG — swap the shapes per concept. -->
+  <div class="duel">
+    <div class="card">
+      <svg class="icon" viewBox="0 0 110 110" fill="none">
+        <path d="M55 12 C79 12 96 28 96 48 C96 68 79 82 55 82 L40 82 L24 96 L28 78 C18 71 14 60 14 48 C14 28 31 12 55 12 Z" stroke="#6cd97e" stroke-width="6"/>
+        <path d="M40 40 C40 34 45 30 51 30 C57 30 61 34 61 39 C61 46 53 47 53 54 M53 64 L53 66" stroke="#6cd97e" stroke-width="6" stroke-linecap="round"/>
+      </svg>
+      <div class="label">Chat<br>Model</div>
+      <div class="sub">LLM abstraction &amp; inference</div>
+    </div>
+    <div class="vs-wrap">
+      <div class="dots"></div>
+      <div class="vs">VS</div>
+      <div class="dots"></div>
+    </div>
+    <div class="card">
+      <svg class="icon" viewBox="0 0 110 110" fill="none">
+        <path d="M55 12 C79 12 96 28 96 48 C96 68 79 82 55 82 L40 82 L24 96 L28 78 C18 71 14 60 14 48 C14 28 31 12 55 12 Z" stroke="#6cd97e" stroke-width="6"/>
+        <circle cx="37" cy="48" r="5" fill="#6cd97e"/><circle cx="55" cy="48" r="5" fill="#6cd97e"/><circle cx="73" cy="48" r="5" fill="#6cd97e"/>
+      </svg>
+      <div class="label">Chat<br>Client</div>
+      <div class="sub">High-level API &amp; conversation</div>
+    </div>
+  </div>
+
+  <div class="glow"></div>
+  <!-- 3. CUTOUT: thinking/skeptical expression sells a comparison. Absolute
+       path into the library (see cutouts/manifest.md). -->
+  <img class="dan" src="/Users/vega/youtube/shared-assets/thumbnail/cutouts/smile-neutral.png">
+
+  <!-- 4. BACKGROUND (optional): tune gradient intensity / plexus opacity. -->
+</body>
+</html>
