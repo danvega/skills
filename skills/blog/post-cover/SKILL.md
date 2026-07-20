@@ -1,53 +1,72 @@
 ---
 name: post-cover
-description: Generate a terminal-theme cover image for a blog post — renders an on-brand HTML template to PNG with headless Chrome. Use when the user wants a cover image, thumbnail, or og-image for a post, or when a finished post is missing its cover. Scope is the site's terminal-style covers (dark green, $-prompt, terminal window); photo/YouTube-style thumbnails with Dan's face are the video `thumbnail` skill, NOT this one.
+description: Generate a cover image for a blog post — renders an on-brand HTML template to PNG with headless Chrome, choosing from a library of seven visual styles (terminal, blueprint, brutalist, editorial, aurora, bauhaus, poster). Use when the user wants a cover image, thumbnail, or og-image for a post, or when a finished post is missing its cover. Photo/YouTube-style thumbnails with Dan's face are the video `thumbnail` skill, NOT this one.
 ---
 
 # Post Cover
 
-Generate a cover image in the site's terminal design language: dark green background with a faint grid, a mono `$`-prompt eyebrow, a big bold headline with one accent word, optional status chips, and a terminal-window card. The reference for this style is `public/images/blog/2026/07/14/spring-boot-end-of-life.png`.
+Generate a blog cover by picking one of seven visual styles, filling its HTML template with content written from the post's actual argument, and rendering to PNG.
 
-This is deliberately NOT AI image generation. The cover is HTML/CSS rendered to a PNG, so it is deterministic, always on-brand, and every text element is intentional.
+This is deliberately NOT AI image generation. Covers are HTML/CSS rendered to PNG, so they are deterministic, every text element is intentional, and each style stays consistent across uses.
 
 ## Files
 
 ```
-scripts/cover/template.html    the annotated template — copy it, never edit it in place
+scripts/cover/styles/*.html    one annotated template per style — copy, never edit in place
 scripts/cover/render.mjs       HTML → PNG via headless Chrome (no dependencies)
 ```
 
 Output goes to `public/images/blog/YYYY/MM/DD/<slug>.png` (same date path as the post) and the post's frontmatter gets `cover: <slug>.png` (bare filename).
 
+## The style library
+
+| Style | Vibe | Use when |
+|---|---|---|
+| `terminal` | dark green, $-prompt, terminal window — the house look | tutorials, how-tos, news; default when in doubt |
+| `blueprint` | engineering drawing, drafting blue, box-and-arrow diagram | architecture, pipelines, any concept that diagrams as a flow |
+| `brutalist` | yellow, thick black borders, stickers, marquee — loud | opinion pieces, hot takes, "stop doing X" |
+| `editorial` | warm paper, serif, masthead, byline — magazine front page | essays, "state of X", reflective/analytical posts |
+| `aurora` | dark, gradient blobs, glass pills — SaaS launch page | release announcements, AI-topic posts, launch energy |
+| `bauhaus` | cream, geometric shapes, giant uppercase type — art print | milestones, retrospectives, celebration posts |
+| `poster` | black, outline-to-solid stacked headline, acid green | big announcements where the title alone carries it |
+
+Each template's header comment documents its customizable sections and gotchas. Read it before filling in the copy.
+
+## Choosing a style
+
+1. Match the post's **content type** using the table above.
+2. Match the post's **tone**: brutalist on a somber post or editorial on a meme post is a miss.
+3. **Anti-repetition rule**: check the covers of the last 3–4 published posts (`grep -r "cover:" content/blog/` sorted by date, or just look at the newest date folders under `public/images/blog/`). Never use the style of the most recent post; prefer one not used in the last 3–4.
+4. When two styles fit, pick the one used less recently. When none clearly fits, use `terminal`.
+
+State the chosen style and one-line reason to Dan when showing the render. If he asks for "options", render the same content in 2–3 styles and let him pick.
+
 ## Workflow
 
-1. **Read the post.** Title, thesis, and the strongest concrete details. The cover content should be written from the post's actual argument, not generic filler.
+1. **Read the post.** Title, thesis, and the strongest concrete details. The cover content must come from the post's actual argument, not generic filler.
 
-2. **Copy `scripts/cover/template.html`** to the scratchpad and fill in the five marked sections:
-   - **Eyebrow**: lowercase mono phrase. The post's subtitle or stakes ("why java is better positioned than you think", "oss support ended · june 2026").
-   - **Headline**: short version of the title, not necessarily the full SEO title. Wrap ONE word in `<em>` for the green accent, or `<em class="warn">` for red when the post is a warning (EOL, breaking change, deprecation).
-   - **Chips** (optional): 2–3 pill facts. Delete the div if the composition is better without them.
-   - **Terminal title bar**: `~/dev — zsh` is the default; change only with a reason.
-   - **Terminal body**: this is where the post's idea becomes a joke or a payoff. A fake command whose output makes the argument ("your existing team ✓ already hired"). 4–6 lines max, end with the green `.accent` line + `.cursor`. Alignment is `white-space: pre`, so count characters when building columns.
+2. **Pick the style** (rules above), copy `scripts/cover/styles/<style>.html` to the scratchpad, and fill in the sections listed in its header comment. All example content in the templates is from a real post and must be replaced.
 
 3. **Render**: `node scripts/cover/render.mjs <copy.html> public/images/blog/YYYY/MM/DD/<slug>.png`
    Default output is 5040x2836 (16:9 at 2x). Pass `WxH` and `scale` args to override.
 
-4. **Verify by Reading the PNG.** Check: nothing clipped, columns aligned, headline fits on one or two lines, accent word is the right word. Fix the HTML and re-render until it's right. Long headlines: drop `h1` font-size from 148px toward 110px before allowing a third line.
+4. **Verify by Reading the PNG.** Check: nothing clipped, nothing overlapping, headline fits, accent lands on the right word. Fix the HTML and re-render until it's right. Long headlines: shrink the `h1` font-size before allowing an extra line.
 
-5. **Show the user the rendered image location and wait for their reaction before iterating further on taste.** Dan has strong opinions about covers; one render + his feedback beats five speculative variants.
+5. **Show Dan the rendered image and the style choice, then wait for his reaction before iterating on taste.** One render + his feedback beats five speculative variants.
 
 6. **Set frontmatter** `cover: <slug>.png` on the post once he approves (or immediately if he asked for the whole thing done).
 
-## Style rules
+## Style rules (all styles)
 
-- Terminal text is lowercase. Headline is Title Case. Eyebrow is lowercase.
-- One accent color per cover: green for positive/announcement posts, red accents (`warn`, `.bad`) only when the post is a warning.
-- The terminal body must be specific to the post. "loading..." or "hello world" filler is a failure; the reader should get the post's argument from the terminal alone.
 - No em dashes in any cover text (same rule as prose). The `·` separator is the house alternative.
-- Don't add logos. Spring leaf/Java Duke licensing is not worth it for a cover; the type does the work.
+- One accent color per cover, and it should land on the payoff word.
+- Text must be specific to the post; if a line could sit on any cover, rewrite it.
+- Don't add logos. Spring leaf/Java Duke licensing is not worth it; the type does the work.
+- Keep each style's palette as shipped in its template — variety comes from switching styles, not from drifting a style's colors.
+- Terminal-specific: terminal text lowercase, headline Title Case; `.term-body` is `white-space: pre`, so count characters when aligning columns; green accents for positive posts, red (`warn`, `.bad`) only for warnings (EOL, breaking change, deprecation).
 
 ## Renderer notes
 
 - Requires Chrome at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`.
-- Fonts are system: SF Mono/Menlo for mono, Inter/system sans for headlines. Nothing to install.
+- Fonts are system: SF Mono/Menlo for mono, Inter/system sans, Georgia for editorial's serif. Nothing to install.
 - If a JPG is needed (rare): `sips -s format jpeg <png> --out <jpg>`.
