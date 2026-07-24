@@ -135,6 +135,7 @@ The full pipeline for my [YouTube channel](https://www.youtube.com/@DanVega) —
 - **[video-rough-cut](./skills/video/video-rough-cut/SKILL.md)**: raw recording → safe first pass — trims dead air, cuts fillers, resolves retakes; knows the difference between talking-head silence and screen-share "silence" while a build runs
 - **[video-motion-graphics](./skills/video/video-motion-graphics/SKILL.md)**: transcript-driven graphics pass — branded terminal-style lower thirds (and a growing template library) rendered via headless Chrome with alpha, placed by actually looking at the frame, composited with ffmpeg; every graphic also ships as a ProRes 4444 overlay for Premiere
 - **[video-shorts](./skills/video/video-shorts/SKILL.md)**: chop a long-form video into 30–60s 9:16 shorts — finds the moments that stand alone (hook + payoff, quality bar over quota), reframes per segment (face crop vs stacked screen-share layout), and burns in word-by-word "karaoke pop" captions with selectable font styles
+- **[video-social-campaign](./skills/video/video-social-campaign/SKILL.md)**: turn a published video into a staggered 3-post campaign — launch / value / conversation, written natively per platform (LinkedIn, X, Bluesky) from the transcript's actual specifics, saved as drafts to the ContentOS social calendar and scheduled on approval
 
 ## What's a skill?
 
