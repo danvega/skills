@@ -1,16 +1,18 @@
 ---
 name: blog-seo-optimize
 description: |
-  SEO keyword research and optimization for an existing blog post on Dan Vega's site. Use when the user wants to: (1) find keywords for a finished blog post, (2) optimize a post for search engines, (3) research what developers search for on a topic, (4) improve or add the `keywords` frontmatter, or when they mention "SEO", "keywords", "optimize for search", or "make this rank better". Works on posts in content/blog/. Research is web-search based (no paid APIs). Scope is optimizing a post that already exists — not writing new posts (use blog-new-post for that).
+  SEO keyword research and optimization for an existing blog post on Dan Vega's site. Use when the user wants to: (1) find keywords for a finished blog post, (2) optimize a post for search engines, (3) research what developers search for on a topic, (4) improve or add the `keywords` frontmatter, or when they mention "SEO", "keywords", "optimize for search", or "make this rank better". Works on posts in the site's content/blog/ AND on generated drafts anywhere on disk (e.g. a ContentOS-generated video post that hasn't been copied to the site yet). Research is web-search based (no paid APIs). Scope is optimizing a post that already exists — not writing new posts (use blog-new-post for that).
 ---
 
 # SEO Optimize
 
-Optimize an existing technical blog post in `content/blog/` for search visibility while keeping Dan's natural, developer-friendly voice. Readability and accuracy always beat keyword density.
+Optimize an existing technical blog post for search visibility while keeping Dan's natural, developer-friendly voice. Readability and accuracy always beat keyword density.
 
 ## Inputs
 
 The user points you at a post — a path, a slug, or "the latest post." If ambiguous, list recent candidates and confirm before editing. Never optimize a post you haven't been pointed at.
+
+The post does not have to live in the site repo. Drafts generated elsewhere (ContentOS turns a video's transcript + demo repo into a blog draft in that video's project) are in scope — optimize them in place via their absolute path, before they get copied into the site. The frontmatter conventions below apply either way, because the draft's destination is always `danvega-dev-nuxt/content/blog/`.
 
 ## Workflow
 
@@ -108,7 +110,17 @@ keywords:
   - @Component vs @Bean        # breaks the build
 ```
 
-This bites constantly on Spring posts, where the annotation *is* the high-value exact-match term (`@Bean`, `@CrossOrigin`, `@Value`). After editing frontmatter, parse it with the repo's own `js-yaml` to confirm — run from the project root so it resolves.
+This bites constantly on Spring posts, where the annotation *is* the high-value exact-match term (`@Bean`, `@CrossOrigin`, `@Value`). After editing frontmatter, parse it with `js-yaml` to confirm. Resolve it from the site repo by absolute path so this works from any project:
+
+```bash
+node -e "
+const yaml = require('/Users/vega/dev/danvega/danvega-dev-nuxt/node_modules/js-yaml');
+const src = require('fs').readFileSync(process.argv[1], 'utf8');
+console.log(JSON.stringify(yaml.load(src.split('---')[1]), null, 2));
+" /absolute/path/to/post.md
+```
+
+**If the post lives in the site repo**, also rerun `node scripts/generate-rss-data.js` from the repo root after editing — the RSS feed embeds copies of title and description and silently serves stale text otherwise. Skip this for drafts outside the repo; it runs when the post lands in the site.
 
 ## Developer-blog keyword patterns
 
