@@ -56,5 +56,12 @@ def call(tool, args=None, timeout=120):
 
 if __name__ == "__main__":
     tool = sys.argv[1]
-    args = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    if len(sys.argv) > 2:
+        raw = sys.argv[2]
+        if raw.startswith("@"):  # @path/to/args.json for payloads too big for argv
+            with open(raw[1:]) as f:
+                raw = f.read()
+        args = json.loads(raw)
+    else:
+        args = {}
     print(call(tool, args))

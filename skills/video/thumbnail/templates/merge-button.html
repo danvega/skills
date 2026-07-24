@@ -1,0 +1,128 @@
+<!doctype html>
+<!--
+  MERGE-BUTTON (ui-artifact direction): a fake product UI as the hero — here a
+  GitHub-style PR card with a giant green "Merge pull request" button and a
+  hovering cursor — plus a short hook line up top and Dan on the right third.
+  Inspired by the fake-UI thumbnails on the inspiration board (Ali Abdaal's
+  chat-UI, floating payment cards). Use for any video whose tension is a
+  CLICK/DECISION moment: merging, deploying, deleting, paying.
+
+  FILL: 1) .hook line (<=3 words) 2) PR card title/tag/stats (UI texture —
+  swap for whatever UI artifact fits: deploy modal, delete dialog, invoice)
+  3) .btn label (recognizable UI copy, doesn't count against word budget)
+  4) cutout + height. The button IS the accent — keep everything else muted.
+  Render at 1920x1080 CSS px @1x -> 1920x1080.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
+    background:
+      radial-gradient(ellipse 1200px 900px at 30% 40%, rgba(56, 139, 253, 0.08), transparent 65%),
+      linear-gradient(150deg, #10161d 0%, #0d1117 55%, #080b0f 100%);
+    position: relative;
+  }
+
+  .dots {
+    position: absolute; inset: 0; opacity: 0.4;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 3px, transparent 3px);
+    background-size: 69px 69px;
+  }
+
+  .hook {
+    position: absolute; left: 96px; top: 90px; z-index: 3;
+    font-size: 207px; font-weight: 900; color: #fff; letter-spacing: -6px;
+    line-height: 1.0; text-shadow: 0 12px 51px rgba(0,0,0,0.7);
+  }
+
+  /* GitHub-style PR card */
+  .pr {
+    position: absolute; left: 96px; top: 390px; z-index: 2; width: 1050px;
+    background: #161b22; border: 3px solid #30363d; border-radius: 33px;
+    box-shadow: 0 45px 120px rgba(0,0,0,0.65);
+    padding: 51px 57px;
+  }
+  .pr .title {
+    display: flex; align-items: center; gap: 27px;
+    font-size: 51px; font-weight: 700; color: #e6edf3;
+  }
+  .pr .title .num { color: #8b949e; font-weight: 600; }
+  .pr .ai-tag {
+    background: rgba(163, 113, 247, 0.18); color: #d2a8ff;
+    border: 2.2px solid rgba(163, 113, 247, 0.5); border-radius: 1498.5px;
+    font-size: 39px; font-weight: 700; padding: 6px 27px;
+  }
+  .pr .checks {
+    margin-top: 39px; display: flex; align-items: center; gap: 24px;
+    font-size: 45px; font-weight: 700; color: #3fb950;
+  }
+  .pr .checks .dot {
+    width: 51px; height: 51px; border-radius: 50%; background: #238636;
+    display: flex; align-items: center; justify-content: center; flex: none;
+  }
+  .pr .files {
+    margin-top: 21px; font-size: 39px; color: #8b949e; font-weight: 600;
+    font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+  }
+  .btn {
+    margin-top: 45px; display: inline-flex; align-items: center; gap: 24px;
+    background: linear-gradient(180deg, #2ea043, #238636);
+    border: 3px solid rgba(240,246,252,0.12); border-radius: 24px;
+    color: #fff; font-size: 66px; font-weight: 800;
+    padding: 33px 60px;
+    box-shadow: 0 18px 54px rgba(35, 134, 54, 0.45);
+  }
+
+  /* big hovering cursor */
+  .cursor { position: absolute; left: 705px; top: 840px; z-index: 4;
+    filter: drop-shadow(6px 12px 24px rgba(0,0,0,0.7)); }
+
+  .glow {
+    position: absolute; right: -105px; bottom: -195px; width: 1050px; height: 1140px;
+    background: radial-gradient(ellipse at center, rgba(88, 166, 255, 0.14), transparent 62%);
+    z-index: 1;
+  }
+  img.dan {
+    position: absolute; right: -54px; bottom: 0; height: 885px; z-index: 3;
+    filter: drop-shadow(-27px 0 60px rgba(0,0,0,0.6));
+  }
+</style>
+</head>
+<body>
+  <div class="dots"></div>
+
+  <div class="hook">WOULD YOU?</div>
+
+  <div class="pr">
+    <div class="title">
+      <span class="ai-tag">AI</span>
+      Add user lookup <span class="num">#1024</span>
+    </div>
+    <div class="checks">
+      <div class="dot">
+        <svg width="30" height="30" viewBox="0 0 20 20"><path d="M3 11 L8 16 L17 5" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </div>
+      All checks have passed
+    </div>
+    <div class="files">+412 −9 · 6 files · generated in 11s</div>
+    <div class="btn">
+      Merge pull request
+    </div>
+  </div>
+
+  <div class="cursor">
+    <svg width="138" height="153" viewBox="0 0 92 102">
+      <path d="M8 4 L8 78 L28 60 L42 94 L58 87 L44 54 L72 54 Z"
+            fill="#fff" stroke="#0d1117" stroke-width="5" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <div class="glow"></div>
+  <img class="dan" src="surprised-eyebrows.png">
+</body>
+</html>

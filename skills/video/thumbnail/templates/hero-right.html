@@ -3,78 +3,78 @@
   HERO-RIGHT: big wordmark + accent pill + fact chips on the left, Dan on the
   right third. The workhorse layout (matches the "Tool Search" designer thumb).
 
-  Copy to the scratchpad, fill the FIVE marked sections, render at 1280x720 @2x.
+  Copy to the scratchpad, fill the FIVE marked sections, render at 1920x1080 CSS px @1x → 1920×1080 PNG.
   Design rules live in SKILL.md — one green accent, <=4 words of real text,
-  everything must survive 120px.
+  everything must survive 180px.
 -->
 <html>
 <head>
 <meta charset="utf-8">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 1280px; height: 720px; overflow: hidden; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
   body {
     font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
     background:
-      radial-gradient(ellipse 900px 700px at 78% 45%, rgba(70, 160, 90, 0.22), transparent 65%),
-      radial-gradient(ellipse 800px 600px at 15% 20%, rgba(40, 90, 55, 0.25), transparent 70%),
+      radial-gradient(ellipse 1350px 1050px at 78% 45%, rgba(70, 160, 90, 0.22), transparent 65%),
+      radial-gradient(ellipse 1200px 900px at 15% 20%, rgba(40, 90, 55, 0.25), transparent 70%),
       linear-gradient(135deg, #0c1a10 0%, #08120b 55%, #060d08 100%);
     position: relative;
   }
 
   svg.plexus { position: absolute; inset: 0; opacity: 0.35; }
 
-  .content { position: absolute; left: 64px; top: 72px; z-index: 3; }
+  .content { position: absolute; left: 96px; top: 108px; z-index: 3; }
 
-  .wordmark { display: flex; align-items: center; gap: 28px; }
+  .wordmark { display: flex; align-items: center; gap: 42px; }
   .wordmark .big {
-    font-size: 126px; font-weight: 900; color: #fff; letter-spacing: -2px;
-    text-shadow: 0 6px 30px rgba(0,0,0,0.55);
+    font-size: 189px; font-weight: 900; color: #fff; letter-spacing: -3px;
+    text-shadow: 0 9px 45px rgba(0,0,0,0.55);
   }
   .wordmark .big.accent { color: #6cd97e; }
   .ai-box {
-    width: 112px; height: 112px; border: 8px solid #fff; border-radius: 26px;
+    width: 168px; height: 168px; border: 12px solid #fff; border-radius: 39px;
     display: flex; align-items: flex-end; justify-content: center;
-    position: relative; margin-top: 14px;
-    box-shadow: 0 6px 30px rgba(0,0,0,0.45);
+    position: relative; margin-top: 21px;
+    box-shadow: 0 9px 45px rgba(0,0,0,0.45);
   }
-  .ai-box .ai { font-size: 72px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 6px; }
-  .ai-box .sparkle { position: absolute; top: -34px; right: -34px; }
+  .ai-box .ai { font-size: 108px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 9px; }
+  .ai-box .sparkle { position: absolute; top: -51px; right: -51px; }
 
   .pill {
-    margin-top: 44px; display: inline-flex; align-items: center; gap: 22px;
+    margin-top: 66px; display: inline-flex; align-items: center; gap: 33px;
     background: linear-gradient(180deg, rgba(24, 48, 30, 0.95), rgba(14, 30, 18, 0.95));
-    border: 3px solid rgba(255,255,255,0.92); border-radius: 22px;
-    padding: 18px 40px 18px 28px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+    border: 4.5px solid rgba(255,255,255,0.92); border-radius: 33px;
+    padding: 27px 60px 27px 42px;
+    box-shadow: 0 15px 60px rgba(0,0,0,0.5), inset 0 1.5px 0 rgba(255,255,255,0.15);
   }
-  .pill .txt { font-size: 70px; font-weight: 800; letter-spacing: -1px; }
+  .pill .txt { font-size: 105px; font-weight: 800; letter-spacing: -1.5px; }
   .pill .g { color: #6cd97e; }
   .pill .w { color: #fff; }
 
-  .chips { margin-top: 52px; display: flex; gap: 20px; }
+  .chips { margin-top: 78px; display: flex; gap: 30px; }
   .chip {
     background: linear-gradient(180deg, rgba(26, 52, 32, 0.9), rgba(13, 28, 17, 0.9));
-    border: 2.5px solid #3f7a4d; border-radius: 18px;
-    color: #d9f2de; font-size: 34px; font-weight: 700;
-    padding: 16px 28px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    border: 3.8px solid #3f7a4d; border-radius: 27px;
+    color: #d9f2de; font-size: 51px; font-weight: 700;
+    padding: 24px 42px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.4);
   }
   .chip b { color: #6cd97e; }
 
   .glow {
-    position: absolute; right: -60px; bottom: -120px; width: 720px; height: 780px;
+    position: absolute; right: -90px; bottom: -180px; width: 1080px; height: 1170px;
     background: radial-gradient(ellipse at center, rgba(90, 200, 115, 0.30), transparent 62%);
     z-index: 1;
   }
   img.dan {
-    position: absolute; right: -45px; bottom: 0; height: 555px; z-index: 2;
-    filter: drop-shadow(-18px 0 40px rgba(0,0,0,0.55));
+    position: absolute; right: -67.5px; bottom: 0; height: 832.5px; z-index: 2;
+    filter: drop-shadow(-27px 0 60px rgba(0,0,0,0.55));
   }
 </style>
 </head>
 <body>
-  <svg class="plexus" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <svg class="plexus" width="1920" height="1080" viewBox="0 0 1280 720" fill="none">
     <g stroke="#3a6b46" stroke-width="1">
       <path d="M40 620 L210 520 L390 610 L340 700"/><path d="M210 520 L180 400 L330 340"/>
       <path d="M330 340 L390 610"/><path d="M180 400 L40 430"/>
@@ -97,7 +97,7 @@
       <span class="big">SPRING</span>
       <div class="ai-box">
         <span class="ai">AI</span>
-        <svg class="sparkle" width="72" height="72" viewBox="0 0 72 72">
+        <svg class="sparkle" width="108" height="108" viewBox="0 0 72 72">
           <path d="M36 2 C39 20 44 27 62 32 C44 37 39 44 36 66 C33 44 28 37 10 32 C28 27 33 20 36 2 Z" fill="#fff"/>
           <path d="M58 44 C59.5 51 61.5 53.5 68 55 C61.5 56.5 59.5 59 58 66 C56.5 59 54.5 56.5 48 55 C54.5 53.5 56.5 51 58 44 Z" fill="#fff"/>
         </svg>
@@ -107,9 +107,9 @@
 
     <!-- 2. PILL: the hook phrase, <=3 words, one .g (green) + rest .w (white).
          Swap the magnifier SVG for another line icon if the concept calls for
-         it, or delete the icon. This is the line that must read at 120px. -->
+         it, or delete the icon. This is the line that must read at 180px. -->
     <div class="pill">
-      <svg width="58" height="58" viewBox="0 0 58 58" fill="none">
+      <svg width="87" height="87" viewBox="0 0 58 58" fill="none">
         <circle cx="24" cy="24" r="15" stroke="#6cd97e" stroke-width="6"/>
         <path d="M36 36 L50 50" stroke="#6cd97e" stroke-width="7" stroke-linecap="round"/>
       </svg>
@@ -117,7 +117,7 @@
     </div>
 
     <!-- 3. CHIPS: 2-3 small facts (feature names, versions). Texture, not
-         message — illegible at 120px is fine. Delete the div if the
+         message — illegible at 180px is fine. Delete the div if the
          composition is cleaner without them. -->
     <div class="chips">
       <div class="chip"><b>Chat</b>Client</div>

@@ -1,0 +1,146 @@
+<!doctype html>
+<!--
+  FILE-EXPLORER: fake editor sidebar (repo file tree) as the hero, ONE file
+  circled in red marker, big type top-left, Dan right (a pointing cutout sells
+  it). For videos about "that file/config everyone has seen but nobody
+  understands" — the mystery-artifact hook.
+
+  Palette: dark editor slate blue (deliberately NOT the house green — reads as
+  "an IDE", not "the channel"). The red marker ellipse is the ONE accent; keep
+  the type white and the tree blue-gray.
+
+  Copy to the scratchpad, fill the FOUR marked sections, render at
+  1920x1080 CSS px @1x → 1920×1080 PNG.
+
+  First used: "Clone. Run. Done." (docker-compose.yml, 2026-07).
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
+    background:
+      radial-gradient(ellipse 1300px 1000px at 75% 40%, rgba(70, 110, 190, 0.16), transparent 65%),
+      radial-gradient(ellipse 1100px 900px at 12% 15%, rgba(45, 70, 130, 0.18), transparent 70%),
+      linear-gradient(135deg, #0e1626 0%, #0a101c 55%, #070b14 100%);
+    position: relative;
+  }
+
+  .dots {
+    position: absolute; inset: 0; opacity: 0.35;
+    background-image: radial-gradient(rgba(160, 185, 230, 0.14) 3px, transparent 3px);
+    background-size: 72px 72px;
+  }
+
+  .content { position: absolute; left: 90px; top: 84px; z-index: 3; }
+  .stack .line {
+    font-size: 152px; font-weight: 900; color: #fff;
+    letter-spacing: -4px; line-height: 1.02;
+    text-shadow: 0 9px 45px rgba(0,0,0,0.6);
+  }
+
+  .panel {
+    position: absolute; left: 90px; top: 470px; z-index: 3;
+    width: 900px;
+    background: linear-gradient(180deg, rgba(22, 30, 48, 0.96), rgba(13, 19, 33, 0.96));
+    border: 3px solid rgba(160, 185, 230, 0.22); border-radius: 30px;
+    box-shadow: 0 20px 70px rgba(0,0,0,0.55), inset 0 1.5px 0 rgba(255,255,255,0.08);
+    padding: 0 0 30px 0; overflow: hidden;
+  }
+  .panel .titlebar {
+    display: flex; align-items: center; gap: 16px;
+    padding: 26px 36px; border-bottom: 2px solid rgba(160, 185, 230, 0.14);
+    margin-bottom: 18px;
+  }
+  .titlebar .dot { width: 26px; height: 26px; border-radius: 50%; background: #3a4a68; }
+  .titlebar .label {
+    margin-left: 18px; font-size: 34px; font-weight: 700; letter-spacing: 5px;
+    color: #7d8fb0;
+  }
+  .row {
+    display: flex; align-items: center; gap: 26px;
+    font-size: 49px; font-weight: 600; color: #b9c6de;
+    padding: 17px 44px;
+  }
+  .row.indent { padding-left: 96px; }
+  .row .chev { color: #7d8fb0; font-size: 40px; width: 44px; }
+  .row.hot {
+    color: #fff; font-weight: 800;
+    background: rgba(255, 255, 255, 0.07);
+  }
+  .fileicon { width: 40px; height: 48px; flex: none; }
+
+  /* the ONE accent: rough marker ellipse. Rows are ~92px tall starting at
+     y≈560 abs (titlebar ≈ 108px incl border/margin); center the 220px-tall
+     svg on the .hot row: top ≈ 560 + rowIndex*92 - 60. */
+  .circle {
+    position: absolute; left: 52px; top: 786px; z-index: 4;
+    pointer-events: none;
+  }
+
+  .glow {
+    position: absolute; right: -90px; bottom: -180px; width: 1080px; height: 1170px;
+    background: radial-gradient(ellipse at center, rgba(90, 130, 200, 0.22), transparent 62%);
+    z-index: 1;
+  }
+  img.dan {
+    position: absolute; right: -48px; bottom: 0; height: 955px; z-index: 2;
+    filter: drop-shadow(-27px 0 60px rgba(0,0,0,0.6));
+  }
+</style>
+</head>
+<body>
+  <div class="dots"></div>
+
+  <div class="content">
+    <!-- 1. TYPE STACK: the hook, <=4 words over 1-2 lines, ALL white (the red
+         circle below is the accent). Must read at 120px. Longest line ends by
+         x~1100 so it clears the cutout's head. -->
+    <div class="stack">
+      <div class="line">YOU'VE SEEN</div>
+      <div class="line">THIS FILE</div>
+    </div>
+  </div>
+
+  <!-- 2. FILE TREE: a believable repo listing, 5 rows max. Put the mystery
+       file on a .hot row; everything else stays muted. File names are
+       texture — only the circled row needs to be identifiable. -->
+  <div class="panel">
+    <div class="titlebar">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="label">EXPLORER</div>
+    </div>
+    <div class="row"><span class="chev">&#9662;</span>my-java-app</div>
+    <div class="row indent"><span class="chev">&#9656;</span>src</div>
+    <div class="row indent">
+      <svg class="fileicon" viewBox="0 0 40 48" fill="none"><path d="M4 4 h22 l10 10 v30 h-32 z" stroke="#7d8fb0" stroke-width="4" fill="none" stroke-linejoin="round"/></svg>
+      pom.xml
+    </div>
+    <div class="row indent hot">
+      <svg class="fileicon" viewBox="0 0 40 48" fill="none"><path d="M4 4 h22 l10 10 v30 h-32 z" stroke="#fff" stroke-width="4" fill="none" stroke-linejoin="round"/></svg>
+      docker-compose.yml
+    </div>
+    <div class="row indent">
+      <svg class="fileicon" viewBox="0 0 40 48" fill="none"><path d="M4 4 h22 l10 10 v30 h-32 z" stroke="#7d8fb0" stroke-width="4" fill="none" stroke-linejoin="round"/></svg>
+      README.md
+    </div>
+  </div>
+
+  <!-- 3. MARKER ELLIPSE: adjust .circle top so it wraps the .hot row (see the
+       math in the CSS comment); widen/narrow the path to hug the filename. -->
+  <svg class="circle" width="960" height="220" viewBox="0 0 960 220">
+    <path d="M120 110 C160 30 800 18 900 88 C950 140 760 200 420 202 C200 204 80 170 120 110 Z"
+          fill="none" stroke="#ff4d3d" stroke-width="14" stroke-linecap="round"/>
+    <path d="M140 124 C170 55 780 40 878 96"
+          fill="none" stroke="#ff4d3d" stroke-width="9" stroke-linecap="round" opacity="0.65"/>
+  </svg>
+
+  <div class="glow"></div>
+  <!-- 4. CUTOUT: a pointing shot aimed at the panel side sells the layout;
+       puzzled/ooh expressions fit the mystery hook. ~85-90% frame height. -->
+  <img class="dan" src="dan-pointing.png">
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<!--
+  QUOTE-CARD direction: one damning/intriguing quote at maximum size inside a
+  thin colored border frame, giant serif quote mark, mono attribution line,
+  Dan on the right third reacting to the quote. Inspired by the Stephen
+  Wolfram "TIME IS NOT WHAT YOU THINK IT IS!" board reference. Use when the
+  video's hook is a LINE someone (or something) says — a claim to debunk, a
+  hot take, a famous quote.
+
+  FILL: 1) .quote lines (<=4 words, ONE .accent word — accent + frame share
+  one color) 2) .attr attribution (texture) 3) cutout + height (expression =
+  reaction to the quote) 4) frame/accent color per mood (red = danger,
+  green = house). Render at 1920x1080 CSS px @1x -> 1920x1080.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
+    background:
+      radial-gradient(ellipse 1350px 1050px at 25% 30%, rgba(60, 60, 80, 0.35), transparent 70%),
+      linear-gradient(150deg, #16161c 0%, #101014 55%, #0a0a0d 100%);
+    position: relative;
+  }
+
+  /* thin frame, Wolfram-card style */
+  .frame {
+    position: absolute; inset: 33px; z-index: 1;
+    border: 7.5px solid #ff4a3d; border-radius: 42px;
+    box-shadow: 0 0 90px rgba(255, 74, 61, 0.25), inset 0 0 90px rgba(0,0,0,0.4);
+  }
+
+  .qmark {
+    position: absolute; left: 87px; top: 51px; z-index: 2;
+    font-size: 390px; font-weight: 900; color: #ff4a3d; line-height: 1;
+    font-family: Georgia, serif; opacity: 0.9;
+  }
+
+  .quote {
+    position: absolute; left: 138px; top: 300px; z-index: 3; width: 1140px;
+  }
+  .quote .line {
+    font-size: 192px; font-weight: 900; color: #fff; letter-spacing: -4.5px;
+    line-height: 1.06; text-shadow: 0 12px 51px rgba(0,0,0,0.7);
+  }
+  .quote .line .accent { color: #ff4a3d; }
+
+  .attr {
+    position: absolute; left: 144px; top: 840px; z-index: 3;
+    font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    font-size: 54px; font-weight: 700; color: #9aa0ab;
+  }
+  .attr .spark { color: #d2a8ff; }
+
+  .glow {
+    position: absolute; right: -105px; bottom: -195px; width: 1050px; height: 1140px;
+    background: radial-gradient(ellipse at center, rgba(255, 74, 61, 0.12), transparent 62%);
+    z-index: 1;
+  }
+  img.dan {
+    position: absolute; right: -30px; bottom: 33px; height: 900px; z-index: 2;
+    filter: drop-shadow(-27px 0 60px rgba(0,0,0,0.65));
+  }
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="qmark">“</div>
+
+  <div class="quote">
+    <div class="line">IT <span class="accent">LOOKS</span></div>
+    <div class="line">RIGHT.</div>
+  </div>
+
+  <div class="attr"><span class="spark">✦</span> — your AI assistant</div>
+
+  <div class="glow"></div>
+  <img class="dan" src="skeptical-frown.png">
+</body>
+</html>

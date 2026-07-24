@@ -16,6 +16,9 @@ Desktop.ini
 *.swo
 *~
 
+# Python
+__pycache__/
+
 # Logs / temp
 *.log
 .tmp/

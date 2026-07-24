@@ -1,0 +1,78 @@
+<!doctype html>
+<!--
+  BIG-SHIELD (big-object direction, first build): one giant cracked shield as
+  the hero on a near-black field, hook type stacked right, Dan absent. The red
+  crack is the single accent hit; everything else stays monochrome.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
+    background:
+      radial-gradient(ellipse 1050px 1050px at 28% 50%, rgba(120, 140, 160, 0.14), transparent 65%),
+      linear-gradient(150deg, #171a1f 0%, #101318 55%, #0a0c10 100%);
+    position: relative;
+  }
+
+  .dots {
+    position: absolute; inset: 0; opacity: 0.35;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.07) 3px, transparent 3px);
+    background-size: 72px 72px;
+  }
+
+  .eyebrow {
+    position: absolute; left: 96px; top: 78px; z-index: 3;
+    background: rgba(255,255,255,0.08); color: #e8ecef;
+    border: 3px solid rgba(255,255,255,0.25);
+    font-size: 48px; font-weight: 800; letter-spacing: 4.5px;
+    padding: 18px 42px; border-radius: 1498.5px;
+  }
+
+  .shield-wrap {
+    position: absolute; left: 84px; top: 210px; z-index: 2;
+    filter: drop-shadow(0 36px 90px rgba(0,0,0,0.6));
+  }
+  .shield-wrap svg { width: 750px; height: 778.5px; }
+
+  .stack {
+    position: absolute; left: 915px; top: 300px; z-index: 3;
+  }
+  .stack .line {
+    font-size: 183px; font-weight: 900; color: #ffffff;
+    letter-spacing: -6px; line-height: 1.04;
+    text-shadow: 0 12px 51px rgba(0,0,0,0.6);
+  }
+  .stack .small {
+    margin-top: 45px; font-size: 60px; font-weight: 700; color: #9aa6b0;
+    font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+  }
+</style>
+</head>
+<body>
+  <div class="dots"></div>
+
+  <div class="eyebrow">SPRING AI</div>
+
+  <div class="shield-wrap">
+    <svg width="810" height="840" viewBox="0 0 200 240">
+      <path d="M100 8 L182 40 V120 C182 178 148 210 100 232 C52 210 18 178 18 120 V40 Z"
+            fill="rgba(255,255,255,0.05)" stroke="#cfd6dd" stroke-width="9" stroke-linejoin="round"/>
+      <path d="M100 8 L182 40 V120 C182 178 148 210 100 232"
+            fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"/>
+      <polyline points="96,10 86,58 114,94 82,140 110,178 94,230"
+            fill="none" stroke="#ff4a3d" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="stack">
+    <div class="line">BEATEN</div>
+    <div class="line">BY A</div>
+    <div class="line">SYNONYM</div>
+    <div class="small">SafeGuardAdvisor.java</div>
+  </div>
+</body>
+</html>
