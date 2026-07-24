@@ -1,6 +1,6 @@
 ---
-name: thumbnail
-description: Render the final thumbnail art for a YouTube video — composes real photo cutouts of Dan with HTML/CSS templates in the channel's design language (dark green, big white type, one green accent) and renders to PNG with headless Chrome; no AI image generation. Use when Dan wants the actual thumbnail image made — "make the thumbnail", "render the thumbnail", "thumbnail for <video>", or when a video-packaging concept is ready to become art. Do NOT use for thumbnail *concepts*/creative direction (video-packaging), blog cover images (blog post-cover), or video ideas (video-ideation).
+name: video-thumbnail
+description: Render the final thumbnail art for a YouTube video — composes real photo cutouts of Dan with HTML/CSS templates in the channel's design language (dark green, big white type, one green accent) and renders to PNG with headless Chrome; no AI image generation. Use when Dan wants the actual thumbnail image made — "make the thumbnail", "render the thumbnail", "thumbnail for <video>", or when a video-packaging concept is ready to become art. Do NOT use for thumbnail *concepts*/creative direction (video-packaging), blog cover images (blog-cover), or video ideas (video-ideation).
 ---
 
 # Thumbnail
@@ -9,7 +9,7 @@ Compose, don't generate. AI image generation fails at exactly the two things a
 thumbnail needs most — crisp text and Dan's real face — so this skill never
 generates imagery. It fills an HTML/CSS template (text is perfect by
 construction), drops in a real photo cutout, and renders with headless Chrome.
-Same philosophy and pipeline as the blog `post-cover` skill, pointed at YouTube.
+Same philosophy and pipeline as the blog `blog-cover` skill, pointed at YouTube.
 
 ## Files & assets
 

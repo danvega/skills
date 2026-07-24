@@ -1,5 +1,5 @@
 ---
-name: rough-cut
+name: video-rough-cut
 description: >-
   Produce a rough cut of a raw YouTube recording — trim dead air, remove filler words, and resolve
   retakes while preserving natural pacing. Handles both talking-head and screen-share footage; the
@@ -92,7 +92,7 @@ and list it in the report instead.
 
 Cut standalone `um`, `uh`, `er`, `hmm` with 50ms padding. Leave hedges ("so", "you know", "I
 mean", "basically") alone in v1 — cutting those changes the delivery, and that's an editing
-decision, not a rough-cut decision.
+decision, not a video-rough-cut decision.
 
 ### Retakes / duplicates
 

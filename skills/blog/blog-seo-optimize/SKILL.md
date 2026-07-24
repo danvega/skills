@@ -1,7 +1,7 @@
 ---
-name: seo-optimize
+name: blog-seo-optimize
 description: |
-  SEO keyword research and optimization for an existing blog post on Dan Vega's site. Use when the user wants to: (1) find keywords for a finished blog post, (2) optimize a post for search engines, (3) research what developers search for on a topic, (4) improve or add the `keywords` frontmatter, or when they mention "SEO", "keywords", "optimize for search", or "make this rank better". Works on posts in content/blog/. Research is web-search based (no paid APIs). Scope is optimizing a post that already exists — not writing new posts (use new-blog-post for that).
+  SEO keyword research and optimization for an existing blog post on Dan Vega's site. Use when the user wants to: (1) find keywords for a finished blog post, (2) optimize a post for search engines, (3) research what developers search for on a topic, (4) improve or add the `keywords` frontmatter, or when they mention "SEO", "keywords", "optimize for search", or "make this rank better". Works on posts in content/blog/. Research is web-search based (no paid APIs). Scope is optimizing a post that already exists — not writing new posts (use blog-new-post for that).
 ---
 
 # SEO Optimize

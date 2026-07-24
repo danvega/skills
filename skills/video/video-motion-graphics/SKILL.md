@@ -1,12 +1,12 @@
 ---
-name: motion-graphics
+name: video-motion-graphics
 description: >-
   Add branded motion graphics and camera moves to a YouTube video — lower thirds, section titles,
   callouts, punch-in zooms — transcript-driven placement, rendered from the terminal-style
-  template library and composited with ffmpeg. Chains after rough-cut. Use when Dan says "add
+  template library and composited with ffmpeg. Chains after video-rough-cut. Use when Dan says "add
   graphics", "add a lower third", "motion graphics pass", "add zooms", "punch in on that",
   "put my name on the intro", or wants callouts / titles / animations / transitions on a video.
-  Do NOT use for cutting (rough-cut), thumbnails/titles (video-packaging), or captions.
+  Do NOT use for cutting (video-rough-cut), thumbnails/titles (video-packaging), or captions.
 ---
 
 # Motion Graphics
@@ -25,11 +25,11 @@ where a card must survive those segments, not to add graphics to them.
 
 ## Inputs
 
-- The video — ideally a rough-cut output, because `/tmp/rough-cut/<name>/` then already has the
-  transcript (`audio.json`) and proxy. Without one, transcribe first (see rough-cut Step 2).
+- The video — ideally a video-rough-cut output, because `/tmp/rough-cut/<name>/` then already has the
+  transcript (`audio.json`) and proxy. Without one, transcribe first (see video-rough-cut Step 2).
 - Optional: explicit graphics requests ("callout for the repo at 3:10") — these override the plan.
 
-Scratch/working dir: `/tmp/motion-graphics/<basename>/` (frames, probes, intermediates).
+Scratch/working dir: `/tmp/video-motion-graphics/<basename>/` (frames, probes, intermediates).
 Final deliverables are copied out to the launch directory — see Step 4.
 
 ## Template library
@@ -183,7 +183,7 @@ the time. A graphic that covers what Dan is showing is worse than no graphic.
 > dark card for this reason; if you build a new text overlay, give it a backing card or scrim so
 > it survives a white background. Always eyeball a real frame at the actual insertion time.
 
-Print the plan, then proceed (same render-first contract as rough-cut — revisions are cheap):
+Print the plan, then proceed (same render-first contract as video-rough-cut — revisions are cheap):
 
 ```
 0:33.3  lower-third  "Dan Vega · Spring Developer Advocate"  bottom-left  6.0s
@@ -200,8 +200,8 @@ node <skill>/scripts/render.mjs \
   --template <skill>/assets/templates/lower-third.html \
   --params '{"name":"Dan Vega","role":"Spring Developer Advocate"}' \
   --duration 6 --fps 30 \
-  --out /tmp/motion-graphics/$NAME/g1 \
-  --mov /tmp/motion-graphics/$NAME/overlays/lower-third.mov
+  --out /tmp/video-motion-graphics/$NAME/g1 \
+  --mov /tmp/video-motion-graphics/$NAME/overlays/lower-third.mov
 ```
 
 Match `--fps` to the source video's frame rate (`ffprobe … r_frame_rate`), and match resolution
@@ -291,8 +291,8 @@ ffmpeg -y -hwaccel videotoolbox -i video.mp4 \
   exactly when it's spoken. Off by a beat = re-derive render_start from the word-level timestamp,
   don't eyeball it.
 - Deliver into the **directory the skill was launched from** (the cwd) — NOT `/tmp`, which is
-  ephemeral and hidden in Finder. Save to `<cwd>/motion-graphics/<name>/<name>_gfx.mp4`, `open` it.
-  (`/tmp/motion-graphics/<name>/` stays the scratch/working dir; the final artifacts get copied out.)
+  ephemeral and hidden in Finder. Save to `<cwd>/video-motion-graphics/<name>/<name>_gfx.mp4`, `open` it.
+  (`/tmp/video-motion-graphics/<name>/` stays the scratch/working dir; the final artifacts get copied out.)
 - Keep `overlays/*.mov` next to it — pre-timed ProRes 4444 with alpha, drag-into-Premiere ready —
   and mention them in the report.
 - Report: plan as executed, per-graphic timestamps, where the overlays live.
@@ -352,7 +352,7 @@ Append a dated line when a run burns you.
   scaffolded project under `/Users/vega/youtube/<Project>/`, deliver there instead — composite
   into `01_Footage/`, ProRes overlays into `03_Graphics/overlays/`. The cwd rule is only the
   fallback for videos with no project folder.
-- (2026-07-23) A multi-part recording (rough-cut of `_01..\_05` parts concatenated) has per-part
+- (2026-07-23) A multi-part recording (video-rough-cut of `_01..\_05` parts concatenated) has per-part
   trim maps: `t_out = to_out_part(t) + sum(prior parts' rough durations)`. Build the combined map
   before placing anything; the seams themselves are the natural chapter boundaries for
   transitions/section-titles.
@@ -363,5 +363,5 @@ Append a dated line when a run burns you.
   structure, a screen recording doesn't need graphics. But structured *coding walkthroughs* (like
   the 02 videos) ARE in scope: chapters, endpoint callouts, and code spotlights/zooms on the beats
   that matter. (Superseded the earlier "talking-head only" note once code moves were built.)
-- Cutting or pacing (rough-cut), captions, music, thumbnails (video-packaging).
+- Cutting or pacing (video-rough-cut), captions, music, thumbnails (video-packaging).
 - Full-screen b-roll or animated code walkthroughs — possible future sibling skill.

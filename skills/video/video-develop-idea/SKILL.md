@@ -1,5 +1,5 @@
 ---
-name: develop-idea
+name: video-develop-idea
 description: Research, refine, and scope a single video idea Dan already has — validate demand with evidence, find the angle competitors are missing, and define what the video covers, ending in a go / reframe / park verdict. Use whenever Dan brings his own idea rather than asking for new ones — "I want to make a video about X", "is X worth a video?", "help me scope this video", "research this topic for a video", "what should I cover in a video on X", "how should I angle this". Finding ideas from scratch is `video-ideation`; turning a settled, scoped idea into a title/thumbnail/intro is `video-packaging`. This skill is the bridge between them.
 ---
 

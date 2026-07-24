@@ -1,12 +1,12 @@
 ---
-name: publish-newsletter
+name: newsletter-publish
 description: >-
   Republish a Beehiiv newsletter edition on danvega.dev — fetch the post via the Beehiiv MCP
   server, convert it to the site's markdown (frontmatter, :YouTube/:TweetEmbed components, local
   images, house footer), run a light quality pass, and save it into content/newsletter/. Use when
   Dan says "publish my newsletter", "convert the latest newsletter", "move this week's newsletter
   to the site", or names a specific edition to bring over. Do NOT use for writing a new post
-  (new-blog-post), optimizing existing content (seo-optimize), or sending the newsletter itself
+  (blog-new-post), optimizing existing content (blog-seo-optimize), or sending the newsletter itself
   (that happens in Beehiiv).
 ---
 
@@ -112,5 +112,5 @@ made, and anything left for manual review. Offer to preview (`npm run dev` in th
 ## What this skill does NOT do
 
 - Write or send the newsletter — Beehiiv is where editions are authored and sent.
-- SEO work on the result (`seo-optimize`) or cover images (`post-cover`).
+- SEO work on the result (`blog-seo-optimize`) or cover images (`blog-cover`).
 - Publish the site — committing/deploying the nuxt repo is Dan's call.

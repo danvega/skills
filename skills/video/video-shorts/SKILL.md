@@ -1,5 +1,5 @@
 ---
-name: shorts
+name: video-shorts
 description: >-
   Chop a long-form video into 30–60 second 9:16 vertical shorts — find the standalone moments in
   the transcript, reframe per segment (face crop for talking-head, stacked layout for
@@ -7,7 +7,7 @@ description: >-
   project's 04_Exports folder, after Dan's final edit. Use when
   Dan says "make some shorts", "chop this up", "pull some clips out of this", "clip this video",
   "vertical clips", "9:16", or mentions Shorts / Reels / TikTok for an existing video. Do NOT use
-  for the long-form first pass (rough-cut), graphics on the long-form video (motion-graphics), or
+  for the long-form first pass (video-rough-cut), graphics on the long-form video (video-motion-graphics), or
   titles/thumbnails (video-packaging).
 ---
 
@@ -16,8 +16,8 @@ description: >-
 Pull the 3–5 moments from a long-form video that genuinely stand alone, and deliver each as a
 finished 1080×1920 short with word-level captions. Quality bar over quota: a video with one great
 clip yields one; a video with nothing clippable yields zero and a report saying why. A mediocre
-short costs channel credibility — **when in doubt, leave it out** (the inverse of rough-cut's
-rule, on purpose: rough-cut keeps, shorts curates).
+short costs channel credibility — **when in doubt, leave it out** (the inverse of video-rough-cut's
+rule, on purpose: video-rough-cut keeps, shorts curates).
 
 ## Inputs
 
@@ -28,15 +28,15 @@ rule, on purpose: rough-cut keeps, shorts curates).
   Premiere pass changes timing after them, so clips cut from those won't line up with the
   published video. If `04_Exports/` is empty, say so and ask whether to proceed from the latest
   intermediate instead — don't silently fall back.
-- The final export has no transcript on the same clock — transcribe it first (rough-cut Step 2:
+- The final export has no transcript on the same clock — transcribe it first (video-rough-cut Step 2:
   proxy + `mlx_whisper`) into `/tmp/shorts/<basename>/`. One clock, no trim mapping needed. Any
-  transcript from an earlier rough-cut run is on a DIFFERENT clock (the final edit re-times
+  transcript from an earlier video-rough-cut run is on a DIFFERENT clock (the final edit re-times
   everything) — never reuse it for clip timestamps.
 - Optional: explicit asks ("clip the part about virtual threads") — these skip ranking.
 
 Working dir: `/tmp/shorts/<basename>/`. Final shorts are copied out (Step 6).
 
-## ⚠️ Clock mapping (same trap as motion-graphics)
+## ⚠️ Clock mapping (same trap as video-motion-graphics)
 
 **Standard flow (final export, transcribed fresh): there is no mapping.** The transcript was made
 from the very file being cut, so transcript time == video time — run `scripts/extract_words.py`
@@ -83,7 +83,7 @@ Skipped: 6:10 virtual-threads riff — references the earlier benchmark, not sta
 ## Step 2 — Reframe plan, per clip
 
 Classify each clip's footage by extracting 3 frames across it and **looking at them**
-(talking-head vs screen-share vs mixed — same check as motion-graphics). Avoid clips that cut
+(talking-head vs screen-share vs mixed — same check as video-motion-graphics). Avoid clips that cut
 between modes in v1; if a great clip mixes, split the reframe at the mode change.
 
 **Talking-head → face crop.** Crop a 9:16 window at full height, centered on the face. Read the
@@ -115,8 +115,8 @@ legible at phone size and the camera bubble isn't clipping Dan's head.
 Every short gets burned-in captions — most Shorts viewers watch muted, and the word-follow style
 is the current standard (Hormozi-style: 1–3 words visible, heavy sans, active word colored with a
 scale pop). The local ffmpeg has **no libass/drawtext**, so captions render as a transparent PNG
-sequence from `assets/captions.html` via the motion-graphics renderer (this skill depends on
-`../motion-graphics/scripts/` being installed and npm-installed), then composite with `overlay`.
+sequence from `assets/captions.html` via the video-motion-graphics renderer (this skill depends on
+`../video-motion-graphics/scripts/` being installed and npm-installed), then composite with `overlay`.
 
 ```bash
 # 1. words for the clip, clip-relative — also prints OUT_A/OUT_B for ffmpeg
@@ -127,7 +127,7 @@ python3 <skill>/scripts/extract_words.py \
   --out /tmp/shorts/$NAME/clip1_words.json
 
 # 2. render caption frames (params JSON inline; words file content goes in "words")
-node <motion-graphics>/scripts/render.mjs \
+node <video-motion-graphics>/scripts/render.mjs \
   --template <skill>/assets/captions.html \
   --params "{\"style\":\"danvega\",\"words\":$(cat /tmp/shorts/$NAME/clip1_words.json)}" \
   --duration <clip len> --fps 30 --width 1080 --height 1920 \
@@ -214,7 +214,7 @@ Append a dated line every time a run burns you.
 - 2026-07-23: Dan's rule — shorts come from the FINAL export in `04_Exports/`, never from the
   rough cut or `_gfx` composite. His Premiere pass re-times the video after those, so clips cut
   from intermediates won't match the published long-form. Empty `04_Exports/` → ask, don't
-  silently fall back. Always transcribe the export fresh; a reused rough-cut transcript is on a
+  silently fall back. Always transcribe the export fresh; a reused video-rough-cut transcript is on a
   different clock.
 - (seed) Whisper word times are ±100–300ms — pad clip starts 0.15s before the hook word or the
   first syllable gets clipped, which kills the hook.
@@ -228,7 +228,7 @@ Append a dated line every time a run burns you.
   Before rendering a stacked clip, extract the CAM CROP REGION (not just full frames) at the
   clip's start/middle/end and confirm the face is in all three. No face for the clip's span →
   drop the clip or use a different layout; don't ship a headless stack.
-- 2026-07-23: deliver like motion-graphics: when the video has a project folder, shorts go to
+- 2026-07-23: deliver like video-motion-graphics: when the video has a project folder, shorts go to
   `/Users/vega/youtube/<Project>/04_Exports/shorts/` — the launch-cwd rule is only the fallback
   (launching from a code repo would dump videos into the repo).
 - 2026-07-23: zsh does not word-split unquoted variables — `$R --flag` where R="node script.mjs"
@@ -243,7 +243,7 @@ Append a dated line every time a run burns you.
 
 ## What this skill does NOT do
 
-- Long-form cutting or pacing — that's rough-cut, run it first.
-- Branded overlay graphics on shorts (lower thirds, callouts) — motion-graphics, if ever needed.
+- Long-form cutting or pacing — that's video-rough-cut, run it first.
+- Branded overlay graphics on shorts (lower thirds, callouts) — video-motion-graphics, if ever needed.
 - Titles, descriptions, hashtags strategy, thumbnails — video-packaging territory.
 - Uploading or scheduling anywhere.

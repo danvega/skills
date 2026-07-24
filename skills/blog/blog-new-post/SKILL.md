@@ -1,7 +1,7 @@
 ---
-name: new-blog-post
+name: blog-new-post
 description: |
-  Write a new blog post for Dan Vega's site — creates the file in content/blog/ with correct frontmatter and a complete first draft in Dan's voice. Use whenever the user wants to start, draft, scaffold, or create a new post/article — including phrasings like "new blog post", "write a post about X", "start an article on Y", "draft something on Z", or when they hand over a topic, a URL, or research notes and want them turned into a post. Scope is creating a NEW post; optimizing an existing one is `seo-optimize`, and finding what to write about next is `seo-opportunities`.
+  Write a new blog post for Dan Vega's site — creates the file in content/blog/ with correct frontmatter and a complete first draft in Dan's voice. Use whenever the user wants to start, draft, scaffold, or create a new post/article — including phrasings like "new blog post", "write a post about X", "start an article on Y", "draft something on Z", or when they hand over a topic, a URL, or research notes and want them turned into a post. Scope is creating a NEW post; optimizing an existing one is `blog-seo-optimize`, and finding what to write about next is `blog-seo-opportunities`.
 ---
 
 # New Blog Post
@@ -54,11 +54,11 @@ Prefer existing tags to new ones. Anything under 3 posts is hidden from `/blog/t
 
 ### keywords
 
-A YAML list of the terms the post should rank for, most important first. Mirror them in the title, an H2, and the opening paragraph — that's what `seo-optimize` will check later.
+A YAML list of the terms the post should rank for, most important first. Mirror them in the title, an H2, and the opening paragraph — that's what `blog-seo-optimize` will check later.
 
 **A keyword starting with `@` must be quoted** (`- "@Transactional"`). Unquoted, `@` is a reserved YAML indicator and Nuxt Content fails to parse the post — it disappears from the site with no error. Spring annotations make this a live risk.
 
-If you don't have real keyword data, say so rather than inventing plausible ones. `seo-opportunities` finds them from Search Console; `seo-optimize` researches them for a finished post.
+If you don't have real keyword data, say so rather than inventing plausible ones. `blog-seo-opportunities` finds them from Search Console; `blog-seo-optimize` researches them for a finished post.
 
 ### description
 
@@ -68,7 +68,7 @@ One sentence, **~155 characters**. It's the SEO meta description and the RSS fee
 
 A **bare filename** (`cover: ralph-loop.jpg`), resolved against `public/images/blog/YYYY/MM/DD/`. **Omit it from the initial frontmatter rather than pointing at an image that doesn't exist yet** — the cover step below fills it in.
 
-**Once the draft is written, run the `post-cover` skill automatically** — don't ask, don't offer, just chain into it. It generates the terminal-theme cover from the finished post and sets this field. Skip it only if the user supplied their own image or said they don't want a cover. Per that skill's own workflow, show Dan the rendered cover and wait for his reaction before iterating on it.
+**Once the draft is written, run the `blog-cover` skill automatically** — don't ask, don't offer, just chain into it. It generates the terminal-theme cover from the finished post and sets this field. Skip it only if the user supplied their own image or said they don't want a cover. Per that skill's own workflow, show Dan the rendered cover and wait for his reaction before iterating on it.
 
 ### published
 
@@ -131,4 +131,4 @@ Then tell him plainly which parts you were confident about and which need his ey
 Mention, don't do:
 
 - **RSS**: if the post is `published: true` and among the 50 most recent published posts, `server/api/feed/data.ts` needs regenerating via `node scripts/generate-rss-data.js`, or the feed silently serves stale text. Drafts and older posts don't need it. (`npm run dev` also regenerates it on startup.)
-- **seo-optimize**: the natural next step once the prose exists.
+- **blog-seo-optimize**: the natural next step once the prose exists.

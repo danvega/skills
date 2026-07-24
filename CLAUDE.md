@@ -14,6 +14,18 @@ follow these rules.
   newsletter, generating video ideas, rough-cutting a recording).
 - Don't mix the two in one folder; their descriptions optimize for different things.
 
+## Naming convention
+
+- **Workflow skills** are named `<domain>-<task>` after their pipeline: `blog-`,
+  `newsletter-`, `video-` (e.g. `video-thumbnail`, `blog-seo-optimize`). The prefix
+  groups slash-command autocomplete by pipeline and keeps generic words (`thumbnail`,
+  `shorts`) from colliding with plugin skills. New workflow skills must follow it.
+- **Knowledge skills** stay unprefixed — discovery runs on the description and the
+  folder (`spring/spring-boot-4/`) already scopes them. Use a product prefix only
+  when the name needs it to make sense (`spring-data-aot`, `jackson-3`).
+- `dev/` grab-bag skills (`readme`) stay unprefixed.
+- The folder name always equals the `name:` frontmatter.
+
 ## Every knowledge skill
 
 - `SKILL.md` is a **router**, not an essay. Body under ~150 lines. Route by task to

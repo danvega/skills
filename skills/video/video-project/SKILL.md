@@ -1,6 +1,6 @@
 ---
 name: video-project
-description: Scaffold a new YouTube video project on disk from Dan's 2026 template — copy /Users/vega/youtube/2026Template into a new PascalCase project folder and rename the Premiere project file to match. Use when Dan says "new video project", "scaffold a project", "set up a project for <video name>", "create the folders for <video>", or gives a video title and asks to start the project. Do NOT use for deciding what to film (video-ideation), titles/thumbnails (video-packaging), or editing footage (rough-cut).
+description: Scaffold a new YouTube video project on disk from Dan's 2026 template — copy /Users/vega/youtube/2026Template into a new PascalCase project folder and rename the Premiere project file to match. Use when Dan says "new video project", "scaffold a project", "set up a project for <video name>", "create the folders for <video>", or gives a video title and asks to start the project. Do NOT use for deciding what to film (video-ideation), titles/thumbnails (video-packaging), or editing footage (video-rough-cut).
 ---
 
 # video-project

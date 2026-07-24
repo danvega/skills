@@ -1,12 +1,12 @@
 ---
-name: seo-opportunities
+name: blog-seo-opportunities
 description: |
-  Find what to write or fix next on Dan Vega's blog, ranked by evidence from Google Search Console. Use when the user wants to: (1) find content opportunities or "what should I write about", (2) find keyword/traffic gaps, (3) find pages worth optimizing, (4) figure out where the traffic upside is, or when they mention "opportunities", "what to write", "content gap", "striking distance", "low CTR pages", or "where should I focus". This finds the work; `seo-optimize` does the work on a single post; `new-blog-post` scaffolds a new one.
+  Find what to write or fix next on Dan Vega's blog, ranked by evidence from Google Search Console. Use when the user wants to: (1) find content opportunities or "what should I write about", (2) find keyword/traffic gaps, (3) find pages worth optimizing, (4) figure out where the traffic upside is, or when they mention "opportunities", "what to write", "content gap", "striking distance", "low CTR pages", or "where should I focus". This finds the work; `blog-seo-optimize` does the work on a single post; `blog-new-post` scaffolds a new one.
 ---
 
 # SEO Opportunities
 
-Find the highest-value SEO work available, grounded in Dan's real Search Console data — not guesses. Output a ranked list of opportunities, each with evidence, then hand each one to `seo-optimize` (fix an existing post) or `new-blog-post` (write a new one).
+Find the highest-value SEO work available, grounded in Dan's real Search Console data — not guesses. Output a ranked list of opportunities, each with evidence, then hand each one to `blog-seo-optimize` (fix an existing post) or `blog-new-post` (write a new one).
 
 ## The core principle
 
@@ -60,9 +60,9 @@ For each, pull its page-level queries (sorted by impressions) and classify:
 
 | Type | Signature | Action |
 |---|---|---|
-| **CTR rescue** | Ranks fine (pos < 10) but CTR < 2% | `seo-optimize` the title/description. The traffic already exists. |
+| **CTR rescue** | Ranks fine (pos < 10) but CTR < 2% | `blog-seo-optimize` the title/description. The traffic already exists. |
 | **Striking distance** | Position ~5–20, real impressions | Small push → page one. Metadata + maybe content. |
-| **Content gap** | A query cluster with big impressions and no dedicated post | `new-blog-post`. Highest ceiling. |
+| **Content gap** | A query cluster with big impressions and no dedicated post | `blog-new-post`. Highest ceiling. |
 | **Consolidation** | Several thin posts splitting one cluster | One comprehensive post + 301 the rest. |
 | **Trending capture** | New release/framework, rising, Dan has adjacent content | Move fast while it's hot. |
 | **Phantom impressions** ⚠️ | Huge impressions, ~0% CTR, but the queries want something Dan can't be | **Leave it alone.** Not an opportunity. |
@@ -88,7 +88,7 @@ For each opportunity, report:
 ### <N>. <Title>  — <type>
 - Evidence: <impressions> impr, <CTR>, position <N>  (+ the 2-3 queries that prove it)
 - Diagnosis: <why it's underperforming, specifically>
-- Action: seo-optimize | new-blog-post | consolidate
+- Action: blog-seo-optimize | blog-new-post | consolidate
 - Realistic upside: <honest estimate>
 ```
 

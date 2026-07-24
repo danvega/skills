@@ -1,11 +1,11 @@
 ---
-name: demo-design
-description: Design a video's demo code with Dan in an iterative conversation, then build it into a working, viewer-followable companion repo and shot list — choose the codebase, design backwards from the final frame, get Dan's sign-off on the beats, build and verify every checkpoint, and check off the DEMO_CODE_WORKING pipeline stage. Use after `develop-idea` returns a GO, or whenever Dan asks "what code should I show", "build the demo for this video", "I don't know where to start with the example", "set up the companion repo", or has a brief/topic but no on-camera code yet. Deciding WHAT the video covers is `develop-idea`; title/thumbnail/intro is `video-packaging`; scaffolding the Premiere project folder is `video-project`. This skill produces the code the camera will actually see.
+name: video-demo-design
+description: Design a video's demo code with Dan in an iterative conversation, then build it into a working, viewer-followable companion repo and shot list — choose the codebase, design backwards from the final frame, get Dan's sign-off on the beats, build and verify every checkpoint, and check off the DEMO_CODE_WORKING pipeline stage. Use after `video-develop-idea` returns a GO, or whenever Dan asks "what code should I show", "build the demo for this video", "I don't know where to start with the example", "set up the companion repo", or has a brief/topic but no on-camera code yet. Deciding WHAT the video covers is `video-develop-idea`; title/thumbnail/intro is `video-packaging`; scaffolding the Premiere project folder is `video-project`. This skill produces the code the camera will actually see.
 ---
 
 # Demo Design
 
-The demo is the proof of the video's promise. Dan's outperformers are "show, don't slide" videos, and the brief from `develop-idea` names a promise — but a promise plus a blank editor is where production stalls. The fix is an ordering rule: **never start from the code; start from the last thing on screen** and design backwards until the first beat is obvious.
+The demo is the proof of the video's promise. Dan's outperformers are "show, don't slide" videos, and the brief from `video-develop-idea` names a promise — but a promise plus a blank editor is where production stalls. The fix is an ordering rule: **never start from the code; start from the last thing on screen** and design backwards until the first beat is obvious.
 
 This is a **design conversation, not an autonomous build**. Dan has to narrate every line of this code on camera — code he didn't shape is code he can't teach. The skill's job is to structure the discussion: propose, hear his reaction, refine, and only build what's been agreed. Never generate the demo in one shot, even when the brief makes the shape seem obvious.
 
@@ -15,7 +15,7 @@ The honest output of this skill is a single-branch repo — the final code, runn
 
 ### Step 1 — Load the promise
 
-Pull the project's brief (`get_brief` on the ContentOS MCP) and extract the promise sentence, the chosen angle, the scope in/out list, and the assumed audience. Also call `get_demo_plan` — if a plan already exists, this session is a continuation: read it, report where things stand (which beats are built and verified, what's open), and pick up from there instead of redesigning. Restate the promise in one line — every demo beat must trace back to it. If there's no brief, ask Dan for the promise in one sentence (or suggest running `develop-idea` first if the idea itself is still fuzzy); don't design a demo for a video whose promise is unknown, because "what to show" is unanswerable without "what am I proving".
+Pull the project's brief (`get_brief` on the ContentOS MCP) and extract the promise sentence, the chosen angle, the scope in/out list, and the assumed audience. Also call `get_demo_plan` — if a plan already exists, this session is a continuation: read it, report where things stand (which beats are built and verified, what's open), and pick up from there instead of redesigning. Restate the promise in one line — every demo beat must trace back to it. If there's no brief, ask Dan for the promise in one sentence (or suggest running `video-develop-idea` first if the idea itself is still fuzzy); don't design a demo for a video whose promise is unknown, because "what to show" is unanswerable without "what am I proving".
 
 ### Step 2 — Choose the codebase
 

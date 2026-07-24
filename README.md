@@ -22,7 +22,7 @@ git clone https://github.com/danvega/skills.git
 cp -R skills/skills/spring/spring-boot-4/http-interface-clients ~/.claude/skills/
 
 # or just for one project
-cp -R skills/skills/blog/seo-optimize my-project/.claude/skills/
+cp -R skills/skills/blog/blog-seo-optimize my-project/.claude/skills/
 ```
 
 Symlinking instead of copying keeps them updated when you pull:
@@ -110,16 +110,16 @@ The workflow behind [danvega.dev](https://www.danvega.dev) — from "what should
 write?" to a published, optimized post with a cover image. These are tuned to my site
 and voice, but the structure is easy to adapt.
 
-- **[seo-opportunities](./skills/blog/seo-opportunities/SKILL.md)**: find what to write or fix next, ranked by Search Console evidence
-- **[new-blog-post](./skills/blog/new-blog-post/SKILL.md)**: scaffold and draft a new post with correct frontmatter, in my voice
-- **[seo-optimize](./skills/blog/seo-optimize/SKILL.md)**: keyword research + on-page optimization for an existing post
-- **[post-cover](./skills/blog/post-cover/SKILL.md)**: render the site's terminal-style cover image to PNG
+- **[blog-seo-opportunities](./skills/blog/blog-seo-opportunities/SKILL.md)**: find what to write or fix next, ranked by Search Console evidence
+- **[blog-new-post](./skills/blog/blog-new-post/SKILL.md)**: scaffold and draft a new post with correct frontmatter, in my voice
+- **[blog-seo-optimize](./skills/blog/blog-seo-optimize/SKILL.md)**: keyword research + on-page optimization for an existing post
+- **[blog-cover](./skills/blog/blog-cover/SKILL.md)**: render the site's terminal-style cover image to PNG
 
 ### newsletter
 
 The newsletter workflow — authored and sent in [Beehiiv](https://www.beehiiv.com), republished on the site.
 
-- **[publish-newsletter](./skills/newsletter/publish-newsletter/SKILL.md)**: republish a Beehiiv edition on the site — fetch via MCP, convert to site markdown (embeds, local images, house footer), light typo pass, validated save
+- **[newsletter-publish](./skills/newsletter/newsletter-publish/SKILL.md)**: republish a Beehiiv edition on the site — fetch via MCP, convert to site markdown (embeds, local images, house footer), light typo pass, validated save
 
 ### video
 
@@ -127,14 +127,14 @@ The full pipeline for my [YouTube channel](https://www.youtube.com/@DanVega) —
 "what should I make?" through packaging to the first cut.
 
 - **[video-ideation](./skills/video/video-ideation/SKILL.md)**: research-driven video ideas — fans out across channel data, YouTube outliers, community trends, and search demand, then returns a ranked brief where every idea cites evidence of real demand
-- **[develop-idea](./skills/video/develop-idea/SKILL.md)**: pressure-test an idea I already have — validates demand with evidence, maps the existing coverage to find the angle it misses, scopes what's in and out, and ends in an honest go / reframe / park verdict
-- **[demo-design](./skills/video/demo-design/SKILL.md)**: design the demo code with me in conversation — start from the final frame and work backwards to the beats, then build a viewer-followable companion repo with every checkpoint verified, plus a shot list to record from
+- **[video-develop-idea](./skills/video/video-develop-idea/SKILL.md)**: pressure-test an idea I already have — validates demand with evidence, maps the existing coverage to find the angle it misses, scopes what's in and out, and ends in an honest go / reframe / park verdict
+- **[video-demo-design](./skills/video/video-demo-design/SKILL.md)**: design the demo code with me in conversation — start from the final frame and work backwards to the beats, then build a viewer-followable companion repo with every checkpoint verified, plus a shot list to record from
 - **[video-project](./skills/video/video-project/SKILL.md)**: scaffold a new project on disk — copies the 2026 template into a PascalCase project folder under `~/youtube/` and renames the Premiere project file to match
 - **[video-packaging](./skills/video/video-packaging/SKILL.md)**: turn a chosen idea into a congruent package — title options, a thumbnail creative brief, and a scripted first-30-seconds intro that all tell the same story
-- **[thumbnail](./skills/video/thumbnail/SKILL.md)**: render the final thumbnail art — no AI image generation; composes real photo cutouts (Apple Vision subject lift) with HTML/CSS templates in the channel's design language, rendered via headless Chrome, verified with a 120px shrink test
-- **[rough-cut](./skills/video/rough-cut/SKILL.md)**: raw recording → safe first pass — trims dead air, cuts fillers, resolves retakes; knows the difference between talking-head silence and screen-share "silence" while a build runs
-- **[motion-graphics](./skills/video/motion-graphics/SKILL.md)**: transcript-driven graphics pass — branded terminal-style lower thirds (and a growing template library) rendered via headless Chrome with alpha, placed by actually looking at the frame, composited with ffmpeg; every graphic also ships as a ProRes 4444 overlay for Premiere
-- **[shorts](./skills/video/shorts/SKILL.md)**: chop a long-form video into 30–60s 9:16 shorts — finds the moments that stand alone (hook + payoff, quality bar over quota), reframes per segment (face crop vs stacked screen-share layout), and burns in word-by-word "karaoke pop" captions with selectable font styles
+- **[video-thumbnail](./skills/video/video-thumbnail/SKILL.md)**: render the final thumbnail art — no AI image generation; composes real photo cutouts (Apple Vision subject lift) with HTML/CSS templates in the channel's design language, rendered via headless Chrome, verified with a 120px shrink test
+- **[video-rough-cut](./skills/video/video-rough-cut/SKILL.md)**: raw recording → safe first pass — trims dead air, cuts fillers, resolves retakes; knows the difference between talking-head silence and screen-share "silence" while a build runs
+- **[video-motion-graphics](./skills/video/video-motion-graphics/SKILL.md)**: transcript-driven graphics pass — branded terminal-style lower thirds (and a growing template library) rendered via headless Chrome with alpha, placed by actually looking at the frame, composited with ffmpeg; every graphic also ships as a ProRes 4444 overlay for Premiere
+- **[video-shorts](./skills/video/video-shorts/SKILL.md)**: chop a long-form video into 30–60s 9:16 shorts — finds the moments that stand alone (hook + payoff, quality bar over quota), reframes per segment (face crop vs stacked screen-share layout), and burns in word-by-word "karaoke pop" captions with selectable font styles
 
 ## What's a skill?
 

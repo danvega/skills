@@ -1,6 +1,6 @@
 ---
-name: post-cover
-description: Generate a cover image for a blog post — renders an on-brand HTML template to PNG with headless Chrome, choosing from a library of seven visual styles (terminal, blueprint, brutalist, editorial, aurora, bauhaus, poster). Use when the user wants a cover image, thumbnail, or og-image for a post, or when a finished post is missing its cover. Photo/YouTube-style thumbnails with Dan's face are the video `thumbnail` skill, NOT this one.
+name: blog-cover
+description: Generate a cover image for a blog post — renders an on-brand HTML template to PNG with headless Chrome, choosing from a library of seven visual styles (terminal, blueprint, brutalist, editorial, aurora, bauhaus, poster). Use when the user wants a cover image, thumbnail, or og-image for a post, or when a finished post is missing its cover. Photo/YouTube-style thumbnails with Dan's face are the video `video-thumbnail` skill, NOT this one.
 ---
 
 # Post Cover
