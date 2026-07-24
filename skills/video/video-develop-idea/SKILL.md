@@ -1,13 +1,13 @@
 ---
 name: video-develop-idea
-description: Research, refine, and scope a single video idea Dan already has — validate demand with evidence, find the angle competitors are missing, and define what the video covers, ending in a go / reframe / park verdict. Use whenever Dan brings his own idea rather than asking for new ones — "I want to make a video about X", "is X worth a video?", "help me scope this video", "research this topic for a video", "what should I cover in a video on X", "how should I angle this". Finding ideas from scratch is `video-ideation`; turning a settled, scoped idea into a title/thumbnail/intro is `video-packaging`. This skill is the bridge between them.
+description: Research, refine, and scope a single video idea Dan already has — validate demand with evidence, find the angle competitors are missing, and define what the video covers, ending in a go / reframe / park verdict saved as the project's brief in ContentOS. Use whenever Dan brings his own idea rather than asking for new ones — "I want to make a video about X", "is X worth a video?", "help me scope this video", "research this topic for a video", "what should I cover in a video on X", "how should I angle this". Finding ideas from scratch is `video-ideation`; turning a settled, scoped idea into a title/thumbnail/intro is `video-packaging`. This skill is the bridge between them.
 ---
 
 # Develop Idea
 
 Dan arrives with an idea; the job is to pressure-test and shape it, not to admire it. A good session answers three questions with evidence: **is there demand** for this, **what angle** wins against what already exists, and **what exactly should the video cover**. The honest outcomes are *go*, *reframe* (the idea is close but a different angle or framing is stronger), or *park* (the evidence says wait or skip — saying so saves Dan a week of production on a video nobody asked for).
 
-Present the resulting brief **directly in the conversation** — no artifact, no file saved to a repo or working folder.
+Present the resulting brief **directly in the conversation** — no artifact, no file saved to a repo or working folder. The durable record is **ContentOS** (Step 6): saving the brief there is what makes the verdict actionable, and on a GO it kicks off the downstream automation.
 
 ## Workflow
 
@@ -60,7 +60,20 @@ Present the brief in the conversation, verdict first:
 - **Reframe** — the topic has legs but a different angle is stronger. Show the original vs. the reframe and why the evidence favors it.
 - **Park** — weak or falling demand, or a saturated field with no gap. Say so plainly, cite the evidence, and note what would change the verdict (an upcoming release, a rising trend to watch).
 
-Then the supporting sections: the demand evidence, the competitive map with the gap, the angle options with the pick, and the scope. Close a *go* with the handoff: the promise sentence and target keyword feed straight into `video-packaging`, and `video-project` scaffolds the project folder when he's ready to film.
+Then the supporting sections: the demand evidence, the competitive map with the gap, the angle options with the pick, and the scope. Close a *go* with the handoff: `video-packaging` reads the saved brief via `get_brief`, and `video-project` scaffolds the project folder when he's ready to film.
+
+### Step 6 — Record it in ContentOS
+
+The brief must outlive the conversation. Route by where the idea currently lives (`mcp__contentos__list_projects`, `mcp__contentos__list_ideas`):
+
+- **A project already exists** → `save_brief(slug, verdict, markdown)`. One brief per project; saving again replaces it, which is exactly right for a re-scoped idea.
+- **It's a backlog idea, verdict GO or REFRAME** → `promote_idea` to create the project, then `save_brief` on the new slug.
+- **It's a backlog idea, verdict PARK** → `update_idea_status` to ARCHIVED with notes citing the evidence and what would change the verdict. Don't create a project for a parked idea.
+- **No record anywhere** → GO/REFRAME: `create_project`, then `save_brief`. PARK: `save_idea` into the backlog with the park reasoning in notes — the research shouldn't evaporate just because the answer was no.
+
+The markdown body is the full brief: demand evidence, competitive map, chosen angle, scope in/out, demo plan, hook. On a **GO**, also `set_pipeline_stage IDEA_DEVELOPED` and, if the research sharpened it, `update_project` with the better one-sentence idea. Know what the save triggers so you don't duplicate it: a GO brief auto-creates the long-form PLANNING video and generates packaging candidates (hook/thumbnail ideas) — don't hand-create the video or pre-write packaging here.
+
+If the ContentOS MCP tools aren't connected, say so explicitly and flag that the brief exists only in the conversation until it's saved.
 
 ## Principles
 

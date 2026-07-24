@@ -35,6 +35,9 @@ scripts/cutout.swift          Apple Vision subject lift: swift cutout.swift <in>
 scripts/figma_client.py       JSON-RPC client for the remote Figma MCP when its
                               tools aren't attached: figma_client.py <tool> '<json>'
                               (auth reuses Claude Code's stored OAuth token)
+scripts/paper_client.py       legacy — same idea for the Paper MCP (127.0.0.1:29979);
+                              only for pulling old boards still in the Paper file
+                              (see History). Args >argv limit: pass @path/to/args.json
 
 /Users/vega/youtube/shared-assets/thumbnail/photos/    the photo catalog — a dump
                               directory of photos of Dan: raw shots or transparent
@@ -50,8 +53,11 @@ edits the HTML, not the pixels).
 ## Workflow
 
 1. **Get the concept.** Best input is a `video-packaging` brief (focal
-   expression, ≤4 words of text, composition, what to leave out). Given only a
-   topic, derive a minimal concept first: subject, hook words, expression.
+   expression, ≤4 words of text, composition, what to leave out) — packaging
+   locks it into the video's ContentOS project, so check there first:
+   `mcp__contentos__list_videos(slug)` returns the long-form video's locked
+   title and thumbnail concept. Given only a topic, derive a minimal concept
+   first: subject, hook words, expression.
 
 2. **Consult the inspiration board, then pick 3–5 directions.** Before
    choosing directions on a fresh request, pull an overview screenshot of
