@@ -347,6 +347,15 @@ Append a dated line when a run burns you.
   am" card it shouldn't have — the viewer already met Dan in 01. In a set, only the FIRST video
   gets the lower-third; continuation videos (numbered `_02+`, or no self-intro after a series
   opener) skip it. See step 0 of the lower-third rule.
+- (2026-07-23) "Deliver to the launch cwd" misfires when the skill is invoked from a code repo
+  (e.g. the ContentOS session): the artifacts would land in the repo. When the video has a
+  scaffolded project under `/Users/vega/youtube/<Project>/`, deliver there instead — composite
+  into `01_Footage/`, ProRes overlays into `03_Graphics/overlays/`. The cwd rule is only the
+  fallback for videos with no project folder.
+- (2026-07-23) A multi-part recording (rough-cut of `_01..\_05` parts concatenated) has per-part
+  trim maps: `t_out = to_out_part(t) + sum(prior parts' rough durations)`. Build the combined map
+  before placing anything; the seams themselves are the natural chapter boundaries for
+  transitions/section-titles.
 
 ## What this skill does NOT do
 

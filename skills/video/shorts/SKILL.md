@@ -3,7 +3,8 @@ name: shorts
 description: >-
   Chop a long-form video into 30–60 second 9:16 vertical shorts — find the standalone moments in
   the transcript, reframe per segment (face crop for talking-head, stacked layout for
-  screen-share), and burn in word-by-word "karaoke pop" captions. Chains after rough-cut. Use when
+  screen-share), and burn in word-by-word "karaoke pop" captions. Runs on the FINAL export in the
+  project's 04_Exports folder, after Dan's final edit. Use when
   Dan says "make some shorts", "chop this up", "pull some clips out of this", "clip this video",
   "vertical clips", "9:16", or mentions Shorts / Reels / TikTok for an existing video. Do NOT use
   for the long-form first pass (rough-cut), graphics on the long-form video (motion-graphics), or
@@ -20,22 +21,35 @@ rule, on purpose: rough-cut keeps, shorts curates).
 
 ## Inputs
 
-- The video — ideally a rough-cut output, because `/tmp/rough-cut/<name>/` then already has the
-  word-level transcript (`audio.json`) and the fillers/retakes are already gone. Cut clips from
-  `rough_4k.mp4` (native res) when it exists. A raw video works too: transcribe first
-  (rough-cut Step 2) and cut from the source — one clock, no mapping needed.
+- **The video — the FINAL export, not an intermediate (Dan, 2026-07-23).** Source clips from the
+  finished edit in the project's `04_Exports/` folder (`/Users/vega/youtube/<Project>/04_Exports/`)
+  whenever it exists — that's the artifact with Dan's final pacing, graphics, and fixes, and it's
+  what published shorts must match. Rough cuts and `_gfx` composites are intermediates: Dan's
+  Premiere pass changes timing after them, so clips cut from those won't line up with the
+  published video. If `04_Exports/` is empty, say so and ask whether to proceed from the latest
+  intermediate instead — don't silently fall back.
+- The final export has no transcript on the same clock — transcribe it first (rough-cut Step 2:
+  proxy + `mlx_whisper`) into `/tmp/shorts/<basename>/`. One clock, no trim mapping needed. Any
+  transcript from an earlier rough-cut run is on a DIFFERENT clock (the final edit re-times
+  everything) — never reuse it for clip timestamps.
 - Optional: explicit asks ("clip the part about virtual threads") — these skip ranking.
 
 Working dir: `/tmp/shorts/<basename>/`. Final shorts are copied out (Step 6).
 
 ## ⚠️ Clock mapping (same trap as motion-graphics)
 
-`audio.json` is timestamped on the **original recording**; the rough cut is **trimmed**. Every
-transcript time — clip boundaries AND caption words — must map through the trim before touching
-the video. `scripts/extract_words.py` does all of it: give it the clip window on the transcript's
-clock plus the rough cut's `filter.txt`, and it prints the mapped `-ss/-to` boundaries and writes
-clip-relative caption words. Work in transcript times everywhere in Step 1; only convert at the
-extract step. (Cutting an untrimmed source: omit `--filter`, mapping is identity.)
+**Standard flow (final export, transcribed fresh): there is no mapping.** The transcript was made
+from the very file being cut, so transcript time == video time — run `scripts/extract_words.py`
+WITHOUT `--filter` (mapping is identity) and use timestamps directly.
+
+The trap only exists in the fallback flow (cutting an intermediate rough cut with a reused
+transcript): `audio.json` is then timestamped on the **original recording** while the rough cut
+is **trimmed**, and every transcript time — clip boundaries AND caption words — must map through
+the trim before touching the video. In that case give `extract_words.py` the clip window on the
+transcript's clock plus the rough cut's `filter.txt`; it prints the mapped `-ss/-to` boundaries
+and writes clip-relative caption words. Work in transcript times everywhere in Step 1; only
+convert at the extract step. Rule of thumb: `--filter` if and only if the transcript and the
+video are on different clocks.
 
 ## Step 1 — Find the clips (transcript first, ranked)
 
@@ -105,10 +119,12 @@ sequence from `assets/captions.html` via the motion-graphics renderer (this skil
 `../motion-graphics/scripts/` being installed and npm-installed), then composite with `overlay`.
 
 ```bash
-# 1. words for the clip, clip-relative, trim-map applied — also prints OUT_A/OUT_B for ffmpeg
+# 1. words for the clip, clip-relative — also prints OUT_A/OUT_B for ffmpeg
+#    (standard flow: fresh transcript of the final export, same clock, NO --filter;
+#     add --filter /tmp/rough-cut/$NAME/filter.txt ONLY in the reused-transcript fallback)
 python3 <skill>/scripts/extract_words.py \
-  --json /tmp/rough-cut/$NAME/audio.json --start 42.3 --end 78.1 \
-  --filter /tmp/rough-cut/$NAME/filter.txt --out /tmp/shorts/$NAME/clip1_words.json
+  --json /tmp/shorts/$NAME/audio.json --start 42.3 --end 78.1 \
+  --out /tmp/shorts/$NAME/clip1_words.json
 
 # 2. render caption frames (params JSON inline; words file content goes in "words")
 node <motion-graphics>/scripts/render.mjs \
@@ -155,7 +171,7 @@ One pass per clip: cut, reframe, caption overlay, loudness. `-ss/-to` **before**
 clip starts at t=0 (the caption frames are clip-relative):
 
 ```bash
-ffmpeg -y -hwaccel videotoolbox -ss $OUT_A -to $OUT_B -i rough_4k.mp4 \
+ffmpeg -y -hwaccel videotoolbox -ss $OUT_A -to $OUT_B -i "$SRC" \  # SRC = the 04_Exports final (or fallback intermediate)
   -framerate 30 -i /tmp/shorts/$NAME/clip1_cap/f_%04d.png \
   -filter_complex "[0:v]crop=1214:2160:$X:0,scale=1080:1920[v];\
 [v][1:v]overlay=0:0:eof_action=pass[out]" \
@@ -193,13 +209,32 @@ Append a dated line every time a run burns you.
   `ffmpeg -hide_banner -filters | grep subtitles` first.
 - (seed) The transcript is on the original clock, the rough cut is trimmed — run BOTH clip
   boundaries and caption words through `extract_words.py --filter` (see ⚠️ block). Symptom:
-  captions drift a few seconds into the clip.
+  captions drift a few seconds into the clip. (Fallback flow only — the standard final-export
+  flow transcribes the export itself, one clock, no `--filter`.)
+- 2026-07-23: Dan's rule — shorts come from the FINAL export in `04_Exports/`, never from the
+  rough cut or `_gfx` composite. His Premiere pass re-times the video after those, so clips cut
+  from intermediates won't match the published long-form. Empty `04_Exports/` → ask, don't
+  silently fall back. Always transcribe the export fresh; a reused rough-cut transcript is on a
+  different clock.
 - (seed) Whisper word times are ±100–300ms — pad clip starts 0.15s before the hook word or the
   first syllable gets clipped, which kills the hook.
 - 2026-07-16: a hook-card overlay added as `-loop 1 -i card.png` makes the encode run FOREVER
   (the looped image stream never EOFs and the graph keeps producing frames — a 40s clip hit
   1.6GB before being killed). Bound the input with `-t 3` (`-loop 1 -t 3 -i card.png`) and put
   `eof_action=pass` on that overlay.
+- 2026-07-23: the camera bubble is NOT on screen for the whole video — in the Tool Calling
+  Advisor final edit it disappeared during a deep-coding stretch (full-screen IDE), so a stacked
+  short cut there had a blank white cam section (with an autocomplete popup drifting through it).
+  Before rendering a stacked clip, extract the CAM CROP REGION (not just full frames) at the
+  clip's start/middle/end and confirm the face is in all three. No face for the clip's span →
+  drop the clip or use a different layout; don't ship a headless stack.
+- 2026-07-23: deliver like motion-graphics: when the video has a project folder, shorts go to
+  `/Users/vega/youtube/<Project>/04_Exports/shorts/` — the launch-cwd rule is only the fallback
+  (launching from a code repo would dump videos into the repo).
+- 2026-07-23: zsh does not word-split unquoted variables — `$R --flag` where R="node script.mjs"
+  runs a command literally named "node script.mjs" (exit 127), and `set -- $spec` doesn't split
+  either. Write multi-command render loops as bash script files and `bash file.sh`, not inline
+  compound one-liners.
 - 2026-07-16: the active word's scale() pop doesn't reflow layout, so it visually eats the gap
   to its neighbors — words looked glued together ("UNRELIABLELARGE"). Spacing must be margin-based
   and sized per font width (`gap` in the style presets; wide fonts like Komika Axis need ~0.22em

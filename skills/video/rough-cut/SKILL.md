@@ -112,10 +112,30 @@ and drop every earlier one; never keep both.
 - List every group in the report (`line → takes at [t1, t2] → keeping t2`) so an override is one
   sentence away.
 
+### Coughs / sneezes / throat-clears — cut like dead air (Dan, 2026-07-23)
+
+Wordless noise is not content. A cough, sneeze, sniff, or throat-clear sitting in a pause must
+go WITH the pause — Dan flagged graphics landing over coughs that the old "audible = keep" rule
+had protected.
+
+- **Where to look:** gaps between whisper words ≥ 0.5s. `silencedetect` won't flag these (the
+  burst keeps RMS above threshold), so scan word-free gaps directly: measure 50ms-window RMS
+  inside each gap; bursts above ≈ speech-median − 15dB are noise events.
+- **What a cough/sneeze looks like:** 1–3 sharp transients, each < ~400ms, in an otherwise quiet
+  gap — possibly with whisper debris attached (a stray "Ugh", "(coughs)", or an isolated
+  nonsense token; treat that token as part of the noise, not as speech).
+- **The cut:** treat the WHOLE gap (burst included) as one silence and apply the normal trim
+  table for the footage mode — never leave a burst at a cut boundary; the cut must span from
+  0.15s after the last real word to 0.15s before the next, leaving only the trimmed pause.
+- **Laughs still survive:** a laugh is voiced, rhythmic, usually > 1s, and hangs off a spoken
+  beat. Sharp/percussive → cut; voiced/rhythmic after a joke line → keep. When genuinely
+  uncertain about a burst in a long wordless gap, cut it (Dan's preference) and list it in the
+  report so restoring is one sentence.
+
 ### Never cut
 
-- Laughs and reactions — whisper writes them as silence. Before cutting any silence, check its
-  RMS against the noise floor: above `F + 10dB` means audible content, keep it.
+- Laughs and reactions that ARE a beat — voiced, rhythmic, riding a joke or an on-camera
+  reaction. (Percussive wordless bursts — coughs, sneezes — are dead air, see above.)
 - Deliberate beats — the pause after "and here's the thing…". If a silence directly follows a
   question or an emphasis word, trim it no shorter than 0.5s.
 
@@ -183,6 +203,24 @@ Append a dated line here every time a run burns you — this log is where the sk
   original source at native resolution** — reuse the same `filter.txt` (cut timestamps are
   resolution-independent), point `-i` at the source, drop the `scale`, and encode 4K with
   `-c:v h264_videotoolbox -b:v 50M -maxrate 60M -bufsize 80M` (libx264 at 4K is far slower).
+- 2026-07-23: the noise-floor+6dB threshold badly under-detects on Dan's setup — the RMS
+  distribution is bimodal (speech ≈ −20dB median, true pauses −50..−69dB) and 10th-pctile+6
+  lands below breath/keyboard noise, so 6-min segments showed 1 "silence". Sanity-check counts;
+  when bimodal, detect at ≈15dB below the speech median (−35dB worked) instead.
+- 2026-07-23: whisper hallucinated a final sentence *inside* a region silencedetect reported as
+  pure silence (end-of-file repeat of an earlier line). Retake keep-last logic then wanted a 55s
+  cut to "keep" the phantom take. Before resolving retakes, cross-check each take's words against
+  the silence list — a "take" inside detected silence doesn't exist.
+- 2026-07-23: two retake false-positive shapes on screen-share footage: (1) recurring demo
+  phrases ("let's go ahead and rerun this") matched 55s apart — real retakes restart within
+  seconds, so distrust matches with a working demo between them; (2) narrate-while-typing — Dan
+  says a line, then repeats it while typing it. If the gap between "takes" has scene changes
+  (typing), it's narration, not a retake — keep both.
+- 2026-07-23: Dan's feedback on the Tool Calling Advisor cut: coughs/sneezes survived because the
+  "audible content above floor+10dB = keep" guard protected them, and silencedetect never flags
+  them (the burst itself is loud). Result: motion graphics later landed over coughs. Fix: scan
+  word-free gaps ≥0.5s for percussive bursts and cut them as dead air — see the coughs/sneezes
+  rule in Step 3. Only voiced, rhythmic laughs riding a beat are protected now.
 
 ## What this skill does NOT do
 
