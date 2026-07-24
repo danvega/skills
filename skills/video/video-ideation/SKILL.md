@@ -1,15 +1,15 @@
 ---
 name: video-ideation
-description: Research-driven YouTube video ideation for Dan Vega's channel (Java, Spring, AI, and developer tools). Use this whenever Dan asks for video ideas, wonders what video to make next, wants to know what's trending in the Java/Spring/AI space, asks what topics are doing well on YouTube, or mentions ideation, content planning, or "what should I cover". Even a vague "I'm stuck on what to make" should trigger this skill. Produces a ranked idea brief where every idea is backed by evidence of real demand.
+description: Research-driven YouTube video ideation for Dan Vega's channel (Java, Spring, AI, and developer tools). Use this whenever Dan asks for video ideas, wonders what video to make next, wants to know what's trending in the Java/Spring/AI space, asks what topics are doing well on YouTube, or mentions ideation, content planning, or "what should I cover". Even a vague "I'm stuck on what to make" should trigger this skill. Produces ranked ideas backed by evidence of real demand, saved into the ContentOS idea backlog.
 ---
 
 # Video Ideation
 
-Generate video ideas for Dan's YouTube channel that are backed by evidence, not guesses. The channel's goal: help developers learn and understand software topics — mainly Java, Spring, and AI — while growing views and subscribers. Growth comes from topics people are *already searching for or talking about*, so every idea in the final brief must cite the signal that suggests demand.
+Generate video ideas for Dan's YouTube channel that are backed by evidence, not guesses. The channel's goal: help developers learn and understand software topics — mainly Java, Spring, and AI — while growing views and subscribers. Growth comes from topics people are *already searching for or talking about*, so every idea saved must cite the signal that suggests demand.
 
 ## What good output looks like
 
-A ranked brief of 5–10 ideas published as a **private artifact** (Dan's preferred home for briefs — do not save them into his repo or working folder). Each idea includes: 2–3 title options, the evidence for why it will perform ("why now"), a hook angle for the first 30 seconds, a target search keyword, and a score. Structure the content per `assets/idea-brief-template.md`.
+5–10 ranked ideas saved into the **ContentOS idea backlog** via `mcp__contentos__save_idea` (they show up in the Ideas inbox at `/ideas` for review and promotion into projects — do not save them into his repo or working folder, and do not publish an artifact). Each idea includes: 2–3 title options, the evidence for why it will perform ("why now"), a hook angle for the first 30 seconds, a target search keyword, and a score. Step 4 maps these onto `save_idea`'s fields.
 
 ## Workflow
 
@@ -17,15 +17,17 @@ A ranked brief of 5–10 ideas published as a **private artifact** (Dan's prefer
 
 If Dan gave constraints (e.g., "ideas about Spring AI", "something quick to produce"), respect them. Otherwise run the full sweep without asking questions first — the research itself surfaces better questions than guessing upfront.
 
-### Step 0.5 — Read past briefs (avoid repeating ideas)
+### Step 0.5 — Read the idea backlog (avoid repeating ideas)
 
-Before researching, call the Artifact tool with `action: "list"` and find prior idea briefs — their titles start with `Video Ideas —`. WebFetch the 2–3 most recent ones (skip anything older than ~4 months; the evidence is stale by then) and extract the ideas they already proposed. This can run while the Step 1 research agents are working, but must finish before Step 2's merge. Then:
+Before researching, call `mcp__contentos__list_ideas` (no filter) — the ContentOS idea backlog is the record of every past suggestion. This can run while the Step 1 research agents are working, but must finish before Step 2's merge. Then:
 
 - **Already filmed** (it appears in his recent uploads from the channel-data source): exclude it, and exclude near-duplicates of it.
-- **Previously suggested, still unfilmed, evidence unchanged**: exclude it from the new top list, but mention it in one line under a "Still on the table from last time" note so it isn't silently forgotten.
-- **Previously suggested but the evidence materially strengthened** (new release, new outlier, new deadline): it may re-enter the ranked list — mark it "carried over from <date>, re-scored" and cite the *new* evidence.
+- **PROMOTED**: it's already in the project pipeline — exclude it and near-duplicates of it.
+- **ARCHIVED**: Dan passed on it — exclude it unless the evidence has materially strengthened since (new release, new outlier, new deadline); then it may re-enter, marked "previously archived, re-scored" and citing the *new* evidence.
+- **NEW or SHORTLISTED, evidence unchanged**: don't re-save it, but mention it in one line under a "Still in your inbox from last time" note so it isn't silently forgotten.
+- **NEW or SHORTLISTED, evidence materially strengthened**: mention it in that same note with the new evidence and suggest bumping it; don't create a duplicate.
 
-If no prior brief artifacts exist, skip this step silently.
+Match on topic, not exact title strings. Legacy fallback: idea briefs from before the backlog existed (before July 2026) live as artifacts titled `Video Ideas — <date>`; if the backlog is suspiciously empty, list artifacts and WebFetch the most recent one or two as an extra dedupe source. If the ContentOS MCP tools aren't connected, say so and ask Dan whether to proceed without the backlog — running without it risks duplicate suggestions and the results will only live in the conversation.
 
 ### Step 1 — Fan out research (run sources in parallel)
 
@@ -54,18 +56,25 @@ Score each candidate 1–5 on the five criteria below; total is out of 25. The w
 
 Drop anything scoring under 15. Keep the top 5–10.
 
-### Step 4 — Write the brief and publish it as an artifact
+### Step 4 — Save the ideas into ContentOS
 
-Draft the brief following the structure of `assets/idea-brief-template.md`. Titles should be written like real YouTube titles — specific, benefit-forward, under ~65 characters. Pattern examples from what already works in this niche: "Build a ___ in Minutes", "___ Explained: ___", "I Tried ___. Here's What Happened", "Stop ___ (Do This Instead)".
+The ContentOS idea backlog is the single destination — do NOT publish an artifact, save files into Dan's repo, or call `create_project` (ideas graduate to projects later, from the Ideas inbox or via `promote_idea`).
 
-Publish it as a **new artifact** (each brief gets its own URL — never overwrite a previous brief, since past briefs are the dedupe record for Step 0.5):
+Titles should be written like real YouTube titles — specific, benefit-forward, under ~65 characters. Pattern examples from what already works in this niche: "Build a ___ in Minutes", "___ Explained: ___", "I Tried ___. Here's What Happened", "Stop ___ (Do This Instead)".
 
-1. Load the `artifact-design` skill first, then write the page as an HTML file in the scratchpad directory.
-2. The `<title>` must follow the pattern `Video Ideas — <Month D, YYYY>` (add the scope in parens for constrained runs, e.g. `Video Ideas — August 3, 2026 (Spring AI)`). Step 0.5 depends on this exact prefix to find past briefs.
-3. Favicon: 🎬. Keep the brief self-contained: research date, sources used, data gaps, every idea with its evidence and scores, and the watchlist — a future session must be able to reconstruct "what was suggested and why" from the artifact alone.
-4. Do **not** save a copy into Dan's repo or working folder; the artifact is the single record.
+One `mcp__contentos__save_idea` call per ranked idea:
 
-Present the artifact URL, leading the summary with the #1 idea and its one-line evidence. When Dan picks an idea to film, hand off to the `video-packaging` skill to develop its title, thumbnail concept, and intro as one congruent package.
+- `title`: the strongest title option. `hook`: the hook angle. `whyNow`: the evidence — specific link + number + date, e.g. "X's video hit 180K views on a 9K-sub channel 2 weeks ago". `targetKeyword`: the primary search phrase. `score`: the total out of 25.
+- `source`: `video-ideation <YYYY-MM-DD>` so it's traceable to this run.
+- `notes`: markdown with the rest of the per-idea detail — alternate title options, per-criterion scores (Demand/Timeliness/Fit/Searchability/Differentiation), format (build-along / explained / comparison / first look), estimated effort (S/M/L), and any extra evidence that didn't fit `whyNow`. Each saved idea must stand alone: a future session should reconstruct "what this is and why it was suggested" from the idea record itself.
+
+Also save each **watchlist** topic (rising but didn't make the cut) as an idea: no `score`, `source` = `video-ideation <YYYY-MM-DD> watchlist`, and `notes` stating the signal to watch and when to re-check. Unscored ideas sort to the bottom of the inbox, so they won't crowd the ranked ones.
+
+Don't re-save anything Step 0.5 found already in the backlog.
+
+### Step 5 — Present the results
+
+Summarize the ranked list in the conversation, leading with the #1 idea and its one-line evidence; note any theme that emerged across sources and any data gaps. Point Dan at the Ideas inbox (`http://localhost:8888/ideas`) to review, shortlist, or promote. When Dan picks an idea to film, hand off to the `video-packaging` skill to develop its title, thumbnail concept, and intro as one congruent package.
 
 ## Principles
 

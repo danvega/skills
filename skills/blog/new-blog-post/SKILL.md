@@ -66,7 +66,9 @@ One sentence, **~155 characters**. It's the SEO meta description and the RSS fee
 
 ### cover
 
-A **bare filename** (`cover: ralph-loop.jpg`), resolved against `public/images/blog/YYYY/MM/DD/`. It's optional — **omit it entirely rather than pointing at an image that doesn't exist yet**. The `post-cover` skill generates an on-brand terminal-theme cover from the finished post; offer it instead of telling the user to make an image by hand.
+A **bare filename** (`cover: ralph-loop.jpg`), resolved against `public/images/blog/YYYY/MM/DD/`. **Omit it from the initial frontmatter rather than pointing at an image that doesn't exist yet** — the cover step below fills it in.
+
+**Once the draft is written, run the `post-cover` skill automatically** — don't ask, don't offer, just chain into it. It generates the terminal-theme cover from the finished post and sets this field. Skip it only if the user supplied their own image or said they don't want a cover. Per that skill's own workflow, show Dan the rendered cover and wait for his reaction before iterating on it.
 
 ### published
 
