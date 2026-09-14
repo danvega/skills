@@ -1,315 +1,307 @@
 ---
 name: video-thumbnail
-description: Render the final thumbnail art for a YouTube video — composes real photo cutouts of Dan with HTML/CSS templates in the channel's design language (dark green, big white type, one green accent) and renders to PNG with headless Chrome; no AI image generation. Use when Dan wants the actual thumbnail image made — "make the thumbnail", "render the thumbnail", "thumbnail for <video>", or when a video-packaging concept is ready to become art. Do NOT use for thumbnail *concepts*/creative direction (video-packaging), blog cover images (blog-cover), or video ideas (video-ideation).
+description: >-
+  Render a YouTube thumbnail from real photo cutouts and HTML/CSS templates in the
+  channel's visual style, using headless Chrome rather than AI image generation.
+  Use when Dan asks to make or render a thumbnail, or a video-packaging hook is
+  ready to become art. Do not use for thumbnail hooks and titles (video-packaging),
+  blog cover images (blog-cover), or video ideas (video-ideation).
 ---
 
 # Thumbnail
 
 Compose, don't generate. AI image generation fails at exactly the two things a
-thumbnail needs most — crisp text and Dan's real face — so this skill never
+thumbnail needs most: crisp text and Dan's real face. So this skill never
 generates imagery. It fills an HTML/CSS template (text is perfect by
 construction), drops in a real photo cutout, and renders with headless Chrome.
-Same philosophy and pipeline as the blog `blog-cover` skill, pointed at YouTube.
+Same pipeline as `blog-cover`, pointed at YouTube.
+
+## The budget: one sitting, three rounds, about 15 minutes
+
+A review of the last six videos (2026-09) found the same pattern every time:
+
+- Round 1's structure is what shipped. Later rounds only ever changed the face,
+  the copy, or the accent word.
+- The one video that took two days did so because the hook moved mid-way.
+  That is a packaging problem. No amount of rendering fixes an unlocked promise.
+- The same six cutouts got copied into every project folder by hand.
+
+So the process is: lock the hook first, render real options fast, tighten the
+winner, stop. Renders are cheap. Rounds are not.
 
 ## Files & assets
 
 ```
-templates/hero-right.html     wordmark + pill + chips left, Dan right — the workhorse
-templates/versus.html         two cards + VS badge — for comparison videos
-templates/before-after.html   red-X line → green-check line story panel + hook badge —
-                              for "broken thing becomes fixed thing" videos
-templates/big-type-light.html light background, huge dark ink type — the
-                              stands-out-in-a-dark-feed option
-templates/big-shield.html     giant cracked-shield hero + stacked type, no Dan —
-                              the big-object option; swap the SVG per concept
-templates/merge-button.html   fake product UI as the hero (GitHub PR card + giant
-                              button + hovering cursor) — the ui-artifact option
-templates/quote-card.html     one damning quote at max size in a thin colored
-                              frame, serif quote mark, mono attribution
-templates/annotated-code.html IDE window + rough red marker ellipse/arrow +
-                              sticky-note sticker + pointing Dan — hand-drawn
-templates/file-explorer.html  editor-slate repo file tree with ONE file circled
-                              in red marker + big type + pointing Dan — the
-                              mystery-artifact hook ("you've seen this file")
+templates/hero-right.html     wordmark + pill + chips left, Dan right (house look)
+templates/versus.html         two cards + VS badge, for comparison videos
+templates/before-after.html   red-X line to green-check line story panel + hook badge
+templates/big-type-light.html light background, huge dark ink type
+templates/big-shield.html     giant cracked-shield hero + stacked type, no Dan
+templates/merge-button.html   fake product UI as the hero (PR card + button + cursor)
+templates/quote-card.html     one quote at max size in a thin colored frame
+templates/annotated-code.html IDE window + red marker ellipse/arrow + sticky note
+templates/file-explorer.html  repo file tree with ONE file circled in red marker
+
+scripts/render.sh             render every draft HTML to 1920x1080 PNG (~3s each)
+scripts/contact_sheet.py      one feed-style sheet: each option at 360px with its
+                              title, plus a 120px copy. The verify step AND the
+                              thing Dan reacts to.
 scripts/cutout.swift          Apple Vision subject lift: swift cutout.swift <in> <out.png>
 scripts/figma_client.py       JSON-RPC client for the remote Figma MCP when its
                               tools aren't attached: figma_client.py <tool> '<json>'
-                              (auth reuses Claude Code's stored OAuth token)
-scripts/paper_client.py       legacy — same idea for the Paper MCP (127.0.0.1:29979);
-                              only for pulling old boards still in the Paper file
-                              (see History). Args >argv limit: pass @path/to/args.json
+scripts/paper_client.py       legacy (Paper MCP), only for pulling old boards
 
-/Users/vega/youtube/shared-assets/thumbnail/photos/    the photo catalog — a dump
-                              directory of photos of Dan: raw shots or transparent
-                              cutout PNGs, no curation or manifest required
-/Users/vega/youtube/shared-assets/thumbnail/doodles/   hand-drawn PNG/SVG assets
-                              (arrows, circles, scribbles), transparent PNG/SVG
+/Users/vega/youtube/shared-assets/thumbnail/cutouts/
+                              THE cutout library. Named transparent PNGs
+                              (<expression>-<outfit>.png), manifest.md, and
+                              cutouts-sheet.png (every cutout with its name in
+                              one image). Templates reference these by absolute path.
+/Users/vega/youtube/shared-assets/thumbnail/photos/
+                              raw Photo Booth shots. Source material for new
+                              cutouts only. Never browse this during a round.
+/Users/vega/youtube/shared-assets/thumbnail/doodles/
+                              hand-drawn PNG/SVG assets (arrows, circles)
 ```
 
-Output goes to the video project's `06_Thumbnails/` folder as
-`thumbnail-draft-v<N>.png` alongside its `.html` source (so the next iteration
-edits the HTML, not the pixels).
+Output goes to the video project's `06_Thumbnails/` folder. If the project
+folder does not exist under `/Users/vega/youtube/`, run `video-project` first.
 
 ## Workflow
 
-1. **Get the concept.** Best input is a `video-packaging` brief (focal
-   expression, ≤4 words of text, composition, what to leave out) — packaging
-   locks it into the video's ContentOS project, so check there first:
-   `mcp__contentos__list_videos(slug)` returns the long-form video's locked
-   title and thumbnail concept. Given only a topic, derive a minimal concept
-   first: subject, hook words, expression.
+### Round 0: get the hook. Do not render without it.
 
-2. **Consult the inspiration board, then pick 3–5 directions.** Before
-   choosing directions on a fresh request, pull an overview screenshot of
-   the **"Thumbnail Inspiration" Figma file** (fileKey
-   `vwHATW30WF1B8da9CVDHpv`, page `0:1` — `get_screenshot` at
-   maxDimension ~2400, split into halves with sips to review) and extract
-   the *structures* worth stealing for THIS concept: layout grid, hero
-   device, where the tension comes from. Bones only, never their colors/
-   assets/branding. This step exists because the failure mode is real and
-   named (Dan, 2026-07): without it every option converges on the house
-   formula — big type left, Dan right, one accent — and rounds come out
-   "tired". Structural variety beats palette variety: vary the HERO ITSELF
-   across the set (type / fake UI artifact / quote / annotated screenshot /
-   giant object / code panel), and make at least one option something no
-   existing template does — build it, then register it as a new template
-   (see Growing the library).
+`mcp__contentos__list_videos(slug)` returns the long-form video's locked title
+and thumbnail hook (text, hero device, expression). If either is missing or
+vague, stop and run `video-packaging`. Rendering against an unlocked promise is
+how a thumbnail takes two days.
 
-   Every fresh request gets at least three options in genuinely different
-   styles — different layout, palette, and hero device — not tweaks of one
-   idea. Renders are cheap; distinct ideas are not: add a fourth or fifth
-   option only when the concept genuinely supports another distinct angle,
-   never to pad the count. Choose from **Style directions** below (or
-   invent a new one); the dark-green house look has no reserved slot — it
-   competes for a spot like any other direction, and some rounds it won't
-   appear at all. Each direction gets its own text angle where possible
-   (mechanism vs outcome vs reaction). Go straight to rendering — no
-   wireframe/sketch step; Dan reacts to finished thumbnails, not boxes.
+### Round 1: three or four real options (about 5 minutes)
 
-3. **Pick the photo(s).** Browse the photo catalog at
-   `shared-assets/thumbnail/photos/` — Read the images and judge the
-   expressions directly; there is no manifest. Pick the shot each concept
-   calls for, then lift Dan out on the fly:
-   `swift scripts/cutout.swift <photo> <out.png>` (skip the script if the
-   file is already a transparent cutout). Generated cutouts live with the
-   working files, not the catalog. If nothing in the catalog fits, pull a
-   frame from this video's own footage (below). Options may share a photo,
-   but different expressions sell "different style" harder.
-
-4. **Fill a template per direction.** Copy the closest template to the
-   scratchpad and edit the numbered `<!-- FILL -->` sections. Style rules
-   (apply to every option regardless of palette):
-   - ONE accent color hit — one word, number, or element. Never two.
-   - Real text budget is ≤4 words; chips/code lines are texture and don't count.
-   - Thumbnail text must not repeat the title (the pair reads together).
-   - Keep type clear of the cutout's head — no text over the face.
-   - No logos beyond the built-in AI-box/sparkle marks (leaf licensing isn't
-     worth it; the type does the work).
-
-5. **Render** each at 1920×1080 (Dan's standard output size, set 2026-07-22).
-   Templates are authored at 1920×1080 CSS px (convention changed 2026-07-23
-   so Figma captures arrive as full-size 1920×1080 boards — captures land at
-   the page's CSS size, not the rendered-PNG size):
+1. **Pick the hero devices.** Choose 3 or 4 from the structure list below,
+   each a different device. Each gets its own text angle where possible
+   (mechanism, outcome, reaction). Add a fourth only when the hook genuinely
+   supports another angle, never to pad. The house look has no reserved slot.
+2. **Pick the faces.** Read `cutouts/cutouts-sheet.png` once. Choose by
+   expression name. Different expressions across options sell "different
+   style" harder than palette does. Make a new cutout only when the library
+   lacks the expression the hook needs (see Getting a new cutout).
+3. **Fill a template per option.** Copy the closest template into the
+   scratchpad and edit the numbered `<!-- FILL -->` sections. Rules for
+   every option, whatever the palette:
+   - ONE accent color hit: one word, number, or element. Never two.
+   - Real text budget is 4 words or fewer. Chips and code lines are texture
+     and don't count.
+   - Thumbnail text must not repeat the title. The pair reads together.
+   - Keep type clear of the cutout's head. No text over the face.
+   - Cutouts read smaller than you think. Bottom-anchor at 85 to 90% of frame
+     height (chest-up) unless the option wants Dan small or absent.
+   - No logos beyond the built-in AI-box/sparkle marks.
+4. **Render them in one call** (sequential, about 3 seconds each; do not
+   parallelize Chrome, it stops exiting):
 
    ```bash
-   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-     --headless=new --disable-gpu --hide-scrollbars \
-     --force-device-scale-factor=1 --window-size=1920,1080 \
-     --screenshot=<out.png> "file://<abs-path-to-copy.html>"
+   scripts/render.sh draft-*.html
    ```
 
-   (A 1280×720-authored draft can be migrated by multiplying every CSS `px`
-   value and every svg width=/height= attribute — NOT viewBox, NOT
-   stroke-width attrs — by 1.5.)
+5. **Build one sheet and Read it.** This is the verify step and the shrink
+   test in one image:
 
-6. **Verify each by Reading the PNG** — nothing clipped, no element touching
-   the face, accent on the right word. Then the shrink test:
-   `sips -Z 120 <out.png> --out <out_120.png>` and Read it — the biggest type,
-   the hook phrase, and the face must all still read at 120px. Fix and
-   re-render until both pass.
+   ```bash
+   scripts/contact_sheet.py -o round1.png -t "<candidate title>" ... draft-*.png
+   ```
 
-7. **Save and stop.** Copy the PNGs + HTML into the project's `06_Thumbnails/`
-   as `thumbnail-v<N>-<style>.png` (e.g. `thumbnail-v1-story-panel.png`) and
-   show Dan the full set. Then wait: iterate only on the option he reacts
-   to — a few distinct directions beat many tweaks of one idea, and further
-   rounds refine the winner, not the field.
+   Pass one `-t` per image (repeat the same title if only the thumbnails
+   differ). On the sheet, check: nothing clipped, nothing touching the face,
+   accent on the right word, and the hook phrase plus face still read in the
+   120px copy. Fix and re-render until it passes. Do not Read the individual
+   PNGs; the sheet is enough.
+6. **Save, send, stop.** Copy the PNGs and HTML into `06_Thumbnails/` as
+   `thumbnail-v1-<style>.png` and `.html`. Send the sheet with `SendUserFile`
+   so Dan can react from his phone. Then wait. Dan picks one and says what's off.
 
-8. **Winner variation round.** Once Dan picks a direction, the next round is
-   THREE new takes on that winning CONCEPT (`v2a/v2b/v2c`) — what carries
-   forward is the idea (the hook's meaning, the mystery/tension), NOT its
-   styling. Re-consult the inspiration board and re-execute the same concept
-   in genuinely different visual languages: vary palette, type treatment,
-   and hero rendering across the takes (light vs dark, handwritten vs
-   grotesk, zoomed artifact vs quote vs UI panel). At most ONE take may stay
-   close to the winner's original styling as the safe pick. A cutout swap
-   alone is NOT a variation, and neither is reshuffling the same hook text,
-   palette, and accent around the frame (Dan's feedback 2026-07-23: three
-   same-palette recompositions of the winner read as "pretty much the
-   same"). Each take still changes the photo/expression. Size Dan generously — cutouts read smaller than you
-   think at feed size; bottom-anchor at ~85–90% of frame height (chest-up)
-   unless the take wants him small or absent. Render variations in Chrome
-   first (seconds per iteration), then capture them into Figma (see
-   **Figma** below) so Dan picks and hand-edits among real, editable frames —
-   from that point the Figma file is the source of truth.
+### Round 2: tighten the winner (about 5 minutes)
 
-## Style directions
+Three takes (`v2a`, `v2b`, `v2c`) that keep the winner's structure and vary
+what actually changed in past shipped versions:
 
-Vary at least two of {layout, palette, hero device} between options. Grow
-this list as new directions land:
+- **Expression:** a different cutout in at least two takes.
+- **Copy:** the hook words or which word carries the accent.
+- **One composition move:** flip Dan to the other side, size the hero up or
+  down, or tighten the crop. One move per take.
 
-- **house-terminal** — dark green + plexus + big white type
-  (`hero-right.html`, `versus.html`)
-- **story-panel** — red-X → green-check before/after tension
-  (`before-after.html`)
-- **clean-light** — paper-light background, huge dark ink type, studio cutout
-  for pop (`big-type-light.html`); rare in a dark-mode feed, so it stands out
-- **big-object** — one giant object/logo/number as the hero, big type beside
-  it, Dan small or absent (`big-shield.html` — cracked-shield build; adapt
-  the SVG hero per concept)
-- **ui-artifact** — a fake product UI as the hero: the click/decision moment
-  rendered as a real interface (PR merge button, deploy modal, delete
-  dialog), short hook line, Dan reacting (`merge-button.html`). Instantly
-  legible to devs; the button/control is the accent. Variant: an editor
-  file tree with one file circled in red marker (`file-explorer.html`) —
-  for "what IS this file" mystery-artifact hooks.
-- **quote-card** — one damning or intriguing quote at max size in a thin
-  colored border frame, serif quote mark, mono attribution, Dan reacting
-  (`quote-card.html`). For videos whose hook is a LINE someone/something says.
-- **designer-komika** — Dan's published designer look: deep purple/navy
-  background, Komika Axis display type (white line + green line, often a
-  question: "TOO MANY TOOLS?"), JetBrains Mono code panel, studio cutout
-  pointing at the content. Reference boards live in the legacy Paper file;
-  build the template from Dan's published thumbnails when this direction is
-  picked.
-- **hand-drawn** — marker circles/arrows/scribbles over a photo or screenshot
-  (`annotated-code.html` — IDE window + red ellipse + sticker + pointing Dan;
-  or compose with assets from `shared-assets/thumbnail/doodles/`)
+Do not re-execute the concept in a new visual language, palette, or template.
+That was the old "winner variation round", and Dan's verdict on it was
+"pretty much the same" (2026-07-23). If he wants a different direction he will
+say so. If he is torn between two titles, put both on the sheet. Same render,
+same sheet, same send.
+
+### Lock
+
+1. Copy the winner to `06_Thumbnails/thumbnail-final.png` and `.html`.
+2. `mcp__contentos__set_pipeline_stage(slug, "THUMBNAIL_READY")`.
+3. `mcp__contentos__update_video_packaging(slug, thumbnailConcept="<hook> · final: 06_Thumbnails/thumbnail-final.png")`
+   so the record points at the art.
+
+**Face swap first, Figma second.** When Dan loves the thumbnail but not the
+photo, change the `img.dan` src to another library cutout and run `render.sh`.
+That is seconds. Offer the Figma capture only when he wants to hand-edit
+something a src swap can't do.
+
+## Structure list (hero devices)
+
+Vary at least two of {layout, palette, hero device} between options. Tagged
+with what has shipped on the channel so the picks are evidence, not taste:
+
+- **ui-artifact** (`merge-button.html`): a fake product UI as the hero. The
+  click or decision moment rendered as a real interface; the button is the
+  accent. Shipped: "WOULD YOU?" merge button, "TRUST AI?" fix-everything button.
+- **file-explorer** (`file-explorer.html`): editor file tree with one file
+  circled in red marker, for "what IS this file" hooks. Shipped: "YOU'VE SEEN
+  THIS FILE".
+- **story-panel** (`before-after.html`): red-X line to green-check line.
+  Shipped: "IT LEAKS!", "ONE LINE".
+- **hand-drawn** (`annotated-code.html`, or freehand SVG over a dark ground):
+  marker circles, arrows, a map. Shipped: "you are here" adoption map.
+- **house-terminal** (`hero-right.html`, `versus.html`): dark green + plexus +
+  big white type. Shipped: "Tool Search", most 2025 thumbnails. Competes for a
+  slot like any other direction; some rounds it won't appear.
+- **designer-komika**: deep purple/navy, Komika Axis display type (white line
+  + green line, often a question), JetBrains Mono code panel. Shipped: "WATCH
+  IT THINK?!". No template yet; build from the published thumbnail when picked.
+- **code-panel** (`annotated-code.html` without the sticker): the hook is a
+  line of code or config, shown huge, one token in the accent color.
+- **big-object** (`big-shield.html`): one giant object as the hero, Dan small
+  or absent. Rendered several times, never shipped. Use when the hook IS an
+  object.
+- **quote-card** (`quote-card.html`): one line someone says, at max size.
+  Rendered, never shipped. Use only when the hook is a quote.
+- **clean-light** (`big-type-light.html`): paper background, huge dark type.
+  Rendered often, never shipped, but it is the only option that stands out in
+  a dark feed. Keep offering it as the odd one out.
+
+The **"Thumbnail Inspiration" Figma file** (fileKey `vwHATW30WF1B8da9CVDHpv`,
+page `0:1`) is where new structures come from. Consult it when adding a
+direction to this list (see Growing the library), not every round. The list
+above is the distilled result of past consults.
 
 ## Getting a new cutout
 
-**From any photo** (photoshoot, phone shot — plain background works best):
+**From any photo** (photoshoot, phone shot; plain background works best):
 
 ```bash
-swift scripts/cutout.swift <photo.jpg> <name>.png
+swift scripts/cutout.swift <photo.jpg> <expression>-<outfit>.png
 ```
 
-**From this video's raw footage** (shirt matches the video; expressions are
-free because Dan makes them all on camera):
+**From this video's raw footage** (the shirt matches the video; expressions
+are free because Dan makes them all on camera):
 
 ```bash
-# contact sheet: one small frame every 5s — Read a few to pick a timestamp
+# contact sheet: one small frame every 5s. Read a few to pick a timestamp
 ffmpeg -i <raw.mp4> -vf "fps=1/5,scale=480:-1" -q:v 4 frames/f_%03d.jpg
 # extract the chosen moment at full res, then cut it out
 ffmpeg -ss <timestamp> -i <raw.mp4> -frames:v 1 frame.png
-swift scripts/cutout.swift frame.png <name>.png
+swift scripts/cutout.swift frame.png <expression>-<outfit>.png
 ```
 
-Watch for motion blur and mid-word mouths — step ±0.1s (`-ss`) until the frame
-is sharp. Keep one-off cutouts in the project folder; when a source frame or
-photo is a keeper, drop it into `shared-assets/thumbnail/photos/` so future
-thumbnails can find it — no manifest, the catalog is browsed visually.
+Watch for motion blur and mid-word mouths. Step the `-ss` by 0.1s until the
+frame is sharp. Every keeper goes into `shared-assets/thumbnail/cutouts/`
+with the naming scheme, a row in `manifest.md`, and a rebuilt
+`cutouts-sheet.png` (snippet below). Never leave cutouts only in a project
+folder; that is how the library went stale in 2026-07.
 
 ## Design tokens (house-terminal direction)
 
-These bind only the dark-green house look; other directions define their own
+These bind only the dark-green house look. Other directions define their own
 palette but keep the same text discipline.
 
-- Background: `linear-gradient(135deg, #0c1a10, #08120b, #060d08)` + soft green
-  radial glows + the faint plexus SVG. Dark enough that white 900-weight type carries.
+- Background: `linear-gradient(135deg, #0c1a10, #08120b, #060d08)` + soft
+  green radial glows + the faint plexus SVG. Dark enough that white 900-weight
+  type carries.
 - Accent green `#6cd97e`; card/chip borders `#3f7a4d`; muted text `#9fc7a8`.
-- Type: Inter/SF 800–900 weight, tight letter-spacing; text-shadow for depth.
-- Cutout: bottom-anchored, right third, `drop-shadow(-18px 0 40px rgba(0,0,0,0.55))`
-  over a soft green radial `.glow` to bed it into the scene. Err BIG: ~85–90%
-  of frame height (Dan's feedback 2026-07: smaller cutouts read weak in the
-  feed); let chips/panels overlap the shirt rather than shrinking him.
+- Type: Inter/SF 800 to 900 weight, tight letter-spacing; text-shadow for depth.
+- Cutout: bottom-anchored, right third,
+  `drop-shadow(-18px 0 40px rgba(0,0,0,0.55))` over a soft green radial
+  `.glow`. Err big: 85 to 90% of frame height. Let chips overlap the shirt
+  rather than shrinking Dan.
 
 ## Growing the library
 
-New layout needed (big-object hero, "3 things" grid…)? Build it as a new
-annotated template file next to the others, register it under a style
-direction, test-render once with real content, and keep the FILL-comment
-convention.
+**New structure:** when a hook fits nothing on the list, pull an overview of
+the inspiration file (`get_screenshot` on page `0:1` at maxDimension ~2400,
+split with sips to review), extract the bones (layout grid, hero device, where
+the tension comes from), build it as a new annotated template with the FILL
+convention, test-render once, and add it to the structure list. Bones only,
+never their colors, assets, or branding.
 
-**From inspiration:** Dan can drop screenshots of other creators' thumbnails
-he admires into `shared-assets/thumbnail/inspiration/`. When he points at one,
-Read it and extract the *structure* — layout grid, type scale and placement,
-face size/position, color logic, where the tension comes from — then rebuild
-that composition as a new template in Dan's own design language and register
-it as a style direction. Learn the bones, never copy the art: no lifting their
-colors verbatim, assets, or branding.
+**New cutout:** see above. Rebuild the picker sheet after adding one:
 
-Doodles for the hand-drawn direction can be authored in Figma (draw, then
-export as transparent PNG into `shared-assets/thumbnail/doodles/`). Templates, cutouts, and doodles compound —
-every video should leave the library slightly richer than it found it.
+```bash
+cd /Users/vega/youtube/shared-assets/thumbnail/cutouts && python3 - <<'EOF'
+import os
+from PIL import Image, ImageDraw, ImageFont
+files=sorted(f for f in os.listdir('.') if f.endswith('.png') and f!='cutouts-sheet.png')
+W,H=300,330; cols=5; rows=(len(files)+cols-1)//cols
+sheet=Image.new('RGB',(cols*W,rows*H),'#3a3a3a'); dr=ImageDraw.Draw(sheet)
+fnt=ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Bold.ttf',15)
+for i,f in enumerate(files):
+    im=Image.open(f).convert('RGBA'); im.thumbnail((W-10,H-40))
+    x,y=(i%cols)*W,(i//cols)*H
+    bg=Image.new('RGBA',im.size,'#3a3a3a'); bg.alpha_composite(im); sheet.paste(bg.convert('RGB'),(x+5,y+5))
+    dr.text((x+8,y+H-28),f.replace('.png',''),fill='white',font=fnt)
+sheet.save('cutouts-sheet.png')
+EOF
+```
 
-## Figma (design canvas, hand-edit + export)
+Doodles for the hand-drawn direction can be authored in Figma and exported as
+transparent PNG into `shared-assets/thumbnail/doodles/`. Templates, cutouts,
+and doodles compound. Every video should leave the library slightly richer.
 
-Figma is where a draft becomes hand-editable. The remote Figma MCP server
-(`https://mcp.figma.com/mcp`) is registered in Claude Code user config as
-`figma` (OAuth already done; Dan is a Full seat on the Team Vega pro plan =
-write access). If the tools aren't attached to the session, drive it with
-`scripts/figma_client.py <tool> '<json>'` — same JSON-RPC over HTTP; it reads
-the OAuth token Claude Code stored in the macOS keychain.
+## Figma (opt-in: hand-edit the winner)
 
-The **"YouTube Thumbnails" Figma file is the canonical board** — fileKey
-`qxwLTGPFH4RPlV5cZOYrqS`. Every capture/promotion targets this file so all
-thumbnail work accumulates in one place. Dan's **"Thumbnail Inspiration"**
-Figma file — fileKey `vwHATW30WF1B8da9CVDHpv`, one page (`0:1`) of other
-creators' thumbnails — is consulted at the START of every fresh round
-(Workflow step 2), not just when explicitly asked.
+Figma is where a finished thumbnail becomes hand-editable, for the cases a
+src swap can't cover. It is not part of the rounds. Capture only the winner,
+only when Dan asks, and only after the face-swap offer.
 
-**The capture flow that works (proven end-to-end, 2026-07):** Chrome drafts
-become editable Figma layers via `generate_figma_design` — no element-by-
-element porting.
+The remote Figma MCP server (`https://mcp.figma.com/mcp`) is registered in
+Claude Code user config as `figma` (OAuth done; Dan is a Full seat on the Team
+Vega pro plan). If the tools aren't attached, drive it with
+`scripts/figma_client.py <tool> '<json>'`; it reads the OAuth token Claude
+Code stored in the macOS keychain.
 
-1. Prep each draft HTML: add
+The **"YouTube Thumbnails" Figma file is the canonical board**, fileKey
+`qxwLTGPFH4RPlV5cZOYrqS`, one page `0:1`. Dan's monthly grid of published
+thumbnails lives there; captured drafts land in a row to the right of it.
+
+**The capture recipe (proven end-to-end, 2026-07):**
+
+1. Prep the winner's HTML: add
    `<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>`
-   to `<head>`, and make every `img src` RELATIVE (absolute filesystem paths
-   404 over HTTP and you get a blank cutout).
-2. Serve the draft dir: `python3 -m http.server 8931` from the folder with
-   the HTML + images.
+   to `<head>`, copy the cutout next to the HTML and make the `img src`
+   RELATIVE (absolute paths 404 over HTTP and you get a blank cutout), and
+   `sips -Z 1400` that copy. Cutout PNGs much over 2 MB silently drop out of
+   the capture.
+2. Serve the folder: `python3 -m http.server 8931`.
 3. Mint a capture: `generate_figma_design {"fileKey": ..., "url":
-   "http://localhost:8931/<page>.html"}` → response contains a single-use
-   `captureId` and a ready-made hash URL
-   (`<url>#figmacapture=<id>&figmaendpoint=<urlencoded submit URL>&figmadelay=1500`).
-4. Open that hash URL in a browser — the in-app Browser pane works and keeps
-   Dan's screen clean, but plain `navigate` to localhost is blocked by
-   policy: open the FIRST page via `preview_start {url: <hash-url>}` (which
-   returns a tabId), then `navigate` with that tabId for subsequent pages.
-   The page shows a "Sending to Figma…" toolbar while uploading; multi-MB
-   cutout PNGs take 1–3 minutes. Two learned gotchas (2026-07): cutout PNGs
-   much over ~2 MB can silently DROP OUT of the capture (page renders fine,
-   Figma page arrives without Dan) — `sips -Z 1400` every cutout the HTML
-   references before capturing; and use `figmadelay=4000` so large images
-   finish decoding first. Always verify each capture with `get_screenshot`
-   before telling Dan it's done.
-5. Poll `generate_figma_design {"fileKey": ..., "captureId": ...}` every
-   ~10s until the response says "The design has been added to your existing
-   file" with a node id. Never mint a new id while one is pending.
-6. Where a capture lands depends on the file's page structure: in the current
-   single-page "YouTube Thumbnails" file (one page `0:1`, everything on it),
-   each capture arrives as a 1920×1080 FRAME named "Document" placed in a row
-   on that page — NOT as a new page (observed 2026-07-23; multi-page files may
-   still get new pages). Verify with `get_screenshot {"fileKey", "nodeId"}`
-   (returns an asset URL — plain curl downloads it). Rename the capture
-   FRAMES to the `<Project> / v<N> <style>` convention via `use_figma` —
-   check `node.parent.type` first and never blind-rename a node's page (a
-   climb-to-PAGE loop renames the one shared page instead). Captures can
-   also land offset vertically — align `y` with the existing row.
+   "http://localhost:8931/<page>.html"}`. The response contains a single-use
+   `captureId` and a hash URL. Change its `figmadelay` to `4000` so the image
+   finishes decoding.
+4. Open the hash URL in the in-app Browser pane: `preview_start {url:
+   <hash-url>}` (plain `navigate` to localhost is blocked by policy). The page
+   shows "Sending to Figma…" while uploading; allow 1 to 3 minutes.
+5. Poll `generate_figma_design {"fileKey": ..., "captureId": ...}` every ~10s
+   until it reports the design was added, with a node id. Never mint a new id
+   while one is pending.
+6. The capture arrives as a 1920x1080 FRAME named "Document" on page `0:1`.
+   Verify with `get_screenshot {"fileKey", "nodeId"}` before telling Dan it's
+   there. Rename the frame to `<Project> / final` via `use_figma` (check
+   `node.parent.type` first; never rename the page). Align its `y` with the
+   existing row if it lands offset.
 
-Fine-grained edits from here: `use_figma` runs Figma Plugin API JavaScript
-against the file — but ALWAYS read the `skill://figma/figma-use/SKILL.md`
-MCP resource first (font-loading and color-range rules); pass `skillNames`
-as instructed. For final art: Dan hand-tweaks in Figma and exports PNG at
-1920×1080 (or use the `download_assets` tool), then copy into
-`06_Thumbnails/`.
+Fine-grained edits from there use `use_figma` (Figma Plugin API JavaScript).
+ALWAYS read the `skill://figma/figma-use/SKILL.md` MCP resource first. For
+the final PNG: Dan exports at 1920x1080 (or `download_assets`), then copy it
+over `06_Thumbnails/thumbnail-final.png`.
 
-The division of labor: headless Chrome renders every fresh round of options
-(seconds per iteration, Claude holds the pen); winning designs are captured
-into Figma (Dan holds the pen — element-level hand edits, then export for
-the final PNG).
-
-History: this role was played by Paper (paper.design) until 2026-07 — dropped
-for its $200/yr price and weekly MCP call caps. Old artboards (v1 house-hero
-and the designer-komika reference boards) still live in the Paper file;
-rebuild references in Figma opportunistically.
+History: Paper (paper.design) played this role until 2026-07 and was dropped
+for its price and MCP call caps. Old artboards (v1 house-hero, the
+designer-komika reference boards) still live in the Paper file.
