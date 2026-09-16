@@ -81,3 +81,20 @@ If the ContentOS MCP tools aren't connected, say so explicitly and flag that the
 - **Park is a win.** A well-evidenced "don't make this" is worth more than a polite green light. Dan brought the idea; he needs the truth about it, not validation.
 - **The angle comes from the gap.** Refinement isn't wordsmithing the idea — it's finding what the existing coverage misses and aiming there.
 - **One video, one promise.** Scoping is mostly deciding what to leave out. Cut material is future-video fuel, not waste.
+
+## Chain mode
+
+`contentos-next` invokes this skill with "chain mode" in the arguments. Then:
+
+- Run the research and write the brief without pausing for sign-off. Pick the angle
+  yourself and say why.
+- GO or REFRAME: `save_brief` on the project (a reframe saves as GO on the reframed angle,
+  flagged at the top of the brief), tick `IDEA_DEVELOPED`, and `update_project` with the
+  sharper one-sentence idea. PARK: `save_brief` with PARK, tick nothing, and return so the
+  chain halts.
+- The conversation-only rule above applies when Dan invokes this skill himself. It does not
+  apply in chain mode.
+- Decided ideas do not come here at all. When the project was captured from Dan's own
+  dictation or repo, `contentos-next` writes a short GO brief instead of running this
+  research. The demand and competition pass that packaging needs happens inside
+  `video-packaging` at a lighter weight.

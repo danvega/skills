@@ -8,8 +8,8 @@ conventions, and lessons that improve a real task.
 - `skills/dev/`: general development tasks.
 - `skills/shipit/`: planning, building, and reviewing demos or products.
 - `skills/spring/`: framework guidance, grouped by release or product.
-- `skills/blog/`, `skills/newsletter/`, `skills/podcast/`, and `skills/video/`:
-  personal content workflows.
+- `skills/blog/`, `skills/newsletter/`, `skills/podcast/`, `skills/video/`, and
+  `skills/contentos/`: personal content workflows.
 
 Framework guidance should focus on version-specific changes and gotchas.
 Workflow skills should describe the outcome and the decisions needed to reach it.
@@ -18,7 +18,7 @@ Workflow skills should describe the outcome and the decisions needed to reach it
 
 - Match the folder name to the frontmatter `name`.
 - Use lowercase letters, numbers, and hyphens.
-- Keep pipeline prefixes such as `shipit-`, `blog-`, `newsletter-`, and `video-`.
+- Keep pipeline prefixes such as `shipit-`, `blog-`, `newsletter-`, `video-`, and `contentos-`.
 - Podcast workflows may use the show name, such as `spring-office-hours-`.
 - General dev skills stay unprefixed, such as `readme` and `code-review`.
 - Framework skill names describe the capability, such as `jackson-3`.

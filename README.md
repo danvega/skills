@@ -120,6 +120,14 @@ development to editing and promotion.
 - **[video-shorts](./skills/video/video-shorts/SKILL.md)**: turn long-form footage into vertical clips with captions
 - **[video-social-campaign](./skills/video/video-social-campaign/SKILL.md)**: draft and schedule a social campaign for a published video
 
+### contentos
+
+The glue that moves a video through [ContentOS](https://github.com/danvega/contentos):
+capture an idea in one pass, then run it forward to the next point where I am needed.
+
+- **[contentos-capture](./skills/contentos/contentos-capture/SKILL.md)**: turn dictated notes, a repo, or a link into a saved idea and project
+- **[contentos-next](./skills/contentos/contentos-next/SKILL.md)**: run a project through every stage up to the next stop: record, edit, or publish
+
 ## Adapt these to your setup
 
 The `dev` and `shipit` skills can work with the conventions and tools in your project.

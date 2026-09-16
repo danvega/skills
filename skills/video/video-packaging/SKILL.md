@@ -79,3 +79,14 @@ The ContentOS record holds the locked trio; the artifact is the presentation lay
 - **Specific beats hype.** Version numbers, named tools, and concrete results out-click superlatives in a developer niche.
 - **Curiosity without bait.** Open a gap the video actually closes; never promise what the content doesn't deliver.
 - **The package is a hypothesis.** Note the target keyword and the promise so title/thumbnail can be revisited if the video underperforms its first 48 hours.
+
+## Chain mode
+
+When `contentos-next` invokes this skill with "chain mode" in the arguments: generate the
+options as above, then pick the top title, thumbnail hook, and intro yourself and lock them
+as WORKING versions with `update_video_packaging` (say "working" in the thumbnail concept).
+Tick `TITLE_LOCKED`, `INTRO_WRITTEN`, and `THUMBNAIL_READY`; the concept counts as the
+working thumbnail so the recording gate opens. Publish the shoot brief artifact. Do not
+wait for Dan to pick. He dials in the final title and thumbnail after recording, from the
+transcript and the metadata options, and `video-thumbnail`'s lock step replaces the
+concept with the rendered art.

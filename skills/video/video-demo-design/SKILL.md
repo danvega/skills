@@ -81,3 +81,12 @@ When — and only when — every beat is verified green, mark the stage complete
 - **Credibility from guardrails, not size.** Real tests in a small app over no tests in a big one.
 - **Pre-bake what can fail; live-type what teaches.**
 - **One beat, one idea.** A beat that needs two sentences to justify is two beats — or one beat too many.
+
+## Chain mode
+
+When `contentos-next` invokes this skill with "chain mode" in the arguments there is no
+sign-off pause. Design the beats from the brief, pick the plan yourself, build it, verify
+every checkpoint, tick `DEMO_CODE_WORKING`, and return with the plan and the repo link. Dan
+reviews the result in the shoot brief, not the design. If Dan already wrote the demo and
+said it is done, this skill does not run at all: the stage is ticked on his word and
+nothing is cloned or verified.

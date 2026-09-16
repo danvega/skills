@@ -305,3 +305,11 @@ over `06_Thumbnails/thumbnail-final.png`.
 History: Paper (paper.design) played this role until 2026-07 and was dropped
 for its price and MCP call caps. Old artboards (v1 house-hero, the
 designer-komika reference boards) still live in the Paper file.
+
+## Chain mode
+
+When `contentos-next` invokes this skill with "chain mode" in the arguments, run round 1
+exactly as above, save the options to `06_Thumbnails/`, send the sheet, and return. Do not
+lock. Dan picks at the Edit stop, or earlier if he asks. If `THUMBNAIL_READY` is already
+ticked with a working concept from packaging, leave it; the lock step replaces the concept
+with the rendered art once he picks.
