@@ -57,9 +57,10 @@ description and the transcript — the source of every quotable specific). Get t
 URL from the metadata or the video record; if it's nowhere, ask Dan for the link — a campaign
 without the link is pointless.
 
-If ContentOS has no transcript yet (transcription is user-triggered), transcribe the final export
-from the project's `04_Exports/` folder exactly like `video-shorts` Step 0 does (proxy +
-`mlx_whisper` into `/tmp/social/<slug>/`) rather than waiting.
+If ContentOS has no transcript yet, use `video-rough-cut/scripts/pipeline.py transcribe` on the
+exact final export in `04_Exports/`, with `--work <project>/05_Transcripts/final`. This shares the
+identity-checked transcript cache with shorts, extracts audio directly, and avoids silence analysis.
+Read the actual transcript path from `transcripts.json`; do not reuse a rough-cut transcript.
 
 ### Step 2 — Check what already exists
 

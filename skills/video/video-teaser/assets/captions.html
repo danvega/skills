@@ -1,0 +1,6 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:transparent}#caption{position:absolute;bottom:85px;left:210px;width:1500px;text-align:center}span{display:inline-block;padding:14px 26px;border-radius:10px;background:#09110de8;color:#fff;font:600 50px/1.22 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;white-space:pre-line}
+</style></head><body><div id="caption"><span id="text"></span></div><script>
+let cues=[];window.setParams=p=>{cues=p.cues||[];if(p.bottom!==undefined)document.getElementById('caption').style.bottom=p.bottom+'px';};
+window.seek=t=>{const cue=cues.find(c=>c.start<=t&&t<c.end),el=document.getElementById('text');el.textContent=cue?cue.text:'';el.style.display=cue?'inline-block':'none';};
+</script></body></html>

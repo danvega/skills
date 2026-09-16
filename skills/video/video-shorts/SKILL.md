@@ -3,12 +3,14 @@ name: video-shorts
 description: >-
   Chop a long-form video into 30–60 second 9:16 vertical shorts — find the standalone moments in
   the transcript, reframe per segment (face crop for talking-head, stacked layout for
-  screen-share), and burn in word-by-word "karaoke pop" captions. Runs on the FINAL export in the
-  project's 04_Exports folder, after Dan's final edit. Use when
+  screen-share), burn in word-by-word "karaoke pop" captions, and render a house-style thumbnail
+  for each YouTube-bound short (two approved themes, varied across the batch). Runs on the FINAL
+  export in the project's 04_Exports folder, after Dan's final edit. Use when
   Dan says "make some shorts", "chop this up", "pull some clips out of this", "clip this video",
-  "vertical clips", "9:16", or mentions Shorts / Reels / TikTok for an existing video. Do NOT use
-  for the long-form first pass (video-rough-cut), graphics on the long-form video (video-motion-graphics), or
-  titles/thumbnails (video-packaging).
+  "vertical clips", "9:16", or mentions Shorts / Reels / TikTok for an existing video — and also
+  for shorts thumbnail work on its own ("redo this short's thumbnail", "thumbnails for the
+  batch"). Do NOT use for the long-form first pass (video-rough-cut), graphics on the long-form
+  video (video-motion-graphics), or the long-form video's title/thumbnail (video-packaging).
 ---
 
 # Shorts
@@ -28,13 +30,16 @@ rule, on purpose: video-rough-cut keeps, shorts curates).
   Premiere pass changes timing after them, so clips cut from those won't line up with the
   published video. If `04_Exports/` is empty, say so and ask whether to proceed from the latest
   intermediate instead — don't silently fall back.
-- The final export has no transcript on the same clock — transcribe it first (video-rough-cut Step 2:
-  proxy + `mlx_whisper`) into `/tmp/shorts/<basename>/`. One clock, no trim mapping needed. Any
-  transcript from an earlier video-rough-cut run is on a DIFFERENT clock (the final edit re-times
-  everything) — never reuse it for clip timestamps.
+- Transcribe the exact final export, reusing a cached transcript only when its source identity
+  and ASR settings match. Use `video-rough-cut/scripts/pipeline.py transcribe <final.mp4>
+  --work <project>/05_Transcripts/final`. Read the transcript path from `transcripts.json`.
+  This extracts audio directly and skips silence analysis. Earlier rough-cut transcripts are
+  on a different clock and must not supply final-export timestamps.
 - Optional: explicit asks ("clip the part about virtual threads") — these skip ranking.
 
-Working dir: `/tmp/shorts/<basename>/`. Final shorts are copied out (Step 6).
+Working dir: `<project>/03_Graphics/shorts/<basename>/`; set `$WORK` to this path.
+Keep captions and editable plans here, with rendered frames under `cache/`. Without a project,
+use `<source_dir>/shorts/<basename>/`. Final delivery is in Step 6.
 
 ## ⚠️ Clock mapping (same trap as video-motion-graphics)
 
@@ -42,14 +47,13 @@ Working dir: `/tmp/shorts/<basename>/`. Final shorts are copied out (Step 6).
 from the very file being cut, so transcript time == video time — run `scripts/extract_words.py`
 WITHOUT `--filter` (mapping is identity) and use timestamps directly.
 
-The trap only exists in the fallback flow (cutting an intermediate rough cut with a reused
-transcript): `audio.json` is then timestamped on the **original recording** while the rough cut
-is **trimmed**, and every transcript time — clip boundaries AND caption words — must map through
-the trim before touching the video. In that case give `extract_words.py` the clip window on the
-transcript's clock plus the rough cut's `filter.txt`; it prints the mapped `-ss/-to` boundaries
-and writes clip-relative caption words. Work in transcript times everywhere in Step 1; only
-convert at the extract step. Rule of thumb: `--filter` if and only if the transcript and the
-video are on different clocks.
+For an explicitly agreed rough-cut fallback, prefer that edit's `transcript.output.json` and
+use output-clock clip windows with no `--filter`. It already accounts for multiple sources and
+speed changes. If its words need boundary review, listen or transcribe the delivered cut.
+
+The legacy `--filter` option supports only an old single-source, cuts-only `filter.txt` with a
+source-clock transcript. It cannot represent multiple source clocks or speed changes. Use a
+verified mapped transcript for those cases instead of trying to reconstruct their timing here.
 
 ## Step 1 — Find the clips (transcript first, ranked)
 
@@ -82,7 +86,7 @@ Skipped: 6:10 virtual-threads riff — references the earlier benchmark, not sta
 
 ## Step 2 — Reframe plan, per clip
 
-Classify each clip's footage by extracting 3 frames across it and **looking at them**
+Scene-detect each clip span and inspect at least one frame per shot, plus the start/end, to classify its footage
 (talking-head vs screen-share vs mixed — same check as video-motion-graphics). Avoid clips that cut
 between modes in v1; if a great clip mixes, split the reframe at the mode change.
 
@@ -119,22 +123,26 @@ sequence from `assets/captions.html` via the video-motion-graphics renderer (thi
 `../video-motion-graphics/scripts/` being installed and npm-installed), then composite with `overlay`.
 
 ```bash
+# TRANSCRIPT is the exact export transcript path from transcripts.json.
 # 1. words for the clip, clip-relative — also prints OUT_A/OUT_B for ffmpeg
 #    (standard flow: fresh transcript of the final export, same clock, NO --filter;
-#     add --filter /tmp/rough-cut/$NAME/filter.txt ONLY in the reused-transcript fallback)
+#     mapped rough-cut transcript: also no --filter; see legacy limitations above)
 python3 <skill>/scripts/extract_words.py \
-  --json /tmp/shorts/$NAME/audio.json --start 42.3 --end 78.1 \
-  --out /tmp/shorts/$NAME/clip1_words.json
+  --json "$TRANSCRIPT" --start 42.3 --end 78.1 \
+  --out $WORK/clip1_words.json
 
-# 2. render caption frames (params JSON inline; words file content goes in "words")
+# 2. Write clip1_params.json with style="danvega" and words=the parsed words array.
+# Render only this clip, preserving the actual sequence frame rate.
 node <video-motion-graphics>/scripts/render.mjs \
   --template <skill>/assets/captions.html \
-  --params "{\"style\":\"danvega\",\"words\":$(cat /tmp/shorts/$NAME/clip1_words.json)}" \
+  --params-file "$WORK/clip1_params.json" \
   --duration <clip len> --fps 30 --width 1080 --height 1920 \
-  --out /tmp/shorts/$NAME/clip1_cap
+  --out $WORK/clip1_cap
 ```
 
-A 60s clip is ~1800 playwright frames ≈ 2–4 min — fine; run clips in the background in parallel.
+Use a short caption-dense preview first. Reuse renderer cache when parameters are unchanged.
+Long caption sequences still require many browser captures; measure their cost before increasing
+concurrency. Never run two renderers against the same frame directory.
 
 ### Style presets
 
@@ -171,79 +179,101 @@ One pass per clip: cut, reframe, caption overlay, loudness. `-ss/-to` **before**
 clip starts at t=0 (the caption frames are clip-relative):
 
 ```bash
-ffmpeg -y -hwaccel videotoolbox -ss $OUT_A -to $OUT_B -i "$SRC" \  # SRC = the 04_Exports final (or fallback intermediate)
-  -framerate 30 -i /tmp/shorts/$NAME/clip1_cap/f_%04d.png \
+# SRC is the final export (or an explicitly agreed intermediate).
+ffmpeg -nostdin -y -hwaccel videotoolbox -ss $OUT_A -to $OUT_B -i "$SRC" \
+  -framerate 30 -i $WORK/clip1_cap/f_%04d.png \
   -filter_complex "[0:v]crop=1214:2160:$X:0,scale=1080:1920[v];\
 [v][1:v]overlay=0:0:eof_action=pass[out]" \
   -map "[out]" -map 0:a -af "loudnorm=I=-14:TP=-1.5:LRA=11" \
   -c:v h264_videotoolbox -b:v 12M -pix_fmt yuv420p -c:a aac -b:a 192k \
-  /tmp/shorts/$NAME/short1.mp4
+  $WORK/short1.mp4
 ```
 
 (Screen-share clips: build `[v]` with the Step 2 stack instead of the crop.) Match the caption
 `--fps` to the source's frame rate if it isn't 30. Verify each short before delivering: extract
 a frame mid-clip and at the hook — captions on, correctly styled, framing right, nothing
-clipped — and confirm duration is 30–60s.
+clipped — and confirm duration fits the selected moment (normally 30 to 60 s; do not pad a strong shorter clip).
 
 ## Step 6 — Deliver
 
-- Copy to the **launch directory**: `<cwd>/shorts/<name>_short1_<slug>.mp4` (slug from the hook,
-  e.g. `_short1_stop-writing-retry-logic.mp4`), then `open` the folder.
+- Deliver to `<project>/04_Exports/shorts/<name>_short1_<slug>.mp4`; without a project, use
+  `<source_dir>/shorts/`. Derive the slug from the hook, then open the folder.
 - Report per clip: timestamps (orig → out), duration, mode, caption style, suggested Shorts
   title, and the skipped candidates with reasons.
-- Keep `/tmp/shorts/<name>/` — "use the beast style instead" or "shift the crop left" is a
-  seconds-fast re-render.
+- Keep the editable captions and framing plan; revisions reuse analysis and unchanged renders.
 
-## Pitfalls log
+## Step 7 — Thumbnails (YouTube-bound shorts only)
 
-Append a dated line every time a run burns you.
+Every short headed for YouTube gets a custom thumbnail; X clips don't (the board posts them
+with a tweet, no thumbnail). Never leave the app's auto-generated thumbnails in place — Dan
+has rejected both built-in generator styles every time (2026-07-30 ×2).
 
-- (seed) 9:16 crop at 2160p is 1215px wide — odd widths break x264/videotoolbox. Use 1214.
-- (seed) `-ss` **after** `-i` keeps original timestamps and every caption lands late. Put
-  `-ss/-to` before `-i`.
-- (seed) whisper CLI isn't installed here — `mlx_whisper --model
-  mlx-community/whisper-small.en-mlx --word-timestamps True` (same JSON shape).
-- 2026-07-16: the Homebrew ffmpeg on this machine (8.x, slim formula) has **no libass, no
-  drawtext, no freetype** — `subtitles=`/`.ass` burn-in is impossible. That's why captions are
-  an HTML template + PNG overlay. Don't re-attempt `.ass` without checking
-  `ffmpeg -hide_banner -filters | grep subtitles` first.
-- (seed) The transcript is on the original clock, the rough cut is trimmed — run BOTH clip
-  boundaries and caption words through `extract_words.py --filter` (see ⚠️ block). Symptom:
-  captions drift a few seconds into the clip. (Fallback flow only — the standard final-export
-  flow transcribes the export itself, one clock, no `--filter`.)
-- 2026-07-23: Dan's rule — shorts come from the FINAL export in `04_Exports/`, never from the
-  rough cut or `_gfx` composite. His Premiere pass re-times the video after those, so clips cut
-  from intermediates won't match the published long-form. Empty `04_Exports/` → ask, don't
-  silently fall back. Always transcribe the export fresh; a reused video-rough-cut transcript is on a
-  different clock.
-- (seed) Whisper word times are ±100–300ms — pad clip starts 0.15s before the hook word or the
-  first syllable gets clipped, which kills the hook.
-- 2026-07-16: a hook-card overlay added as `-loop 1 -i card.png` makes the encode run FOREVER
-  (the looped image stream never EOFs and the graph keeps producing frames — a 40s clip hit
-  1.6GB before being killed). Bound the input with `-t 3` (`-loop 1 -t 3 -i card.png`) and put
-  `eof_action=pass` on that overlay.
-- 2026-07-23: the camera bubble is NOT on screen for the whole video — in the Tool Calling
-  Advisor final edit it disappeared during a deep-coding stretch (full-screen IDE), so a stacked
-  short cut there had a blank white cam section (with an autocomplete popup drifting through it).
-  Before rendering a stacked clip, extract the CAM CROP REGION (not just full frames) at the
-  clip's start/middle/end and confirm the face is in all three. No face for the clip's span →
-  drop the clip or use a different layout; don't ship a headless stack.
-- 2026-07-23: deliver like video-motion-graphics: when the video has a project folder, shorts go to
-  `/Users/vega/youtube/<Project>/04_Exports/shorts/` — the launch-cwd rule is only the fallback
-  (launching from a code repo would dump videos into the repo).
-- 2026-07-23: zsh does not word-split unquoted variables — `$R --flag` where R="node script.mjs"
-  runs a command literally named "node script.mjs" (exit 127), and `set -- $spec` doesn't split
-  either. Write multi-command render loops as bash script files and `bash file.sh`, not inline
-  compound one-liners.
-- 2026-07-16: the active word's scale() pop doesn't reflow layout, so it visually eats the gap
-  to its neighbors — words looked glued together ("UNRELIABLELARGE"). Spacing must be margin-based
-  and sized per font width (`gap` in the style presets; wide fonts like Komika Axis need ~0.22em
-  vs 0.10em), with the big punch coming from the whole-line pulse (`linePop`), which can't collide.
-  Check a frame mid-pop on the widest word whenever adding a font.
+**Two approved themes, and vary them across the batch (Dan, 2026-07-31: "mix up the
+styles").** A batch where every thumbnail is the same theme looks like wallpaper on the
+channel's Shorts shelf; alternate dark/light (or roughly half/half for larger batches) so
+adjacent shorts read as distinct videos. Templates are bundled here:
+
+- `assets/thumb-house-dark.html` — dark green gradient + dot grid, Komika Axis title at
+  -2deg, green underline rule (Komika Axis: `~/Library/Fonts/KOMIKAX_.ttf`).
+- `assets/thumb-light.html` — cream + green top bar, heavy black Helvetica 900 title.
+
+Both take `{{KICKER}}` (short mono setup line, e.g. "IT WORKS ON YOUR MACHINE"),
+`{{TITLE_HTML}}` (3-ish short lines via `<br>`, exactly one `<span class="accent">` word —
+the payoff word; use curly apostrophes, straight ones look cheap at 148px), and
+`{{CUTOUT_PATH}}`.
+
+**Match the cutout's emotion to the clip's message** — this matters as much as the theme.
+Dan rejected a grimace on a "this works, BUT…" short; point-surprised fit. Cutout library
+(real photo PNGs labeled by expression) lives in
+`/Users/vega/youtube/shared-assets/thumbnail/cutouts/`; copy the ones you use into this
+project's `06_Thumbnails/` so each project folder stays self-contained.
+
+Render into the project's `06_Thumbnails/shorts/` (keep the filled .html next to the .png
+for fast revisions):
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu \
+  --window-size=1080,1920 --hide-scrollbars --screenshot=<name>.png "file://$PWD/<name>.html"
+sips -s format jpeg -s formatOptions 85 <name>.png --out <name>.jpg   # stays well under YouTube's 2MB
+```
+
+Show Dan the renders (SendUserFile) and get a pick/OK **before** loading anything into
+ContentOS — he has strong opinions here and a swap after upload means re-pushing to YouTube.
+To load an approved thumbnail, overwrite the fixed-name file
+`~/contentos-files/projects/<slug>/videos/thumbnails/short-thumb-<videoId>.jpg` (asset row
+persists; the board's Replace thumbnail button is the alternative). Whatever file sits there
+when the draft uploads is exactly what YouTube gets.
+
+## Operational checks
+
+- Preserve the actual decimal or rational frame rate throughout caption capture and encoding.
+  The shared renderer supports `30000/1001`; the old integer-rate workaround is obsolete.
+- Inspect one frame per detected shot, including full-screen B-roll inserts. Split framing at
+  mode changes. A face crop over an explainer graphic can destroy its meaning.
+- Confirm the camera region really contains Dan throughout a stacked clip. If it disappears,
+  choose another layout. Inspect scrolling code and changing terminal tabs across the whole clip.
+- Keep caption word spacing sufficient at the largest animated scale; transformed glyphs can
+  collide even when their unscaled layout fits. Do not duplicate an insert's baked-in captions.
+- Bound looped still inputs and set overlay EOF behavior so the render ends with the clip.
+- Require even crop dimensions. Do not assume drawtext/libass exists: check before using it.
+- The final export carries the video-motion-graphics overlays. Before choosing a face-crop x or a
+  stacked top box, check which cards fall inside the clip span (lower-third, chapter titles sit
+  bottom-left and reach x≈690 at 1080p): a card edge in the crop or a chapter card under the
+  captions is a re-render (ColdFusion, 2026-09-15: both happened, fixed by x=730 and a top box
+  cropped above the card).
+- Wait for the caption renderer PROCESS to exit before cutting the short. Polling for
+  `render.json` fired early once and the short went out with captions that stopped partway.
+- Run short clip previews before batch delivery. Full-output sampling must include start, end,
+  mode changes, and payoff text, not just the midpoint.
+- Resolve shared photo cutouts from `/Users/vega/youtube/shared-assets/thumbnail/cutouts/`,
+  following video-thumbnail's library. Do not rely on another project's private asset copies.
+- Historical evidence is in [history.md](references/history.md). Update current rules after a
+  lesson rather than appending contradictory instructions.
 
 ## What this skill does NOT do
 
 - Long-form cutting or pacing — that's video-rough-cut, run it first.
 - Branded overlay graphics on shorts (lower thirds, callouts) — video-motion-graphics, if ever needed.
-- Titles, descriptions, hashtags strategy, thumbnails — video-packaging territory.
+- Titles, descriptions, hashtags strategy, and the LONG-FORM video's thumbnail —
+  video-packaging territory. (Shorts thumbnails ARE this skill's job — Step 7.)
 - Uploading or scheduling anywhere.

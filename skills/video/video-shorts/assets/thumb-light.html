@@ -1,0 +1,25 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+  /* House LIGHT shorts thumbnail — cream background + faint grain, green top bar,
+     heavy black sans title with one green accent word, photo cutout at bottom.
+     Replace {{KICKER}}, {{TITLE_HTML}} (use <br> line breaks + <span class="accent">WORD</span>
+     on ONE word), and {{CUTOUT_PATH}} (absolute file:// path to a dan-*.png cutout). */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1080px; height:1920px; overflow:hidden; position:relative; background:#f2efe7; }
+  .grain { position:absolute; inset:0;
+        background-image: radial-gradient(rgba(17,24,39,0.05) 2px, transparent 2px);
+        background-size: 46px 46px; }
+  .bar { position:absolute; top:0; left:0; right:0; height:26px; background:#16a34a; }
+  .kicker { position:absolute; top:110px; left:0; right:0; text-align:center;
+        font-family:"SF Mono",Menlo,monospace; font-size:32px; letter-spacing:9px; color:#6b7280; }
+  .title { position:absolute; top:210px; left:36px; right:36px; text-align:center;
+        font-family:-apple-system,"Helvetica Neue",sans-serif; font-weight:900; color:#111827;
+        font-size:158px; line-height:1.0; letter-spacing:-4px; }
+  .title .accent { color:#16a34a; }
+  .dan { position:absolute; left:50%; bottom:0; transform:translateX(-50%);
+        height:1150px; filter: drop-shadow(0 24px 70px rgba(17,24,39,0.35)); }
+</style></head><body>
+  <div class="grain"></div><div class="bar"></div>
+  <div class="kicker">{{KICKER}}</div>
+  <div class="title">{{TITLE_HTML}}</div>
+  <img class="dan" src="{{CUTOUT_PATH}}">
+</body></html>

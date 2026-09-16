@@ -1,0 +1,8 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0b110e;color:#f4f7f2;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}
+#card{position:absolute;inset:0;background:radial-gradient(ellipse at 90% 10%,#23433266,transparent 60%);padding:145px 150px}#line{height:8px;width:100px;background:#8ce99a;transform-origin:left}#kicker{font:600 24px Menlo,monospace;letter-spacing:.15em;text-transform:uppercase;color:#8ce99a;margin-top:55px}#title{font-size:132px;line-height:1.03;font-weight:800;letter-spacing:-.055em;max-width:1520px;white-space:pre-line;margin-top:42px}#subline{font-size:35px;color:#bdcbc1;margin-top:42px;max-width:1400px}
+</style></head><body><div id="card"><div id="line"></div><div id="kicker"></div><div id="title"></div><div id="subline"></div></div><script>
+const $=id=>document.getElementById(id),clamp=x=>Math.max(0,Math.min(1,x)),ease=x=>1-Math.pow(1-clamp(x),3);
+window.setParams=p=>{for(const id of ['kicker','title','subline'])$(id).textContent=p[id]||'';};
+window.seek=(t,total=3)=>{const enter=ease(t/.4),exit=clamp((t-total+.2)/.2);$('card').style.opacity=1-exit;$('line').style.transform=`scaleX(${enter})`;$('title').style.opacity=enter;$('title').style.transform=`translateY(${(1-enter)*24}px)`;$('kicker').style.opacity=ease((t-.08)/.3);$('subline').style.opacity=ease((t-.25)/.4);};
+</script></body></html>

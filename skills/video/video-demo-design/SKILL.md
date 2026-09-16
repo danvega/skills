@@ -9,7 +9,9 @@ The demo is the proof of the video's promise. Dan's outperformers are "show, don
 
 This is a **design conversation, not an autonomous build**. Dan has to narrate every line of this code on camera — code he didn't shape is code he can't teach. The skill's job is to structure the discussion: propose, hear his reaction, refine, and only build what's been agreed. Never generate the demo in one shot, even when the brief makes the shape seem obvious.
 
-The honest output of this skill is a single-branch repo — the final code, running green, with a README that walks the reader through how it was built — plus a shot list Dan can record from. "Demo code working" is a pipeline gate — don't check it off on code that mostly works.
+The honest output of this skill is a branch-per-step repo — `main` holds the final code with the full README, and each step of the build lives on its own branch with a README for that step, every branch verified green — plus a shot list Dan can record from.
+
+**Vocabulary rule:** "beat" is production jargon — it belongs in this design conversation, the demo plan, and the shot list, and nowhere a viewer can see. The public repo is a tutorial, and tutorial readers follow **steps**: branch names, README headings, commit messages, and the ladder table all say "step", never "beat". (Dan's call, 2026-07-31, after a repo shipped with beat-named branches.) "Demo code working" is a pipeline gate — don't check it off on code that mostly works.
 
 ## Workflow
 
@@ -19,7 +21,7 @@ Pull the project's brief (`get_brief` on the ContentOS MCP) and extract the prom
 
 ### Step 2 — Choose the codebase
 
-Default to a **purpose-built public companion repo**. Dan's real apps are large, private, and unfollowable; the audience's ability to clone the repo and climb through it themselves is part of the promise, and "code along with me" is a differentiator most competitors can't offer because they demo private products.
+Default to a **purpose-built public companion repo**, created under `/Users/vega/dev/youtube/` (the home for all video demo repos — not `/Users/vega/youtube/`, which holds Premiere project folders). Dan's real apps are large, private, and unfollowable; the audience's ability to clone the repo and climb through it themselves is part of the promise, and "code along with me" is a differentiator most competitors can't offer because they demo private products.
 
 - **Small enough to read in ~10 minutes.** One domain concept, a REST API, a service layer, a real test suite. If a viewer can't hold the whole app in their head, the app is stealing attention from the topic.
 - **Real enough to be credible.** Credibility comes from the guardrails — an honest test suite, a `./mvnw verify` loop, CI, review gates — not from codebase size. A tiny app with real verification beats a big app with none.
@@ -46,16 +48,26 @@ Only after the design is agreed. Build beat by beat, in recording order, and che
 
 After each beat lands (and after any decision that changes the plan), update the saved plan via `save_demo_plan` — mark the beat's status, record new gotchas and decisions. The plan is a living document: by recording day it has become the shot list.
 
-- **One repo, one branch, final code only.** No per-beat tags or branches — `main` holds the finished state, and the README carries a walkthrough section that mirrors the beat list, so a viewer reads how the code got here in the order Dan builds it on camera. Beats are a design and recording structure, not a git structure.
-- **On-camera intermediate states are staged, not checked out.** Where a beat shows an earlier state (a file that doesn't exist yet, a block not yet written), Dan produces it at recording time by temporarily deleting/commenting — the shot list records exactly what to remove and how to restore it.
-- **Every beat lands green.** As each beat is built: the app boots and the tests pass, verified by actually running them — and the final state on `main` must run green before the stage closes. Often the verification command is itself part of the demo — all the more reason it must be trustworthy.
+- **One repo, `main` plus one branch per step** — the same shape as a course repo (see `course-demo-design`; Dan's call, 2026-07-31). Each beat from the design maps to a branch named `step-NN-slug` (zero-padded so they sort in video order; slug is one or two words from the step's name): `step-01-assisted`, `step-02-parallel`. Remember the vocabulary rule: the branch says "step" even though the design conversation called it a beat. **When the video follows an external framework with numbered steps or levels, the branch numbers must match the framework's numbers exactly** — a viewer holding the framework's table will read `step-02` as the framework's step 2, and any drift breaks trust. Bridge work between framework steps (a guardrail build, a migration prep) does not get its own branch: it lands as the final commits of the step it exits, because building the bridge is what it takes to leave that step (Dan's call, 2026-07-31). In that case each branch README answers the framework's own three questions: where you are, what the bottleneck is at this step, and what you build to move to the next one. Each branch holds the app as it stands at the **end** of that step, built on the previous branch's tip so history flows forward. When the last step is verified, `main` lands via `git merge --ff-only` from its tip, then one final commit on `main` swaps in the full README — the walkthrough of the whole build. The "just show me the finished code" crowd lands on `main`; the "I'm following along" crowd checks out their step.
+- **Each step branch carries its own README** for that step: what this step does, what was built (key files/classes), how to run and verify it, and what changed since the previous branch — with Previous/Next branch pointers. Same format as the section-branch README in `course-demo-design`; each step's README replaces the previous one on that branch.
+- **On-camera intermediate states are checked out, not hand-staged.** A beat's starting state is simply the previous step's branch — `git switch` and roll; the shot list records which branch each shot starts from. Manual staging notes (what to delete/comment and how to restore it) are only for moments *inside* a beat, like a line Dan retypes on camera.
+- **Every branch lands green.** As each beat is built: the app boots and every test that exists by that beat passes, verified by actually running them — and `main` must run green before the stage closes. A viewer who checks out a broken branch stops trusting every branch. Often the verification command is itself part of the demo — all the more reason it must be trustworthy.
 - **Work items where the demo needs them.** If a beat has agents or the viewer picking up tasks, write the backlog into the repo (GitHub issues once published, or a `TODO.md` until then).
 - **Publishable from the start**: README with the promise, follow-along instructions, and a video-link placeholder; `.env.example` never `.env`; no secrets in history (they're unremovable later without a rewrite).
 - **Don't push to GitHub until Dan says so.** Making the repo public is his call — build locally and offer `gh repo create` at the end.
 
 ### Step 5 — Shot list
 
-For each beat, one entry: what's on screen, live-typed vs pre-baked, how to stage the beat's starting state (what to delete/comment before rolling, and how to restore it), the one-line point Dan makes over it, and the known failure points with their fallback. Its canonical home is the saved demo plan (`save_demo_plan`); present it in the conversation too. If the video's project folder exists (from `video-project`), export a copy there as `shot-list.md` for recording day. It's production material, so it never goes in the public repo.
+For each beat, one entry: what's on screen, live-typed vs pre-baked, which branch the shot starts from plus any in-beat manual staging (what to delete/comment before rolling, and how to restore it), the one-line point Dan makes over it, and the known failure points with their fallback. Its canonical home is the saved demo plan (`save_demo_plan`); present it in the conversation too. If the video's project folder exists (from `video-project`), export a copy there as `shot-list.md` for recording day. It's production material, so it never goes in the public repo.
+
+### Supporting footage while the demo is ready
+
+Add B-roll capture notes to the shot list when the explanation benefits from them: starting
+branch/application state, the exact action, visible payoff, framing, and output filename.
+Capture clean before/after screens and a brief hold around the result while the app is already
+set up. Flag full-screen explanations for `video-visual-story`; actual code changes can use
+`video-code-animation`. These are useful shots, not a fixed footage quota. Keep the approved
+demo-design conversation and build checkpoints intact.
 
 ### Step 6 — Close the stage
 
@@ -65,7 +77,7 @@ When — and only when — every beat is verified green, mark the stage complete
 
 - **It's Dan's demo.** He teaches this code on camera, so he shapes it in discussion — the skill structures the conversation and does the legwork, it doesn't hand him a finished repo to memorize.
 - **The demo proves the promise.** Every beat traces to the brief; everything else is cut material for another video.
-- **The viewer can follow.** Clone, run, green — with a README walkthrough that retraces the build. If Dan can demo it but a viewer can't reproduce it, it's a magic trick, not a tutorial.
+- **The viewer can follow.** Clone, check out your step, run, green — every branch, not just `main`. If Dan can demo it but a viewer can't reproduce it, it's a magic trick, not a tutorial.
 - **Credibility from guardrails, not size.** Real tests in a small app over no tests in a big one.
 - **Pre-bake what can fail; live-type what teaches.**
 - **One beat, one idea.** A beat that needs two sentences to justify is two beats — or one beat too many.

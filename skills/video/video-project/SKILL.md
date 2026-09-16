@@ -1,6 +1,10 @@
 ---
 name: video-project
-description: Scaffold a new YouTube video project on disk from Dan's 2026 template — copy /Users/vega/youtube/2026Template into a new PascalCase project folder and rename the Premiere project file to match. Use when Dan says "new video project", "scaffold a project", "set up a project for <video name>", "create the folders for <video>", or gives a video title and asks to start the project. Do NOT use for deciding what to film (video-ideation), titles/thumbnails (video-packaging), or editing footage (video-rough-cut).
+description: >-
+  Scaffold a YouTube project from Dan's local video template, creating a PascalCase folder
+  and renaming the Premiere project file. Use when Dan asks for a new video project or
+  wants the folders set up for a video. Do not use for choosing a topic (video-ideation),
+  titles and thumbnail concepts (video-packaging), or editing footage (video-rough-cut).
 ---
 
 # video-project
@@ -71,3 +75,11 @@ Acronyms already capitalized stay as-is (`AI`, `MCP`, `API`).
 If the template itself changes (new folders, different project file), copy it
 verbatim — this skill copies whatever the template contains and only ever renames
 the file in `00_Project`.
+
+## Editing handoff
+
+When editing begins, `video-rough-cut` keeps its decisions, manifest, timing reports, and cache
+in `00_Project/edit/`. Graphics and visual-story skills read that manifest and its mapped
+transcript, and keep their editable assets/plans under `03_Graphics/`. The final Premiere
+export still belongs in `04_Exports/`; shorts transcribe that exact export. Do not create empty
+cache directories during scaffolding or modify the master template for these working files.

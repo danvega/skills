@@ -1,23 +1,10 @@
 #!/usr/bin/env python3
-"""Extract clip-relative word timings for a short, handling the rough-cut trim map.
+"""Extract clip-relative words from a transcript on the same clock as the source video.
 
-The whisper transcript (audio.json) is timestamped on the ORIGINAL recording, but
-clips are usually cut from the rough cut, which has had dead air and retakes
-trimmed out. Given a clip window on the ORIGINAL clock (i.e. the clock you read
-in the transcript), this script:
-
-  1. maps the clip boundaries through the rough cut's trim map (filter.txt) and
-     prints them — use these as ffmpeg -ss/-to on the rough cut
-  2. writes words.json with every spoken word inside the window, timed relative
-     to the clip start — feed it to assets/captions.html as the `words` param
-
-Without --filter (cutting from an untrimmed source) the mapping is identity.
-
-Usage:
-  extract_words.py --json /tmp/rough-cut/NAME/audio.json \
-      --start 42.3 --end 78.1 \
-      [--filter /tmp/rough-cut/NAME/filter.txt] \
-      --out /tmp/shorts/NAME/clip1_words.json
+Use the exact final-export transcript, or a verified transcript.output.json for a rough cut.
+Without --filter, boundaries and words map identically. --filter is a legacy fallback for a
+single-source cuts-only edit with an original-clock transcript; it cannot represent speed changes
+or multiple source clocks. The shared edit manifest produces the correct mapped transcript.
 """
 
 import argparse

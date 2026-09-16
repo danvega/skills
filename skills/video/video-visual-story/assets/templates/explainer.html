@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Video explainer</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#edf0e9;color:#17231c;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}
+#scene{position:absolute;inset:0;padding:86px 100px;background:radial-gradient(ellipse at 85% 0%,#d1efcf,transparent 55%),#edf0e9}
+header{display:flex;justify-content:space-between;align-items:center;font:600 22px Menlo,monospace;color:#47614e;letter-spacing:.09em;text-transform:uppercase}
+header .mark{width:56px;height:8px;background:#2f8147}h1{font-size:76px;line-height:1.08;letter-spacing:-.045em;margin:42px 0 18px;max-width:1500px}
+#subtitle{font-size:30px;line-height:1.4;color:#516356;max-width:1400px;min-height:42px}.mode{display:none}.mode.active{display:block}
+#flow{position:absolute;left:100px;right:100px;top:405px;height:450px}#flow svg{position:absolute;width:100%;height:320px;overflow:visible}
+.node{position:absolute;top:65px;width:340px;height:214px;background:#fff;border:2px solid #cad4c8;border-radius:24px;padding:30px;box-shadow:0 20px 45px #28352d0c}
+.node .index{font:600 20px Menlo,monospace;color:#728675;margin-bottom:20px}.node .label{font-size:40px;line-height:1.12;letter-spacing:-.025em;font-weight:700;overflow-wrap:anywhere}
+.node .detail{position:absolute;left:0;top:245px;width:100%;font-size:25px;color:#536758;line-height:1.35}.node.on{border-color:#3d9854;background:#f6fff1}.node.on .index{color:#2f8147}
+#compare{position:absolute;left:100px;right:100px;top:390px;height:480px}.panel{position:absolute;top:0;width:810px;height:440px;border-radius:26px;padding:46px;background:#fff;border:2px solid #d2dbce}.panel.after{right:0;background:#173b28;color:#f6fff1;border-color:#173b28}
+.panel .tag{font:600 22px Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:#6a7e6e}.after .tag{color:#9ee694}.panel .headline{font-size:53px;line-height:1.1;letter-spacing:-.03em;margin:30px 0}.panel .lines{font-size:29px;line-height:1.6;white-space:pre-line;color:#516356}.after .lines{color:#c7ddc8}
+#evidence{position:absolute;left:100px;right:100px;top:345px;height:580px;border-radius:22px;overflow:hidden;border:2px solid #c5d0c0;background:#fff}#evidence img{width:100%;height:100%;object-fit:contain}#focus{position:absolute;border:5px solid #2d9149;box-shadow:0 0 0 2000px #10291866;border-radius:8px;pointer-events:none}
+footer{position:absolute;bottom:62px;left:100px;right:100px;display:flex;align-items:center;justify-content:space-between;gap:60px}#takeaway{font-size:29px;font-weight:600;max-width:1300px}#source{font:18px Menlo,monospace;color:#69806d;max-width:480px;text-align:right}
+</style></head><body><main id="scene">
+<header><span id="eyebrow">How it works</span><span class="mark"></span></header>
+<h1 id="title"></h1><div id="subtitle"></div>
+<div class="mode" id="flow"><svg viewBox="0 0 1720 320"><path id="track" fill="none" stroke="#b0c7b2" stroke-width="5"/><path id="progress" fill="none" stroke="#36864c" stroke-width="6"/><circle id="packet" r="12" fill="#2b823f"/></svg><div id="nodes"></div></div>
+<div class="mode" id="compare"><section class="panel before"><div class="tag" id="beforeLabel"></div><div class="headline" id="beforeTitle"></div><div class="lines" id="beforeLines"></div></section><section class="panel after"><div class="tag" id="afterLabel"></div><div class="headline" id="afterTitle"></div><div class="lines" id="afterLines"></div></section></div>
+<div class="mode" id="evidence"><img id="screenshot" alt="Source evidence"><div id="focus"></div></div>
+<footer><div id="takeaway"></div><div id="source"></div></footer>
+</main><script>
+let P={};let nodeEls=[];let positions=[];
+const $=id=>document.getElementById(id);
+const clamp=x=>Math.max(0,Math.min(1,x));
+const ease=x=>1-Math.pow(1-clamp(x),3);
+function text(id,value){$(id).textContent=value||''}
+window.setParams=function(p){
+ P=p; const mode=p.mode||'flow';
+ if(!['flow','compare','evidence'].includes(mode))throw new Error('Unknown explainer mode');
+ document.querySelectorAll('.mode').forEach(el=>el.classList.toggle('active',el.id===mode));
+ text('title',p.title);text('subtitle',p.subtitle);text('eyebrow',p.eyebrow||'How it works');text('takeaway',p.takeaway);text('source',p.source);
+ if(mode==='flow'){
+  const nodes=p.nodes||[];if(nodes.length<2||nodes.length>4)throw new Error('Flow needs 2 to 4 nodes');
+  $('nodes').replaceChildren(); positions=nodes.map((_,i)=>170+i*1380/(nodes.length-1));
+  nodeEls=nodes.map((n,i)=>{const el=document.createElement('div');el.className='node';el.style.left=(positions[i]-170)+'px';
+   const index=document.createElement('div');index.className='index';index.textContent=String(i+1).padStart(2,'0');
+   const label=document.createElement('div');label.className='label';label.textContent=n.label;
+   const detail=document.createElement('div');detail.className='detail';detail.textContent=n.detail||'';
+   el.append(index,label,detail);$('nodes').append(el);return el;});
+  const d=`M ${positions[0]} 172 L ${positions.at(-1)} 172`;$('track').setAttribute('d',d);$('progress').setAttribute('d',d);
+ }
+ if(mode==='compare'){
+  for(const side of ['before','after']){const data=p[side]||{};text(side+'Label',data.label||side);text(side+'Title',data.title);text(side+'Lines',(data.lines||[]).join('\n'));}
+ }
+ if(mode==='evidence'){
+  if(!p.image)throw new Error('Evidence requires a real screenshot image');
+  $('screenshot').src=p.image;
+  $('screenshot').onload=()=>layoutFocus();
+ }else{$('screenshot').removeAttribute('src');}
+ window.seek(0,p.duration||8);
+};
+function layoutFocus(){
+ const r=P.focus||{x:.1,y:.2,w:.8,h:.25};
+ if(!['x','y','w','h'].every(k=>Number.isFinite(r[k]))||r.x<0||r.y<0||r.w<=0||r.h<=0||r.x+r.w>1||r.y+r.h>1)throw new Error('Invalid fractional focus box');
+ const im=$('screenshot'),box=$('evidence');const scale=Math.min(box.clientWidth/im.naturalWidth,box.clientHeight/im.naturalHeight);
+ const w=im.naturalWidth*scale,h=im.naturalHeight*scale;
+ Object.assign($('focus').style,{left:((box.clientWidth-w)/2+r.x*w)+'px',top:((box.clientHeight-h)/2+r.y*h)+'px',width:(r.w*w)+'px',height:(r.h*h)+'px'});
+}
+window.seek=function(t,total=8){
+ const mode=P.mode||'flow';const enter=ease(t/.45);$('scene').style.opacity=1;
+ $('title').style.transform=`translateY(${(1-enter)*18}px)`;$('title').style.opacity=enter;
+ const reveals=P.reveals||[.6,2.4,4.2,5.8];
+ if(mode==='flow'){
+  nodeEls.forEach((el,i)=>{const on=clamp((t-reveals[i])/.4);el.classList.toggle('on',on>0);el.style.opacity=.35+.65*on;el.style.transform=`translateY(${(1-ease(on))*12}px)`;});
+  let x=positions[0];for(let i=1;i<positions.length;i++){const a=reveals[i-1]+.5,b=reveals[i];x=positions[i-1]+(positions[i]-positions[i-1])*ease((t-a)/Math.max(.1,b-a));if(t<b)break;}
+  const len=positions.at(-1)-positions[0];$('progress').style.strokeDasharray=len;$('progress').style.strokeDashoffset=len-(x-positions[0]);$('packet').setAttribute('cx',x);$('packet').setAttribute('cy',172);
+ }
+ if(mode==='compare'){const v=ease((t-(reveals[1]||2.4))/.65);document.querySelector('.after').style.opacity=v;document.querySelector('.after').style.transform=`translateY(${(1-v)*22}px)`;}
+ if(mode==='evidence'){$('focus').style.opacity=ease((t-(reveals[0]||.6))/.6);if($('screenshot').naturalWidth)layoutFocus();}
+ $('takeaway').style.opacity=ease((t-(P.takeawayAt??Math.max(0,total-2.2)))/.5);
+};
+</script></body></html>
