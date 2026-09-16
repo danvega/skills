@@ -40,6 +40,13 @@ A project exists because Dan (or `contentos-capture`) promoted it. That is the d
 Next never asks "is this worth making". It writes a short GO brief from the project's idea,
 notes, and repo, ticks `IDEA_DEVELOPED`, and moves on.
 
+Short means the record shape Dan asked for, defined in
+`../contentos-capture/references/record-shape.md`: `## At a glance` with at most five
+bullets (the verdict and its one-line reason, the promise, the money shot, what is blocked,
+what happens next), then `## Scope` (in, deliberately out, demo plan, assumed knowledge,
+one line each), then `## Hook`. No demand or competition sections. The whole brief fits on
+one screen, about 250 words. Packaging does its own lighter research.
+
 The exception: Dan says "research it first", or the project came from an ideation batch and
 carries no notes in his own words. Then run `video-develop-idea` in chain mode and honor
 its verdict. GO and REFRAME continue (a reframe continues on the reframed angle, flagged at
@@ -62,7 +69,7 @@ precondition is a stop with one line naming what is missing and where it should 
 
 | Stage | Precondition | Chain-mode action |
 |---|---|---|
-| `IDEA_DEVELOPED` | project exists | decided: `save_brief` GO from idea, notes, repo; tick. Undecided: `video-develop-idea` chain run |
+| `IDEA_DEVELOPED` | project exists | decided: `save_brief` GO from idea, notes, repo in the record shape (At a glance, Scope, Hook); tick. Undecided: `video-develop-idea` chain run |
 | `DEMO_CODE_WORKING` | brief | repo attached and Dan said it is done: tick on his word. Otherwise `video-demo-design` chain run (or `course-demo-design` when the project has sections) |
 | `TITLE_LOCKED`, `INTRO_WRITTEN`, `THUMBNAIL_READY` | brief | `video-packaging` chain run: working title, hook, and intro locked, all three ticked (the concept counts as the working thumbnail so the gate opens), shoot brief published |
 | thumbnails, round 1 | packaging locked, project folder exists | `video-thumbnail` chain run: four options to `06_Thumbnails/`, sheet sent, no lock. Runs here when Dan asks for the thumbnail before recording; otherwise at the Edit stop |

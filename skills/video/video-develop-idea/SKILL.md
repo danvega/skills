@@ -54,13 +54,29 @@ Scope serves the chosen angle: everything "in" must support the one promise from
 
 ### Step 5 — Verdict and brief
 
-Present the brief in the conversation, verdict first:
+Dan is the first reader, and he said the detailed briefs were too long to get through. The brief has two layers. The top layer is what he decides with. The bottom layer is the evidence, kept for packaging and the blog post. The full shape with an example is in `../../contentos/contentos-capture/references/record-shape.md`.
 
-- **Go** — demand confirmed, angle chosen, scope defined. Lead with the one-line reason backed by the strongest evidence.
-- **Reframe** — the topic has legs but a different angle is stronger. Show the original vs. the reframe and why the evidence favors it.
-- **Park** — weak or falling demand, or a saturated field with no gap. Say so plainly, cite the evidence, and note what would change the verdict (an upcoming release, a rising trend to watch).
+Top layer, in this order:
 
-Then the supporting sections: the demand evidence, the competitive map with the gap, the angle options with the pick, and the scope. Close a *go* with the handoff: `video-packaging` reads the saved brief via `get_brief`, and `video-project` scaffolds the project folder when he's ready to film.
+1. `## At a glance`: at most five bullets. The verdict and its one-line reason, the promise (who it is for and what they walk away with), the money shot, what is blocked, what happens next. Dan can stop here.
+2. `## Scope`: in, deliberately out, demo plan, assumed knowledge, rough shape, from Step 4. One line per item.
+3. `## Hook`: how the first 30 seconds open.
+
+Everything above the evidence heading fits on one screen, about 300 words. Cut before adding.
+
+Bottom layer, under `## Evidence (reference)`:
+
+- Demand: at most three bullets, each a link and a number.
+- Competition: at most three bullets naming who owns the topic and the gap.
+- Angles considered: the two or three options and why the pick won. For a reframe, the original next to the reframe.
+
+Verdict wording for the first bullet:
+
+- **Go**: demand confirmed, angle chosen, scope defined. The one-line reason names the strongest piece of evidence.
+- **Reframe**: the topic has legs but a different angle is stronger. Say why the evidence favors the reframe.
+- **Park**: weak or falling demand, or a saturated field with no gap. Say so plainly, cite the evidence, and note what would change the verdict (an upcoming release, a rising trend to watch). A parked brief can skip the Scope and Hook sections.
+
+Close a *go* with the handoff: `video-packaging` reads the saved brief via `get_brief`, and `video-project` scaffolds the project folder when he's ready to film.
 
 ### Step 6 — Record it in ContentOS
 
@@ -71,7 +87,7 @@ The brief must outlive the conversation. Route by where the idea currently lives
 - **It's a backlog idea, verdict PARK** → `update_idea_status` to ARCHIVED with notes citing the evidence and what would change the verdict. Don't create a project for a parked idea.
 - **No record anywhere** → GO/REFRAME: `create_project`, then `save_brief`. PARK: `save_idea` into the backlog with the park reasoning in notes — the research shouldn't evaporate just because the answer was no.
 
-The markdown body is the full brief: demand evidence, competitive map, chosen angle, scope in/out, demo plan, hook. On a **GO**, also `set_pipeline_stage IDEA_DEVELOPED` and, if the research sharpened it, `update_project` with the better one-sentence idea. Know what the save triggers so you don't duplicate it: a GO brief auto-creates the long-form PLANNING video and generates packaging candidates (hook/thumbnail ideas) — don't hand-create the video or pre-write packaging here.
+The markdown body is the brief in the Step 5 shape: At a glance, Scope, Hook, then the evidence under its reference heading. Nothing extra. On a **GO**, also `set_pipeline_stage IDEA_DEVELOPED` and, if the research sharpened it, `update_project` with the better one-sentence idea. Know what the save triggers so you don't duplicate it: a GO brief auto-creates the long-form PLANNING video and generates packaging candidates (hook/thumbnail ideas). Don't hand-create the video or pre-write packaging here.
 
 If the ContentOS MCP tools aren't connected, say so explicitly and flag that the brief exists only in the conversation until it's saved.
 
