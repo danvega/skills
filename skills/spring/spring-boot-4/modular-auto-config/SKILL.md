@@ -1,13 +1,13 @@
 ---
 name: modular-auto-config
 description: >-
-  Navigate Spring Boot 4's modular auto-configuration — the breaking change that split the monolithic
+  Navigate Spring Boot 4's modular auto-configuration, the breaking change that split the monolithic
   spring-boot-autoconfigure JAR into focused modules, so features only auto-configure when their
   starter is present. Use when migrating Spring Boot 3.x → 4, choosing/adding starters, or debugging
   "it worked before and now it doesn't": missing auto-config, H2 console gone, RestClient/Flyway not
   wired, or the renamed spring-boot-starter-web → spring-boot-starter-webmvc. Also covers the
   spring-boot-autoconfigure-classic escape hatch. Do NOT use for writing your OWN @AutoConfiguration
-  classes, or for runtime bean wiring (see bean-registration).
+  classes, or for runtime bean wiring.
 ---
 
 # Modular auto-configuration (Spring Boot 4)
@@ -24,7 +24,7 @@ assumes a raw dependency still "just works" (H2 console, RestClient, Flyway), or
 
 Use when migrating 3.x→4, picking starters, or diagnosing a feature that silently stopped
 auto-configuring. **Do NOT** use for authoring your own `@AutoConfiguration` classes, or for
-programmatic bean registration — that's `bean-registration`.
+programmatic bean registration.
 
 ## Why things break
 
@@ -75,7 +75,7 @@ specific starters over time:
 |---|---|
 | `spring-boot-starter-web` not resolving | renamed to **`spring-boot-starter-webmvc`** |
 | H2 console not working | `spring-boot-starter-h2-console` |
-| RestClient not auto-configured | add `spring-boot-starter-restclient` (also unblocks `http-interface-clients`) |
+| RestClient not auto-configured | add `spring-boot-starter-restclient` |
 | Flyway not running | add the appropriate Flyway starter |
 | Lots of missing auto-config during migration | add `spring-boot-autoconfigure-classic` as a stopgap |
 
