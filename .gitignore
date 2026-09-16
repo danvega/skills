@@ -19,14 +19,16 @@ Desktop.ini
 # Python
 __pycache__/
 
+# Local agent settings
+.claude/settings.local.json
+
 # Logs / temp
 *.log
 .tmp/
 tmp/
 
-# Node (motion-graphics render deps)
+# Node dependencies
 node_modules/
-package-lock.json
 
-# Rendered video output (shorts samples / deliverables) — not source
+# Rendered video output (shorts samples / deliverables)
 /shorts/

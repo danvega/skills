@@ -1,150 +1,144 @@
 # Dan Vega's Skills
 
-A growing collection of agent skills, straight from my `.claude` directory. Spring,
-Java, and the workflows I run every day, with more landing over time.
+My agent skills for everyday development, Spring, and the workflows behind
+[danvega.dev](https://www.danvega.dev), my YouTube channel, and Spring Office Hours.
 
-Each skill is small, composable, and built to encode the things models get *wrong*,
-not to re-teach what they already know. This repo is the home for all of them.
+These capture choices, conventions, and lessons I want an agent to carry into the next
+task. Start with `dev` for everyday work or `shipit` for building a demo or product.
+The content workflows are tailored to my setup and can serve as examples to adapt.
 
-Works with any agent that supports skills (Claude Code, and others via
-[skills.sh](https://skills.sh)).
+## Use a skill
 
-## Using these skills
-
-A skill is just a folder with a `SKILL.md` in it — there's nothing to install. Clone
-the repo and copy (or symlink) the folders you want to wherever your agent discovers
-skills. For Claude Code that's:
+Clone the repo and enter it:
 
 ```bash
 git clone https://github.com/danvega/skills.git
-
-# available in every session
-cp -R skills/skills/spring/spring-boot-4/http-interface-clients ~/.claude/skills/
-
-# or just for one project
-cp -R skills/skills/blog/blog-seo-optimize my-project/.claude/skills/
+cd skills
 ```
 
-Symlinking instead of copying keeps them updated when you pull:
+For Claude Code, link the skill folders you want into your personal skills directory:
 
 ```bash
-ln -s "$(pwd)/skills/skills/spring/spring-boot-4/null-safety" ~/.claude/skills/null-safety
+mkdir -p "$HOME/.claude/skills"
+ln -s "$PWD/skills/dev/readme" "$HOME/.claude/skills/readme"
 ```
 
-The `spring-boot-4` skills cross-reference each other (e.g. `http-interface-clients`
-points at `modular-auto-config` when a client won't wire), so they work best installed
-as a set:
+The link points to this checkout, so edits and pulled updates are available through it.
+Keep the checkout at the same path. If `readme` is already installed, check its location
+before replacing it.
+
+To copy instead of linking, use this command in place of `ln -s`:
 
 ```bash
-cp -R skills/skills/spring/spring-boot-4/* ~/.claude/skills/
+cp -R skills/dev/readme "$HOME/.claude/skills/"
 ```
 
-## Why these exist
+Replace `skills/dev/readme` with another skill folder to install it. Copy the entire
+folder so its scripts, references, and assets come with it.
+For a project-only skill, use that project's `.claude/skills/` directory instead.
 
-Models are trained on a snapshot of the world. Point one at the latest release of a
-framework, and it reaches for last year's patterns, confidently and wrong. These
-skills close that gap by encoding the **deltas**: what changed, the current idiom, and
-the gotchas you only learn by hitting them.
-
-Concretely, here's what that looks like for Spring Boot 4. Models were trained largely
-on Boot 3.x, so without help they reach for the old way:
-
-| You ask for… | Without the skill | With it |
-| --- | --- | --- |
-| A client for another service | `RestTemplate` boilerplate | `@HttpExchange` + `@ImportHttpServices` |
-| Versioned endpoints | Manual path routing | Built-in API versioning |
-| Retrying a flaky call | `spring-retry` dependency | Built-in `@Retryable` |
-| JSON config | `com.fasterxml.jackson` | Jackson 3 (`tools.jackson`) |
-| Null handling | Nullable-by-default assumptions | JSpecify non-null defaults |
+Once installed, invoke it by name, such as `/readme`, or describe a task that matches
+its description. See the [Claude Code skills documentation](https://code.claude.com/docs/en/skills)
+for discovery and configuration. Other agents may use a different skill directory.
 
 ## What's here
 
-Two kinds of skills, kept deliberately separate:
+### dev
 
-- **Knowledge skills** are auto-discovered by description match. They teach the agent
-  what changed in a framework or language: the deltas, not the basics.
-- **Workflow skills** are processes that drive a repeatable task end to end — my
-  actual blogging and YouTube workflows.
+General development skills with plain language and short instructions.
+
+- **[readme](./skills/dev/readme/SKILL.md)**: write a README that fits the project and its readers
+- **[pr-description](./skills/dev/pr-description/SKILL.md)**: turn a diff into a PR title and description with actual test results
+- **[bug-repro](./skills/dev/bug-repro/SKILL.md)**: reproduce a bug, capture it in a regression test, and verify a focused fix when requested
+- **[code-review](./skills/dev/code-review/SKILL.md)**: find actionable bugs and regressions, with evidence and file references
+- **[release-notes](./skills/dev/release-notes/SKILL.md)**: turn changes between versions into useful release notes
+- **[code-tour](./skills/dev/code-tour/SKILL.md)**: trace a real request or command through the code
+
+### shipit
+
+A process for new demos, small tools, and products: decide enough to start, build
+something you can verify, then review and update. `PRODUCT.md` holds current scope
+and decisions. Supporting files hold work and history, and are created only when useful.
+
+The skills are not seven required stages. See the [shipit guide](./skills/shipit/README.md)
+for the flow and examples of where to start.
+
+- **[shipit-shape](./skills/shipit/shipit-shape/SKILL.md)**: clarify an idea and find the smallest useful version
+- **[shipit-mvp](./skills/shipit/shipit-mvp/SKILL.md)**: create a short initial PRODUCT.md and refine it as the project takes shape
+- **[shipit-stack](./skills/shipit/shipit-stack/SKILL.md)**: resolve material technical choices and record their reasons
+- **[shipit-prototype](./skills/shipit/shipit-prototype/SKILL.md)**: explore an uncertain screen or interaction when a prototype would help
+- **[shipit-verify](./skills/shipit/shipit-verify/SKILL.md)**: reuse or add checks, separating verified behavior from evidence awaiting review
+- **[shipit-feature](./skills/shipit/shipit-feature/SKILL.md)**: build within scope, check the result, and batch review
+- **[shipit-retro](./skills/shipit/shipit-retro/SKILL.md)**: use evidence from a run to propose a focused process improvement
 
 ### spring
 
-Spring skills live under `skills/spring/`, one folder per release or product — today
-that's `spring-boot-4`, with room for `spring-ai` and friends as siblings.
+Focused guidance for Spring Boot 4 migrations, under `skills/spring/spring-boot-4/`.
 
-**spring-boot-4** is one focused skill per feature. Each encodes the delta (what changed
-in 4.x/7.x, the current idiom, and the gotchas) and triggers on the task, not the
-feature name.
-
-**APIs & web**
-- **[http-interface-clients](./skills/spring/spring-boot-4/http-interface-clients/SKILL.md)**: `@ImportHttpServices` + `@HttpExchange` declarative clients
-- **[api-versioning](./skills/spring/spring-boot-4/api-versioning/SKILL.md)**: the `version` attribute + `ApiVersionConfigurer`
-- **[jackson-3](./skills/spring/spring-boot-4/jackson-3/SKILL.md)**: `tools.jackson`, auto-configured `JsonMapper`, ISO-8601 defaults, `@JsonView`
-
-**Messaging & resilience**
-- **[jms-client](./skills/spring/spring-boot-4/jms-client/SKILL.md)**: the fluent `JmsClient` (send, QoS, request-reply)
-- **[resilience](./skills/spring/spring-boot-4/resilience/SKILL.md)**: built-in `@Retryable` + `@ConcurrencyLimit`, no Spring Retry
-
-**Core & data**
-- **[null-safety](./skills/spring/spring-boot-4/null-safety/SKILL.md)**: JSpecify `@NullMarked` / `@Nullable`
-- **[bean-registration](./skills/spring/spring-boot-4/bean-registration/SKILL.md)**: the `BeanRegistrar` interface
-- **[spring-data-aot](./skills/spring/spring-boot-4/spring-data-aot/SKILL.md)**: build-time repositories + the validation gotcha
-
-**Testing**
-- **[rest-test-client](./skills/spring/spring-boot-4/rest-test-client/SKILL.md)**: `RestTestClient` across all five bind modes
-- **[mock-vs-rest](./skills/spring/spring-boot-4/mock-vs-rest/SKILL.md)**: `MockMvcTester` vs `RestTestClient` decision guide
-
-**Observability, security & migration**
-- **[opentelemetry](./skills/spring/spring-boot-4/opentelemetry/SKILL.md)**: the official `spring-boot-starter-opentelemetry`
-- **[spring-security-mfa](./skills/spring/spring-boot-4/spring-security-mfa/SKILL.md)**: `@EnableMultiFactorAuthentication` + one-time tokens
-- **[modular-auto-config](./skills/spring/spring-boot-4/modular-auto-config/SKILL.md)**: the split-up auto-configuration breaking change
-
-### dev
-
-General development workflow skills, not tied to any framework.
-
-- **[readme](./skills/dev/readme/SKILL.md)**: write a README that fits the project type — what to lead with for a CLI vs library vs service vs monorepo, plus honesty rules (verified commands, no hype, no aspirational features) and plain-language style rules (short sentences, no em dashes)
+- **[jackson-3](./skills/spring/spring-boot-4/jackson-3/SKILL.md)**: Jackson 3 migration, JSON configuration, and changed defaults
+- **[modular-auto-config](./skills/spring/spring-boot-4/modular-auto-config/SKILL.md)**: modular auto-configuration and missing starter dependencies
 
 ### blog
 
-The workflow behind [danvega.dev](https://www.danvega.dev) — from "what should I
-write?" to a published, optimized post with a cover image. These are tuned to my site
-and voice, but the structure is easy to adapt.
+The workflow behind danvega.dev, from choosing a topic to preparing a post and cover.
 
-- **[blog-seo-opportunities](./skills/blog/blog-seo-opportunities/SKILL.md)**: find what to write or fix next, ranked by Search Console evidence
-- **[blog-new-post](./skills/blog/blog-new-post/SKILL.md)**: scaffold and draft a new post with correct frontmatter, in my voice
-- **[blog-seo-optimize](./skills/blog/blog-seo-optimize/SKILL.md)**: keyword research + on-page optimization for an existing post
-- **[blog-cover](./skills/blog/blog-cover/SKILL.md)**: render the site's terminal-style cover image to PNG
+- **[blog-seo-opportunities](./skills/blog/blog-seo-opportunities/SKILL.md)**: rank topics and improvements using Search Console evidence
+- **[blog-new-post](./skills/blog/blog-new-post/SKILL.md)**: scaffold and draft a post with the site's frontmatter and writing style
+- **[blog-seo-optimize](./skills/blog/blog-seo-optimize/SKILL.md)**: research keywords and improve an existing post
+- **[blog-cover](./skills/blog/blog-cover/SKILL.md)**: render the site's terminal-style cover image
 
 ### newsletter
 
-The newsletter workflow — authored and sent in [Beehiiv](https://www.beehiiv.com), republished on the site.
+- **[newsletter-publish](./skills/newsletter/newsletter-publish/SKILL.md)**: republish a Beehiiv edition on the site with its links, images, and formatting
 
-- **[newsletter-publish](./skills/newsletter/newsletter-publish/SKILL.md)**: republish a Beehiiv edition on the site — fetch via MCP, convert to site markdown (embeds, local images, house footer), light typo pass, validated save
+### podcast
+
+Guest appearances and the Spring Office Hours episode workflow.
+
+- **[podcast-appearance](./skills/podcast/podcast-appearance/SKILL.md)**: record a guest appearance in ContentOS and on danvega.dev
+- **[spring-office-hours-prep](./skills/podcast/spring-office-hours-prep/SKILL.md)**: run the audio edit and show-notes steps for one episode
+- **[spring-office-hours-edit](./skills/podcast/spring-office-hours-edit/SKILL.md)**: edit a recording into a podcast MP3 and transcript
+- **[spring-office-hours-show-notes](./skills/podcast/spring-office-hours-show-notes/SKILL.md)**: assemble the episode title, description, and resource links
+- **[spring-office-hours-spring-io-pr](./skills/podcast/spring-office-hours-spring-io-pr/SKILL.md)**: prepare the spring.io post and PR after the episode is published on Transistor
 
 ### video
 
-The full pipeline for my [YouTube channel](https://www.youtube.com/@DanVega) — from
-"what should I make?" through packaging to the first cut.
+The workflow for my [YouTube channel](https://www.youtube.com/@DanVega), from idea
+development to editing and promotion.
 
-- **[video-ideation](./skills/video/video-ideation/SKILL.md)**: research-driven video ideas — fans out across channel data, YouTube outliers, community trends, and search demand, then returns a ranked brief where every idea cites evidence of real demand
-- **[video-develop-idea](./skills/video/video-develop-idea/SKILL.md)**: pressure-test an idea I already have — validates demand with evidence, maps the existing coverage to find the angle it misses, scopes what's in and out, and ends in an honest go / reframe / park verdict
-- **[video-demo-design](./skills/video/video-demo-design/SKILL.md)**: design the demo code with me in conversation — start from the final frame and work backwards to the beats, then build a viewer-followable companion repo with every checkpoint verified, plus a shot list to record from
-- **[video-project](./skills/video/video-project/SKILL.md)**: scaffold a new project on disk — copies the 2026 template into a PascalCase project folder under `~/youtube/` and renames the Premiere project file to match
-- **[video-packaging](./skills/video/video-packaging/SKILL.md)**: turn a chosen idea into a congruent package — title options, a thumbnail creative brief, and a scripted first-30-seconds intro that all tell the same story
-- **[video-thumbnail](./skills/video/video-thumbnail/SKILL.md)**: render the final thumbnail art — no AI image generation; composes real photo cutouts (Apple Vision subject lift) with HTML/CSS templates in the channel's design language, rendered via headless Chrome, verified with a 120px shrink test
-- **[video-rough-cut](./skills/video/video-rough-cut/SKILL.md)**: raw recording → safe first pass — trims dead air, cuts fillers, resolves retakes; knows the difference between talking-head silence and screen-share "silence" while a build runs
-- **[video-motion-graphics](./skills/video/video-motion-graphics/SKILL.md)**: transcript-driven graphics pass — branded terminal-style lower thirds (and a growing template library) rendered via headless Chrome with alpha, placed by actually looking at the frame, composited with ffmpeg; every graphic also ships as a ProRes 4444 overlay for Premiere
-- **[video-shorts](./skills/video/video-shorts/SKILL.md)**: chop a long-form video into 30–60s 9:16 shorts — finds the moments that stand alone (hook + payoff, quality bar over quota), reframes per segment (face crop vs stacked screen-share layout), and burns in word-by-word "karaoke pop" captions with selectable font styles
-- **[video-social-campaign](./skills/video/video-social-campaign/SKILL.md)**: turn a published video into a staggered 3-post campaign — launch / value / conversation, written natively per platform (LinkedIn, X, Bluesky) from the transcript's actual specifics, saved as drafts to the ContentOS social calendar and scheduled on approval
+- **[video-ideation](./skills/video/video-ideation/SKILL.md)**: find and rank ideas using channel data, search demand, and community signals
+- **[video-develop-idea](./skills/video/video-develop-idea/SKILL.md)**: evaluate an idea, find its angle, and narrow its scope
+- **[video-demo-design](./skills/video/video-demo-design/SKILL.md)**: design the demo code, build a companion repo, and prepare a shot list
+- **[video-project](./skills/video/video-project/SKILL.md)**: create a project folder from my local video template
+- **[video-packaging](./skills/video/video-packaging/SKILL.md)**: develop titles, a thumbnail brief, and the opening hook
+- **[video-thumbnail](./skills/video/video-thumbnail/SKILL.md)**: compose thumbnail images from photos and HTML/CSS templates
+- **[video-rough-cut](./skills/video/video-rough-cut/SKILL.md)**: prepare a first cut from a recording
+- **[video-motion-graphics](./skills/video/video-motion-graphics/SKILL.md)**: add branded graphics and overlays to recorded footage
+- **[video-visual-story](./skills/video/video-visual-story/SKILL.md)**: plan and produce B-roll, request-flow diagrams, comparisons, and evidence inserts
+- **[video-code-animation](./skills/video/video-code-animation/SKILL.md)**: render animated code diffs, typing, and refactors from source files
+- **[video-teaser](./skills/video/video-teaser/SKILL.md)**: build a cinematic pre-release trailer with demo glimpses, selected dialogue, title cards, and sound design
+- **[video-shorts](./skills/video/video-shorts/SKILL.md)**: turn long-form footage into vertical clips with captions
+- **[video-social-campaign](./skills/video/video-social-campaign/SKILL.md)**: draft and schedule a social campaign for a published video
 
-## What's a skill?
+## Adapt these to your setup
 
-A skill is a small folder with a `SKILL.md` the agent loads on demand: a description
-that tells it *when* to reach for the skill, and a body that tells it *what to do*.
-Knowledge skills here route by task to focused reference files, and nothing loads until
-it's relevant. See [Anthropic's docs](https://docs.claude.com/en/docs/claude-code/skills)
-for the format.
+The `dev` and `shipit` skills can work with the conventions and tools in your project.
+The Spring skills provide guidance for their stated framework versions.
+
+The blog, newsletter, podcast, and video workflows include my paths, branding, and
+publishing conventions. Some rely on ContentOS, Search Console, Figma, local site repos,
+or media tools such as Node.js, ffmpeg, and transcription software. Read the selected
+skill's prerequisites and replace personal paths and account details before using it.
+Copying a skill does not install its tools or connect its accounts.
+
+## Maintain the collection
+
+Keep `name` and `description` valid in each skill's YAML frontmatter, and keep this
+catalog aligned with the folders in `skills/`. See [CLAUDE.md](./CLAUDE.md) for
+authoring conventions.
 
 ## License
 
-MIT
+Original material is licensed under [MIT](./LICENSE).
+The vendored HyperFrames animation blocks retain their
+[Apache 2.0 license and attribution](./skills/video/video-code-animation/assets/blocks/UPSTREAM.md).

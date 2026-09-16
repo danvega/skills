@@ -1,51 +1,59 @@
-# CLAUDE.md — authoring conventions for this repo
+# Authoring conventions
 
-This is Dan Vega's personal skills' repository. When creating or editing skills here,
-follow these rules.
+This is Dan Vega's personal skills repository. Keep skills focused on the choices,
+conventions, and lessons that improve a real task.
 
-## Two layers, kept separate
+## Organization
 
-- **Knowledge skills** (`skills/spring/spring-boot-4/`, future `skills/spring/spring-ai/`,
-  `skills/java/`) are auto-discovered by description match. They encode framework/language
-  deltas. Framework families get a top-level folder (`spring/`) with one subfolder per
-  release or product.
-- **Workflow skills** (`skills/blog/`, `skills/newsletter/`, `skills/video/`) are
-  processes that drive a repeatable task end to end (drafting a post, republishing a
-  newsletter, generating video ideas, rough-cutting a recording).
-- Don't mix the two in one folder; their descriptions optimize for different things.
+- `skills/dev/`: general development tasks.
+- `skills/shipit/`: planning, building, and reviewing demos or products.
+- `skills/spring/`: framework guidance, grouped by release or product.
+- `skills/blog/`, `skills/newsletter/`, `skills/podcast/`, and `skills/video/`:
+  personal content workflows.
 
-## Naming convention
+Framework guidance should focus on version-specific changes and gotchas.
+Workflow skills should describe the outcome and the decisions needed to reach it.
 
-- **Workflow skills** are named `<domain>-<task>` after their pipeline: `blog-`,
-  `newsletter-`, `video-` (e.g. `video-thumbnail`, `blog-seo-optimize`). The prefix
-  groups slash-command autocomplete by pipeline and keeps generic words (`thumbnail`,
-  `shorts`) from colliding with plugin skills. New workflow skills must follow it.
-- **Knowledge skills** stay unprefixed — discovery runs on the description and the
-  folder (`spring/spring-boot-4/`) already scopes them. Use a product prefix only
-  when the name needs it to make sense (`spring-data-aot`, `jackson-3`).
-- `dev/` grab-bag skills (`readme`) stay unprefixed.
-- The folder name always equals the `name:` frontmatter.
+## Naming and discovery
 
-## Every knowledge skill
+- Match the folder name to the frontmatter `name`.
+- Use lowercase letters, numbers, and hyphens.
+- Keep pipeline prefixes such as `shipit-`, `blog-`, `newsletter-`, and `video-`.
+- Podcast workflows may use the show name, such as `spring-office-hours-`.
+- General dev skills stay unprefixed, such as `readme` and `code-review`.
+- Framework skill names describe the capability, such as `jackson-3`.
 
-- `SKILL.md` is a **router**, not an essay. Body under ~150 lines. Route by task to
-  `reference/*.md` files.
-- Reference files are **one level deep** — never `SKILL.md → ref → ref`.
-- Encode the **delta only**. Assume the model knows Spring; tell it what changed in
-  4.x/7.x and what the current idiom is. Don't re-explain a `@RestController`.
-- Put deprecated 3.x patterns in a collapsed `<details>` "Legacy" block so the
-  current path stays clean and the skill doesn't rot on a date.
-- State the version baseline explicitly (Boot 4.0+, Framework 7.0+, Java 17+ (25 recommended)).
-- Include real gotchas (the exceptions you actually hit), not just happy-path code.
+A description says what the skill does and when to use it.
+Add an exclusion when it prevents overlap with another skill that actually exists.
+Keep descriptions under 1,024 characters and omit angle-bracket placeholders.
 
-## The description field
+Use a folded YAML string so punctuation does not break the frontmatter:
 
-This is what discovery runs on. Write it third-person, lead with what it does +
-when to use it, name concrete triggers (the annotations, the feature names), and
-add an explicit "Do NOT use for…" pointing at the sibling skill that does cover it.
+```yaml
+---
+name: example-skill
+description: >-
+  Describe the task this skill handles and when it applies.
+---
+```
+
+## Writing instructions
+
+- Use plain words and short instructions. No em dashes.
+- Include only guidance that changes how the agent should do the task.
+- Keep small tasks small. Avoid quotas, repeated confirmations, and mandatory steps
+  that do not help the requested work.
+- Use supporting references for substantial detail. A short skill can be self-contained.
+- State framework version baselines and distinguish current patterns from legacy examples.
+- Preserve useful operational notes and the user's existing authorization.
+- For personal workflows, make required paths, tools, accounts, and assets clear.
+- Keep source attribution and licenses with vendored resources.
 
 ## Before committing
 
-This is a plain skills repo (no marketplace/plugin packaging). Sanity-check that every
-skill folder has a `SKILL.md` with valid `name` and `description` frontmatter, and that
-the README's skill list matches what's actually in `skills/`.
+- Check each skill's YAML, name, description, and referenced local files.
+- Keep the README catalog aligned with the skills that exist.
+- Check that install examples point to real folders.
+- Exclude local settings, dependencies, and generated output.
+- Validate changed scripts with relevant checks. Documentation checks do not prove a
+  media or publishing workflow works end to end.
