@@ -1,95 +1,84 @@
 ---
 name: readme
 description: >-
-  Write, rewrite, or review a README so it serves its actual reader — structure and emphasis chosen
-  by project type (CLI, library, web app/service, monorepo, template/scaffold, internal tool). Use
-  whenever the task is creating or improving a README or top-level project docs: "write a README",
-  "document this project", "clean up the README", scaffolding a new repo, or prepping a project to
-  go public. Do NOT use for API reference docs, CONTRIBUTING guides, changelogs, or writing ABOUT a
-  project (blog posts, announcements).
+  Write, update, or review a project README. Choose the content based on the project and its
+  readers. Use when the task includes creating or improving a README. Do not use for API
+  reference docs, contributing guides, changelogs, or blog posts.
 ---
 
 # README guidance by project type
 
-A README has one job: get its reader to the thing they came for in under a minute. Who that reader
-is depends on the project type — identify the type first, then weight the sections accordingly.
+A README should help readers understand the project and get started. Identify who will read it
+and what they need first. Use the project guidance below where it fits.
 
-## Ground rules (any type)
+## Ground rules
 
-- **Open with one plain sentence saying what the project is and who it's for.** If the name plus
-  the first sentence don't orient a stranger, nothing below will.
-- **Verify every command against the repo before writing it.** Read package.json scripts, the
-  build file, the Makefile — don't infer install/run commands from convention. A README that lies
-  about `npm run dev` costs more trust than no README at all.
-- **Document what exists, not what's planned.** Check that every documented feature, flag, and
-  endpoint is actually in the code. Aspirational items go in a clearly labeled roadmap section or
-  nowhere.
-- **No hype.** Cut "blazingly fast", "powerful", "simple yet flexible" — show a code sample or a
-  number instead and let the reader judge.
-- **Skip the ritual sections** — table of contents, badge walls, emoji headers, boilerplate
-  Contributing/License prose — unless the project's size and audience earn them. A 60-line README
-  doesn't need a ToC.
-- **Match length to the project.** A weekend CLI needs 30 lines; a framework might need 200 plus
-  links out to real docs. When a section grows past a screen, that's a sign it wants to be a
-  separate doc the README links to.
+- Open with one sentence saying what the project does and who it is for.
+- Check commands against the repo's scripts and build files. Do not guess setup commands.
+- Describe features that exist. Label planned work clearly if it needs to be included.
+- Preserve useful setup notes, known issues, and project conventions when editing a README.
+- Include only sections that help the reader. Add a table of contents when it helps navigation.
+- Keep small projects brief. Link to separate docs for detailed topics.
 
 ## Writing style
 
-- Use simple, direct language. Prefer the short word: "use" over "utilize", "run" over "execute".
-- Keep sentences short, one idea each. If a sentence needs three commas, split it.
+- Use plain words, such as "use" instead of "utilize" and "run" instead of "execute".
+- Keep sentences short and focused on one idea.
 - No em dashes. Use a period, a comma, or parentheses instead.
-- Be concise. Every line should earn its place. If a sentence still reads fine with a word
-  removed, remove the word.
+- Give direct steps in the order the reader needs them. Avoid nested instructions.
+- Remove repetition, filler, and claims like "blazingly fast" or "powerful".
 
 ## CLI tool
 
-Lead with installation and a single representative command. Prioritize:
-- Install one-liner (npm/brew/cargo/pip/go install).
-- A "common commands" table or list with one-line descriptions.
-- Flags and options, or a pointer to `--help`.
-- Exit codes only if scripting against them matters.
+Lead with installation and one useful command.
+
+- Show how to install the tool.
+- List common commands with short descriptions.
+- Explain key options or point to `--help`.
+- Include exit codes when readers need them for scripts.
 
 ## Library / package
 
-The reader is a developer deciding whether to depend on you. Prioritize:
-- Install command for the relevant package manager.
-- A minimal import + call example that returns something — runnable as-is, not pseudocode.
-- API surface overview (link to full reference rather than inlining it).
-- Version/compatibility notes (language version, peer dependencies).
+Help developers decide whether to use the package and make their first call.
+
+- Show the install command.
+- Give a small, runnable example with its expected result.
+- Summarize the main API and link to the full reference if available.
+- State supported versions and required dependencies.
 
 ## Web app / service
 
-The reader wants to run it locally or deploy it. Prioritize:
-- Prerequisites (runtime, database, external services).
-- Environment variable table: name, required/optional, description, example.
-- Local dev startup sequence (install, migrate, seed, run) — verified end to end.
-- How to run tests.
-- Deployment pointer if relevant.
+Help readers run the app locally.
+
+- List required runtimes, databases, and services.
+- Explain required settings and environment variables. Use safe example values.
+- Show setup and startup commands in order.
+- Show how to run tests.
+- Link to deployment instructions when relevant.
 
 ## Monorepo
 
-Keep the root README high-level. Prioritize:
-- What the repo contains (package/app list with one-line descriptions).
-- Shared tooling and setup (workspace install, build orchestration).
-- Pointers to per-package READMEs rather than documenting each package at the root.
+Keep the root README focused on the repo as a whole.
+
+- List packages and apps with short descriptions.
+- Explain shared setup and build commands.
+- Link to each package's README for details.
 
 ## Framework / scaffold / template
 
-Prioritize:
-- What you get out of the box.
-- How to start a new project from it.
-- Where to customize.
+- Explain what is included.
+- Show how to start a new project.
+- Point out where to customize it.
 
 ## Internal / team project
 
-External polish matters less; onboarding speed matters more. Prioritize:
-- How to get a working dev environment fast.
-- Who owns it / where to ask questions.
-- Links to runbooks, dashboards, and deeper internal docs.
+- Show how to set up a working development environment.
+- Identify the owner and where to ask questions, if known.
+- Link to relevant runbooks, dashboards, and team docs.
 
 ## Review pass
 
-Before finishing, reread as the target reader with zero context: can they say what this project is
-in one sentence, and did the quickstart work on the first try? If the README already existed,
-preserve any hard-won operational notes (weird setup steps, known issues) — those are the most
-valuable lines in it, even when they're ugly.
+- Check that a new reader can understand the project and find the first useful step.
+- Try the quickstart when the environment allows it. Tell the user what you could not verify.
+- Check that links and file paths point to the intended pages or files.
+- Remove em dashes and simplify any instructions that are hard to follow.
