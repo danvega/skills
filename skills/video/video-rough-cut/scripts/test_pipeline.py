@@ -30,6 +30,30 @@ class TimelineTests(unittest.TestCase):
         self.assertTrue(p.mapped_time(manifest, "a", 1.9, .15)["snapped"])
         self.assertIsNone(p.mapped_time(manifest, "b", 3))
 
+    def test_wordless_active_windows_are_proposed_not_protected(self):
+        rates = {10: 3., 30: .1}
+        def measure(start, end):
+            return {"hits": 0, "seconds": end - start, "changes_per_second": rates[start]}
+        # 1 to 2.5 is a short screen-share pause and stays; typing at 10 and an idle gap at 30 both get ranges.
+        found = p.silence_candidates([[1, 2.5], [10, 20], [30, 40]], [], "screen-share", measure)
+        typing, idle = found
+        self.assertEqual((typing["reason"], typing["suggest_cut"]), ("screen activity", False))
+        self.assertEqual(typing["proposed_cut"], {"start": 10.35, "end": 19.65})
+        self.assertEqual((idle["start"], idle["end"], idle["suggest_cut"]), (30.35, 39.65, True))
+        self.assertNotIn("proposed_cut", idle)
+        talking = p.silence_candidates([[10, 20]], [], "talking-head", measure)
+        self.assertEqual((talking[0]["start"], talking[0]["end"], talking[0]["activity"]), (10.25, 19.75, None))
+
+    def test_build_refuses_unclassified_windows(self):
+        with tempfile.TemporaryDirectory(prefix="video-pipeline-test-") as temp:
+            root = Path(temp)
+            p.save(root / "analysis.json", {"clips": [{"id": "a"}]})
+            p.save(root / "decisions.json", {"clips": [{"id": "a", "cuts": [], "speeds": [],
+                                                        "classify": [{"start": 10.35, "end": 19.65, "reason": "typing"}]}]})
+            args = type("Args", (), {"analysis": root / "analysis.json", "decisions": root / "decisions.json"})
+            with self.assertRaisesRegex(ValueError, "classify"):
+                p.build(args)
+
     def test_invalid_ranges(self):
         with self.assertRaises(ValueError):
             p.make_segments(5, [{"start": -1, "end": 1}], [])

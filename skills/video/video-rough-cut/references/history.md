@@ -80,3 +80,14 @@ Append a dated line here every time a run burns you — this log is where the sk
   intact (seam transcription confirmed). Head cuts: end no later than silence_end − 0.8s. Also:
   merge overlapping cuts before building keeps; a trimmed silence straddling a retake cut's end
   quietly re-extended the cut by 0.1s (harmless here, not always).
+- (2026-09-16, SkillsArentJustForCoding) The screen-activity detector read 0.17 changes/s while
+  Dan typed a prompt into the Claude desktop app on a 4K Ecamm recording, and 0.33/s while he
+  read a file. Typing in a small text box does not register at this resolution, so a near-zero
+  rate on this kind of footage is not evidence of idle time. Slide/app switches did register
+  (3.5 to 8.5/s), which is what the two long-gap cuts relied on.
+- (2026-09-17, Dan's rule change) The activity check used to protect every wordless window at
+  0.5 changes/s or more, so silent typing and pasting into the IDE survived the cut. Dan does not
+  want to be seen copying or writing code while nobody is talking. Active wordless windows now go
+  to a `classify` list: code entry is cut, a result the viewer must watch stays, and `build`
+  refuses leftovers. The same day Dan asked for the rough cut to continue into motion graphics
+  without being asked, as two separate files (SKILL.md step 5).

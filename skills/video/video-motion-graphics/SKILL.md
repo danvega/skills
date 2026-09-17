@@ -70,6 +70,14 @@ Proceed through reversible previews and rendering without extra confirmation. Fo
 visual direction, show a representative preview for feedback; avoid requiring a new style decision
 on every routine lower third. Keep accepted templates reusable.
 
+## Straight after a rough cut
+
+`video-rough-cut` hands off to this skill in the same run, without Dan asking. In that case the
+full composite `<name>_gfx.mp4` is the deliverable, next to the untouched `<name>_rough.mp4`.
+Still run the poster and short preview checks, but do not pause for feedback. Use accepted
+templates only. If a moment calls for a new visual direction, skip it and describe the idea in
+the report. Finish with one message that covers both files.
+
 ## Reveal timing and placement
 
 Sync the important REVEAL to the spoken phrase, not the first frame of the animation.

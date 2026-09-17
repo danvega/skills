@@ -144,6 +144,32 @@ def words_in(transcript):
     return [w for s in transcript.get("segments", []) for w in s.get("words", [])]
 
 
+def silence_candidates(silent, words, mode, measure):
+    """Turn detected silences into candidates; measure(start, end) reports screen activity."""
+    candidates = []
+    for start, end in silent:
+        length = end - start
+        if mode == "screen-share" and length <= 2:
+            continue
+        check = measure(start, end) if mode == "screen-share" else None
+        pause = (.7 if check else .4 if length <= 2 else .5)
+        previous = next((w for w in reversed(words) if w["end"] <= start + .3), None)
+        if previous and str(previous["word"]).rstrip().endswith(("?", "…")):
+            pause = max(pause, .5)
+        # Retain an extra 0.8 seconds at a clip head to protect a quiet first word.
+        a, b = (0., end - .8) if start < .05 else (start + pause / 2, end - pause / 2)
+        if b <= a:
+            continue
+        if check and check["changes_per_second"] >= .5:
+            # Wordless and active: silent code entry gets cut, a result the viewer must watch stays.
+            # Scene changes cannot tell those apart, so propose the range and leave the call to review.
+            candidates.append({"start": start, "end": end, "reason": "screen activity", "suggest_cut": False,
+                               "activity": check, "proposed_cut": {"start": a, "end": b}})
+        else:
+            candidates.append({"start": a, "end": b, "reason": "silence", "suggest_cut": True, "activity": check})
+    return candidates
+
+
 def prepare_media(args):
     """Extract only audio, then transcribe all uncached clips in one MLX process."""
     work = Path(args.work).resolve()
@@ -215,7 +241,8 @@ def analyze(args):
             clip.update(candidates=[], silences=[], notes=["Preserved without audio analysis"])
             clips.append(clip)
             continue
-        analysis_path = folder / (digest({"version": VERSION, "mode": args.mode, "threshold": args.threshold,
+        # "candidates" versions the candidate shape without invalidating cached transcripts.
+        analysis_path = folder / (digest({"version": VERSION, "candidates": 2, "mode": args.mode, "threshold": args.threshold,
                                            "transcript": identity(transcript) if transcript else None})[:16] + ".analysis.json")
         hit_analysis = analysis_path.exists()
         if hit_analysis:
@@ -228,31 +255,17 @@ def analyze(args):
             if not math.isfinite(threshold) or not -120 <= threshold <= 0:
                 raise ValueError("Silence threshold must be between -120 and 0 dB")
             silent = silences_from_log(ffmpeg("-v", "info", "-i", audio, "-af", f"silencedetect=noise={threshold}dB:d=0.6", "-f", "null", "-").stderr, meta["duration"])
-            candidates = []
             notes = ["Fillers not analyzed: the default ASR normalizes disfluencies"]
             words = words_in(load(transcript)) if transcript else []
             if transcript and not words:
                 notes.append("No word timestamps returned; inspect the audio before speech-based cuts")
-            for start, end in silent:
-                length = end - start
-                if args.mode == "screen-share" and length <= 2:
-                    continue
-                check = activity(source, start, end) if args.mode == "screen-share" else None
-                if check and check["changes_per_second"] >= .5:
-                    candidates.append({"start": start, "end": end, "reason": "screen activity", "suggest_cut": False, "activity": check})
-                    continue
-                pause = (.7 if check else .4 if length <= 2 else .5)
-                previous = next((w for w in reversed(words) if w["end"] <= start + .3), None)
-                if previous and str(previous["word"]).rstrip().endswith(("?", "…")):
-                    pause = max(pause, .5)
-                # Retain an extra 0.8 seconds at a clip head to protect a quiet first word.
-                a, b = (0., end - .8) if start < .05 else (start + pause / 2, end - pause / 2)
-                if b > a:
-                    candidates.append({"start": a, "end": b, "reason": "silence", "suggest_cut": True, "activity": check})
+            candidates = silence_candidates(silent, words, args.mode, lambda a, b: activity(source, a, b))
             if len(silent) < 2 and meta["duration"] > 120:
                 notes.append("Few silences detected; inspect the threshold and a known quiet interval")
             if args.mode == "screen-share":
                 notes.append("Before accepting static candidates, check a known typing interval with the activity command")
+                if any(c.get("proposed_cut") for c in candidates):
+                    notes.append("Classify each wordless active window: cut silent code entry, keep a result the viewer must watch")
             analysis = {"threshold_db": threshold, "noise_floor_db": floor, "speech_proxy_db": speech,
                         "silences": silent, "candidates": candidates, "notes": notes}
             save(analysis_path, analysis)
@@ -262,11 +275,14 @@ def analyze(args):
         timings.append({"source": str(source), "seconds": round(time.monotonic() - began, 3),
                         "prepare_seconds": round(item["prepare_seconds"], 3), "audio_cache_hit": item["audio_cache_hit"],
                         "asr_cache_hit": item["asr_cache_hit"], "analysis_cache_hit": hit_analysis})
-        print(f"Analyzed {source.name}: {len(clip['candidates'])} candidates", flush=True)
+        unclassified = sum(1 for c in clip["candidates"] if c.get("proposed_cut"))
+        print(f"Analyzed {source.name}: {len(clip['candidates'])} candidates, {unclassified} to classify", flush=True)
     save(work / "analysis.json", {"version": VERSION, "clips": clips, "timings": timings, "batch_asr_seconds": asr_seconds})
     # Never overwrite the human/agent's reviewed decisions on a rerun.
     save(work / "suggested-decisions.json", {"clips": [{"id": c["id"], "cuts": [
-        {k: x[k] for k in ("start", "end", "reason")} for x in c["candidates"] if x["suggest_cut"]], "speeds": []} for c in clips]})
+        {k: x[k] for k in ("start", "end", "reason")} for x in c["candidates"] if x["suggest_cut"]], "speeds": [],
+        "classify": [{**x["proposed_cut"], "reason": f"wordless screen activity, {x['activity']['changes_per_second']:.1f} changes/s"}
+                     for x in c["candidates"] if x.get("proposed_cut")]} for c in clips]})
     print(work / "analysis.json")
 
 
@@ -353,6 +369,8 @@ def build(args):
     choices = {c["id"]: c for c in decisions["clips"]}
     if len(choices) != len(decisions["clips"]) or set(choices) != {c["id"] for c in analysis["clips"]}:
         raise ValueError("Decisions must contain each analyzed clip exactly once")
+    if any(c.get("classify") for c in decisions["clips"]):
+        raise ValueError("Unresolved classify entries: move silent code entry to cuts, delete what the viewer must watch")
     fps = args.fps or analysis["clips"][0]["fps"]
     hz = rate(fps)
     dimensions = {(c["width"], c["height"]) for c in analysis["clips"]}

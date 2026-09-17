@@ -12,7 +12,9 @@ python3 -m unittest discover -s <skill>/scripts -p 'test_*.py' -v
 - `analysis.json`: ordered source identities, probes, transcript locations, silence candidates,
   screen activity rates, notes, and timings.
 - `suggested-decisions.json`: regenerable silence suggestions. Copy to `decisions.json` and
-  review before building. Analysis never overwrites your reviewed decisions.
+  review before building. Analysis never overwrites your reviewed decisions. On screen-share it
+  also carries a `classify` list: wordless windows with an active screen, each with a padded
+  range. The script cannot tell code entry from a result, so it suggests nothing for them.
 - `edit.json`: generated shared manifest, including sources, decisions, frame rate, and each
   kept interval's source/output times, speed, and frame count.
 - `transcript.output.json`: words mapped onto the edit clock, with source provenance. Removed
@@ -45,11 +47,18 @@ Reasons are free text; retain them so the edit can be explained and reversed.
 {
   "clips": [{
     "id": "copy-id-from-analysis",
-    "cuts": [{"start": 12.4, "end": 15.8, "reason": "earlier retake, keep 15.8s take"}],
-    "speeds": [{"start": 30.0, "end": 36.0, "speed": 2.0, "reason": "silent boilerplate"}]
+    "cuts": [{"start": 12.4, "end": 15.8, "reason": "earlier retake, keep 15.8s take"},
+             {"start": 52.35, "end": 71.1, "reason": "wordless code entry, pasting the controller"}],
+    "speeds": [{"start": 90.0, "end": 102.0, "speed": 2.0, "reason": "long build, no narration"}],
+    "classify": []
   }]
 }
 ```
+
+`classify` must be empty or absent before `build` runs. Move an entry to `cuts` when it is
+wordless code entry. Delete it when it is a result the viewer must watch, and name it in the
+report. The rule is in [editing-rules.md](editing-rules.md). Older decisions files without the
+key build as before.
 
 Intersecting cuts are merged. Speed intervals cannot overlap; they can span a cut, and only
 surviving material gets sped up. Each output interval rounds to whole frames at the chosen rate.
