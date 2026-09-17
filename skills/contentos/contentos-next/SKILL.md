@@ -2,7 +2,7 @@
 name: contentos-next
 description: >-
   Move a ContentOS project forward to the next point where Dan is actually needed, running
-  every stage in between without pausing for sign-off. Reads the project's 16-stage
+  every stage in between without pausing for sign-off. Reads the project's 18-stage
   checklist, finds the next open stage, runs the stage skills in chain mode (brief,
   packaging, thumbnails, rough cut, graphics, metadata, blog post, shorts, X clips, social
   drafts) and stops only at the stops: Record, Edit, Publish, and Park. Use when Dan says
@@ -15,7 +15,7 @@ description: >-
 
 # ContentOS Next
 
-The pipeline has 16 stages and only a few places where Dan himself has to act. Everything
+The pipeline has 18 stages and only a few places where Dan himself has to act. Everything
 else is a skill invocation. Until this skill existed, Dan was the scheduler who started
 each one. `contentos-next` reads where a project is, runs every stage up to the next stop,
 and hands Dan one thing.
@@ -83,6 +83,7 @@ precondition is a stop with one line naming what is missing and where it should 
 | `FINAL_EDIT` | final export in `04_Exports/`, or Dan says done | tick |
 | `METADATA_ADDED` | Dan picked the title and thumbnail (else keep the working ones and say so) | `update_video_packaging` final title, `video-thumbnail` lock, metadata on the video |
 | `UPLOADED` | YouTube connected in Settings > Social Accounts | private draft upload through ContentOS |
+| `TEASER_TRAILER` | rough cut or better, and Dan asked for a teaser | optional, off by default: `video-teaser` only when Dan asks for one. Dan posts it himself before the video goes live; tick on his word |
 | **Stop: Publish** | | |
 | `VIDEO_PUBLISHED` | Dan publishes (the app raises VideoPublishedEvent), or Dan says published | tick |
 | `BLOG_POST` | published | `blog-new-post`, then the ContentOS blog PR flow |
@@ -100,7 +101,8 @@ event by itself.
    DONE and ARCHIVED, compute the next stop for each, print that board, and continue only
    if exactly one project is mid-chain. Otherwise stop after the board.
 2. **Read the checklist.** The first open required stage in pipeline order is the next
-   action. Optional stages (blog post, shorts) run in distribution unless Dan says skip.
+   action. Optional stages (blog post, shorts) run in distribution unless Dan says skip;
+   the teaser trailer runs only when Dan asks for it.
 3. **Run up to the next stop**, checking each precondition first. Pass shared inputs
    down (slug, project folder, transcript path) so the stage skills do not resolve them
    twice.
