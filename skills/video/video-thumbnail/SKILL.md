@@ -1,8 +1,8 @@
 ---
 name: video-thumbnail
 description: >-
-  Render a YouTube thumbnail from real photo cutouts and HTML/CSS templates in the
-  channel's visual style, using headless Chrome rather than AI image generation.
+  Design varied YouTube thumbnails using Dan's real photos, recent channel art,
+  and concept-specific HTML/CSS compositions rendered with headless Chrome.
   Use when Dan asks to make or render a thumbnail, or a video-packaging hook is
   ready to become art. Do not use for thumbnail hooks and titles (video-packaging),
   blog cover images (blog-cover), or video ideas (video-ideation).
@@ -10,24 +10,17 @@ description: >-
 
 # Thumbnail
 
-Compose, don't generate. AI image generation fails at exactly the two things a
-thumbnail needs most: crisp text and Dan's real face. So this skill never
-generates imagery. It fills an HTML/CSS template (text is perfect by
-construction), drops in a real photo cutout, and renders with headless Chrome.
-Same pipeline as `blog-cover`, pointed at YouTube.
+Compose with real photos and HTML/CSS. Keep Dan recognizable and the type crisp.
+Choose the visual story first; templates are implementation shortcuts, not the
+creative brief. A new background behind the same pose and text block is not a
+new direction. Full studio photos are valid assets alongside transparent cutouts.
 
-## The budget: one sitting, three rounds, about 15 minutes
+## Keep the rounds useful
 
-A review of the last six videos (2026-09) found the same pattern every time:
-
-- Round 1's structure is what shipped. Later rounds only ever changed the face,
-  the copy, or the accent word.
-- The one video that took two days did so because the hook moved mid-way.
-  That is a packaging problem. No amount of rendering fixes an unlocked promise.
-- The same six cutouts got copied into every project folder by hand.
-
-So the process is: lock the hook first, render real options fast, tighten the
-winner, stop. Renders are cheap. Rounds are not.
+Get the promise clear, explore distinct visual stories, then tighten the winner.
+Aim for one sitting, but do not trade away photo discovery or visual variety to
+meet a time limit. September 2026 feedback: the options had become repetitive
+despite different template names. Judge variety by what the viewer sees.
 
 ## Files & assets
 
@@ -46,6 +39,8 @@ scripts/render.sh             render every draft HTML to 1920x1080 PNG (~3s each
 scripts/contact_sheet.py      one feed-style sheet: each option at 360px with its
                               title, plus a 120px copy. The verify step AND the
                               thing Dan reacts to.
+scripts/photo_sheet.py        paginated picker for original photos or cutouts,
+                              with numbered source-path index
 scripts/cutout.swift          Apple Vision subject lift: swift cutout.swift <in> <out.png>
 scripts/figma_client.py       JSON-RPC client for the remote Figma MCP when its
                               tools aren't attached: figma_client.py <tool> '<json>'
@@ -57,45 +52,85 @@ scripts/paper_client.py       legacy (Paper MCP), only for pulling old boards
                               cutouts-sheet.png (every cutout with its name in
                               one image). Templates reference these by absolute path.
 /Users/vega/youtube/shared-assets/thumbnail/photos/
-                              raw Photo Booth shots. Source material for new
-                              cutouts only. Never browse this during a round.
+                              original Photo Booth shots. Browse when choosing
+                              poses; use as full photos or make new cutouts.
 /Users/vega/youtube/shared-assets/thumbnail/doodles/
                               hand-drawn PNG/SVG assets (arrows, circles)
 ```
 
-Output goes to the video project's `06_Thumbnails/` folder. If the project
+Output goes to the video project's `06_Thumbnails/` folder; only the locked winner goes
+in `06_Thumbnails/final/`. If the project
 folder does not exist under `/Users/vega/youtube/`, run `video-project` first.
 
 ## Workflow
 
-### Round 0: get the hook. Do not render without it.
+### Round 0: establish the promise
 
-`mcp__contentos__list_videos(slug)` returns the long-form video's locked title
-and thumbnail hook (text, hero device, expression). If either is missing or
-vague, stop and run `video-packaging`. Rendering against an unlocked promise is
-how a thumbnail takes two days.
+Read the video's title, brief, and thumbnail hook from ContentOS when its tools
+are available. Lock the promise, not the template or expression: packaging's
+suggested device and pose are starting points unless Dan explicitly chose them.
+For a normal production round, resolve a vague promise through `video-packaging`.
+For an explicitly exploratory request, use a stated working promise and label
+drafts as exploratory. If ContentOS is unavailable, use supplied context or a
+local brief and disclose the gap; never claim to have read or updated the record.
+Before concluding ContentOS is unavailable, check the client's MCP configuration.
+The local server is `http://localhost:8888/mcp`, authenticated with `X-API-Key`;
+the browser's form-login screen does not test MCP access. Reuse the existing
+configured connection without printing credentials. Discover the tool schemas,
+then read `get_project`, `get_brief`, and `list_videos` for the matched slug.
+
+### Check the channel and the photo library
+
+Before picking concepts, read [references/creative-range.md](references/creative-range.md).
+Review a small recent set of selected/published thumbnails, ideally 6 to 10, from
+ContentOS, the canonical Figma board, or local final files. Prefer actual publish
+order; modification times only establish local recency. Label drafts as drafts
+and state when the available sample is incomplete. Note repeated pose families,
+face position/size, layout, and visual devices in `06_Thumbnails/selection.md`.
+
+Inspect the cutout picker **and** the original-photo picker when exploring new
+directions or when recent thumbnails repeat a pose. Build missing picker pages:
+
+```bash
+python3 scripts/photo_sheet.py /Users/vega/youtube/shared-assets/thumbnail/photos \
+  -o /Users/vega/youtube/shared-assets/thumbnail/photo-picker
+```
+
+Use the numbered index to recover exact sources. Reuse current picker pages
+within the session. Select by gesture, gaze, emotion, and crop potential before
+outfit. Do not treat a differently dressed version of the same pointing pose as
+new visual range. Recent use breaks ties between equally suitable photos; it
+does not outweigh a pose that actually tells the story. See the reference for
+the lightweight selection record and how to find unused source photos.
 
 ### Round 1: three or four real options (about 5 minutes)
 
-1. **Pick the hero devices.** Choose 3 or 4 from the structure list below,
-   each a different device. Each gets its own text angle where possible
-   (mechanism, outcome, reaction). Add a fourth only when the hook genuinely
-   supports another angle, never to pad. The house look has no reserved slot.
-2. **Pick the faces.** Read `cutouts/cutouts-sheet.png` once. Choose by
-   expression name. Different expressions across options sell "different
-   style" harder than palette does. Make a new cutout only when the library
-   lacks the expression the hook needs (see Getting a new cutout).
-3. **Fill a template per option.** Copy the closest template into the
-   scratchpad and edit the numbered `<!-- FILL -->` sections. Rules for
-   every option, whatever the palette:
-   - ONE accent color hit: one word, number, or element. Never two.
-   - Real text budget is 4 words or fewer. Chips and code lines are texture
-     and don't count.
+1. **Pick visual stories.** Usually three options are enough. Each should make
+   a different visual argument for the same promise, such as disproportionate
+   effort, a simpler alternative, or a decision boundary. Write one sentence
+   per option before looking for a template. Use the structure list as examples,
+   not a closed menu. The house look has no reserved slot.
+2. **Cast each photo.** Choose a different source and pose family for each
+   face-led direction where suitable assets exist. Match gaze and gesture to
+   the focal object. Consider calm confidence, skepticism, and natural studio
+   photos as well as surprise. Do not force every face into the right third.
+   A new cutout is worthwhile for a fresher suitable pose, even when the library
+   already has an expression with the same name. Note any asset limitation.
+3. **Compose each option.** Adapt a template or build fresh HTML/CSS. Clear the
+   template's sample photo, badges, chips, and code before adding what this
+   concept needs. Do not preserve decoration just because it was in the file.
+   Rules for every option, whatever the palette:
+   - Give the eye one dominant focal point. Color supports hierarchy; a
+     comparison may need more than one semantic color.
+   - Aim for 4 words or fewer across the readable message. Labels, chips, and
+     code create clutter too; they are not a loophole in the text budget.
    - Thumbnail text must not repeat the title. The pair reads together.
    - Keep type clear of the cutout's head. No text over the face.
-   - Cutouts read smaller than you think. Bottom-anchor at 85 to 90% of frame
-     height (chest-up) unless the option wants Dan small or absent.
-   - No logos beyond the built-in AI-box/sparkle marks.
+   - Choose face size and position per story: close portrait, left, center,
+     small reaction, or absent. Check recognition at feed size. Do not mirror
+     shirt lettering/logos to manufacture a different gaze direction.
+   - Use logos only when they identify the actual subject. No automatic AI
+     sparkle, pills, or branding ornament on unrelated videos.
 4. **Render them in one call** (sequential, about 3 seconds each; do not
    parallelize Chrome, it stops exiting):
 
@@ -112,35 +147,52 @@ how a thumbnail takes two days.
 
    Pass one `-t` per image (repeat the same title if only the thumbnails
    differ). On the sheet, check: nothing clipped, nothing touching the face,
-   accent on the right word, and the hook phrase plus face still read in the
-   120px copy. Fix and re-render until it passes. Do not Read the individual
-   PNGs; the sheet is enough.
+   clear hierarchy, and the main idea still reads in the 120px copy. Also check
+   **range**: ignore color and copy. If the options still have the same face
+   placement, silhouette, and object relationship, replace a concept before
+   presenting. Compare with the recent channel sample, not just this round.
+   Fix and re-render until it passes. Inspect individual PNGs when the sheet
+   cannot reveal a cutout edge, crop, or text issue.
 6. **Save, send, stop.** Copy the PNGs and HTML into `06_Thumbnails/` as
-   `thumbnail-v1-<style>.png` and `.html`. Send the sheet with `SendUserFile`
-   so Dan can react from his phone. Then wait. Dan picks one and says what's off.
+   `thumbnail-v1-<concept>.png` and `.html`. Include the source photos, visual
+   differences, and provisional/selected status in `selection.md`. Show the
+   sheet inline with a local image link, or use `SendUserFile` if available.
+   Recommend one and explain its tradeoff. Dan picks one and says what's off.
 
 ### Round 2: tighten the winner (about 5 minutes)
 
-Three takes (`v2a`, `v2b`, `v2c`) that keep the winner's structure and vary
-what actually changed in past shipped versions:
+Make only the variants needed to answer Dan's feedback. When he likes the
+concept, keep its structure and vary the unresolved choice:
 
-- **Expression:** a different cutout in at least two takes.
+- **Expression:** compare suitable poses if the photo is the unresolved choice.
 - **Copy:** the hook words or which word carries the accent.
 - **One composition move:** flip Dan to the other side, size the hero up or
   down, or tighten the crop. One move per take.
 
-Do not re-execute the concept in a new visual language, palette, or template.
-That was the old "winner variation round", and Dan's verdict on it was
-"pretty much the same" (2026-07-23). If he wants a different direction he will
-say so. If he is torn between two titles, put both on the sheet. Same render,
-same sheet, same send.
+If the feedback is "same", "boring", or "blah", reopen the visual concept;
+more face swaps or palette changes will not answer it. If he is torn between
+two titles, put both on the sheet. Same render, same sheet, same delivery.
 
 ### Lock
 
-1. Copy the winner to `06_Thumbnails/thumbnail-final.png` and `.html`.
-2. `mcp__contentos__set_pipeline_stage(slug, "THUMBNAIL_READY")`.
-3. `mcp__contentos__update_video_packaging(slug, thumbnailConcept="<hook> · final: 06_Thumbnails/thumbnail-final.png")`
+1. Copy the winner to `06_Thumbnails/final/thumbnail-final.png` and `.html`. The
+   `final/` folder holds only the locked thumbnail (plus its HTML) so Dan can find it
+   without digging through rounds and takes. Create the folder if the template did not.
+   Every draft, take, and sheet stays in `06_Thumbnails/` itself; never put them in `final/`.
+2. `mcp__contentos__set_video_thumbnail(slug, filePath="<absolute path to final/thumbnail-final.png>")`
+   so the art itself lands on the video in ContentOS. Dan should never have to
+   drag it in by hand. It stores under a fixed name, so re-locking replaces the
+   old final. PNG or JPEG, 5MB max. If the tool is missing from the session's
+   tool list (the list loads at session start), call it over the MCP endpoint.
+3. `mcp__contentos__set_pipeline_stage(slug, "THUMBNAIL_READY")`.
+4. `mcp__contentos__update_video_packaging(slug, thumbnailConcept="<hook> · final: 06_Thumbnails/final/thumbnail-final.png")`
    so the record points at the art.
+5. Update `selection.md` with the selected source photo/cutout, pose family,
+   composition, hero device, and decision date. Record published status only
+   when verified. Future rounds read this record instead of guessing usage.
+
+If ContentOS tools are unavailable, save the local result and report the pending
+record update. Do not call drafts final or tick stages before Dan selects.
 
 **Face swap first, Figma second.** When Dan loves the thumbnail but not the
 photo, change the `img.dan` src to another library cutout and run `render.sh`.
@@ -149,7 +201,7 @@ something a src swap can't do.
 
 ## Structure list (hero devices)
 
-Vary at least two of {layout, palette, hero device} between options. Tagged
+Vary the composition and visual argument, not merely palette. Tagged
 with what has shipped on the channel so the picks are evidence, not taste:
 
 - **ui-artifact** (`merge-button.html`): a fake product UI as the hero. The
@@ -176,13 +228,18 @@ with what has shipped on the channel so the picks are evidence, not taste:
 - **quote-card** (`quote-card.html`): one line someone says, at max size.
   Rendered, never shipped. Use only when the hook is a quote.
 - **clean-light** (`big-type-light.html`): paper background, huge dark type.
-  Rendered often, never shipped, but it is the only option that stands out in
-  a dark feed. Keep offering it as the odd one out.
+  Rendered often, never shipped in the original sample. Use when a light field
+  serves this concept; it does not earn a slot just for being light.
+- **photo-editorial**: an original studio photo, deliberate crop, and minimal
+  type; the expression and setting carry the argument. No cutout required.
+- **scale-metaphor**: make effort or stakes visible through a large/small
+  object relationship. Keep any illustrative document/UI clearly conceptual;
+  do not invent measured results or pass it off as a real product screenshot.
 
 The **"Thumbnail Inspiration" Figma file** (fileKey `vwHATW30WF1B8da9CVDHpv`,
-page `0:1`) is where new structures come from. Consult it when adding a
-direction to this list (see Growing the library), not every round. The list
-above is the distilled result of past consults.
+page `0:1`) is one source of new structures. Consult it when the existing
+directions repeat or lack a suitable story. If access is unavailable, design
+from the concept; do not block or invent a review of the board.
 
 ## Getting a new cutout
 
@@ -226,12 +283,12 @@ palette but keep the same text discipline.
 
 ## Growing the library
 
-**New structure:** when a hook fits nothing on the list, pull an overview of
-the inspiration file (`get_screenshot` on page `0:1` at maxDimension ~2400,
-split with sips to review), extract the bones (layout grid, hero device, where
-the tension comes from), build it as a new annotated template with the FILL
-convention, test-render once, and add it to the structure list. Bones only,
-never their colors, assets, or branding.
+**New structure:** build a composition that fits the hook. When the inspiration
+file is accessible, an overview (`get_screenshot` on page `0:1` at maxDimension
+~2400) can help identify layout, hero device, and the source of tension. Borrow
+structure, not someone else's assets or branding. Promote a successful reusable
+composition into an annotated template after review; do not grow the template
+library for every exploratory draft.
 
 **New cutout:** see above. Rebuild the picker sheet after adding one:
 
@@ -300,7 +357,7 @@ thumbnails lives there; captured drafts land in a row to the right of it.
 Fine-grained edits from there use `use_figma` (Figma Plugin API JavaScript).
 ALWAYS read the `skill://figma/figma-use/SKILL.md` MCP resource first. For
 the final PNG: Dan exports at 1920x1080 (or `download_assets`), then copy it
-over `06_Thumbnails/thumbnail-final.png`.
+over `06_Thumbnails/final/thumbnail-final.png`.
 
 History: Paper (paper.design) played this role until 2026-07 and was dropped
 for its price and MCP call caps. Old artboards (v1 house-hero, the

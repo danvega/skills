@@ -80,7 +80,7 @@ def main():
         for line in wrap(draw, title, f_title, FEED_W):
             draw.text((x0, ty), line, fill=FG, font=f_title)
             ty += 22
-        draw.text((x0, ty + 2), "Dan Vega · 1.2K views · 1 hour ago", fill=MUTED, font=f_meta)
+        draw.text((x0, ty + 2), "Dan Vega · Thumbnail preview", fill=MUTED, font=f_meta)
 
         sx = x0 + FEED_W + 24
         sheet.paste(im.resize((SMALL_W, small_h), Image.LANCZOS), (sx, y))

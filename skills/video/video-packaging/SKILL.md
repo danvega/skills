@@ -33,7 +33,13 @@ Then write the video's promise as one sentence: who it's for and what they walk 
 
 ### Step 3 — Thumbnail hooks (one line each, not a brief)
 
-Produce 2–3 hooks. Each is ONE line: the on-image text (**4 words or fewer**), the hero device (from `video-thumbnail`'s structure list: UI card, file explorer, story panel, big object, code panel, quote, hand-drawn), and Dan's expression (a name from the cutout library, e.g. `point-surprised`, `grimace`, `thinking`). Example: `ONE PROPERTY · code panel with the line circled · point-surprised`. Two hard rules:
+Produce 2–3 hooks. Each is ONE line: the on-image text (**4 words or fewer**),
+the visual argument, and a suggested emotion or gesture. Example:
+`ONE PROPERTY · one small change fixes a visible failure · relieved confidence`.
+Use `video-thumbnail`'s structures as examples, not a closed menu. Do not choose
+a stock cutout filename before inspecting photos. Lock the promise; the
+thumbnail round explores devices, poses, and layouts unless Dan explicitly
+chooses one. Two hard rules:
 
 - Thumbnail text must **not repeat the title** — the pair is read together, so the text complements the title (title: "Spring AI 2.0: Everything New" → thumbnail: "IT ALL CHANGED"), never duplicates it.
 - It must be legible at ~120px wide. If a hook needs a paragraph to explain, it won't survive shrinking.

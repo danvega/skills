@@ -68,7 +68,7 @@ Acronyms already capitalized stay as-is (`AI`, `MCP`, `API`).
 03_Graphics/
 04_Exports/
 05_Transcripts/
-06_Thumbnails/
+06_Thumbnails/   rounds and takes; final/ inside it holds only the locked thumbnail
 07_raw/
 ```
 
