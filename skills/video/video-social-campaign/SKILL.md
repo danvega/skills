@@ -36,6 +36,9 @@ never invented; weekends only if Dan asks.
 
 ## Platform-native, not cross-posted
 
+Every post is written as Dan, in first person, because Dan is the one posting. Use "I" and
+"my" ("I built", "my new video"). Never refer to him as "Dan", "he", "his", or "the creator".
+
 - **LinkedIn (3000 chars)** — the first ~200 characters are the hook (that's the "…more" fold).
   Short paragraphs, real line breaks, no hashtag walls (0–3 at the end if any), link at the end.
   Dev-to-dev voice: plain, first person, zero "🚀 Thrilled to announce".
