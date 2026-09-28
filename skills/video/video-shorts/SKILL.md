@@ -15,8 +15,11 @@ description: >-
 
 # Shorts
 
-Pull the 3–5 moments from a long-form video that genuinely stand alone, and deliver each as a
-finished 1080×1920 short with word-level captions. Quality bar over quota: a video with one great
+Pull the **2 to 3** strongest moments from a long-form video that genuinely stand alone, and
+deliver each as a finished 1080×1920 short with word-level captions. Three is the ceiling (Dan,
+2026-09-28: "I'm creating too many shorts"). At one a day in the noon queue, a bigger batch
+crowds out the next video's shorts. List the runners-up under "Skipped" so Dan can swap one in.
+Also avoid two shorts that make the same point. Quality bar over quota: a video with one great
 clip yields one; a video with nothing clippable yields zero and a report saying why. A mediocre
 short costs channel credibility — **when in doubt, leave it out** (the inverse of video-rough-cut's
 rule, on purpose: video-rough-cut keeps, shorts curates).
@@ -244,6 +247,41 @@ To load an approved thumbnail, overwrite the fixed-name file
 persists; the board's Replace thumbnail button is the alternative). Whatever file sits there
 when the draft uploads is exactly what YouTube gets.
 
+## Step 8 — Schedule and link the related video (YouTube-bound shorts)
+
+Runs after the drafts are on YouTube (the board's upload). Dan's rule (2026-09-28): **one
+short a day at noon Eastern, channel-wide, and a new video's shorts go ahead of older queued
+ones.** Every batch also gets its long video as each short's Related video. Dan asked for both
+on every batch, so do them without being asked again.
+
+1. **Schedule.** Open `/projects/<slug>/videos/shorts/schedule` in ContentOS. It reads the real
+   queue from YouTube and shows the plan without changing anything. Shorts from newer long
+   videos keep their days. Use a draft's **Leave out** link for any short Dan dropped (it stays
+   private and the choice carries into Apply). Show Dan the dates, and
+   apply only after he says go, because it sets public publish times. From Claude in Chrome,
+   submit the Apply form with `fetch(form.action, {method: 'POST', body: new URLSearchParams(new
+   FormData(form))})`: a ref click on the button did nothing. Reload the preview afterwards.
+   Every row should read "No change", which proves YouTube stored the times.
+2. **Related video.** The YouTube API has no field for it, so set it in Studio through Dan's
+   logged-in Chrome, one short at a time, at `https://studio.youtube.com/video/<id>/edit`:
+   - Find the "Related video" button and click it. The first click after a page load often
+     does nothing. Click again, then wait about 8 seconds for the "Choose specific video" picker.
+   - Find the long video's tile by its full title. Wait until the tiles have thumbnails before
+     clicking it. A click while they are still gray does not register.
+   - A good click usually closes the picker and fills the field. If the picker stays open with
+     the tile highlighted, close it with its X. Never press Escape, because that dropped the
+     choice once. Then find Save in the page header fresh each time (its ref changes) and click it.
+   - Reload the page and confirm the Related video field shows the long video's title.
+3. Reload the schedule preview once more. Saving in Studio should leave every publish time as
+   is ("No change").
+4. **Thumbnails, after processing.** The thumbnail set during upload is often lost when YouTube
+   finishes processing (2026-09-28: the Model Router and Claude Code shorts all fell back to
+   auto frames). In Studio, a processed short that shows a video frame in the Thumbnail box has
+   lost it; the "…" placeholder is fine. POST the board's `/{videoId}/youtube-thumbnail` for
+   each lost one (50 units), then fetch the signed `i9.ytimg.com` URL from the "Thumbnail
+   confirmed" log line and look at it. That shows what YouTube stored. The public
+   `i.ytimg.com` URL is a gray placeholder for private drafts, so it proves nothing.
+
 ## Operational checks
 
 - Preserve the actual decimal or rational frame rate throughout caption capture and encoding.
@@ -276,4 +314,5 @@ when the draft uploads is exactly what YouTube gets.
 - Branded overlay graphics on shorts (lower thirds, callouts) — video-motion-graphics, if ever needed.
 - Titles, descriptions, hashtags strategy, and the LONG-FORM video's thumbnail —
   video-packaging territory. (Shorts thumbnails ARE this skill's job — Step 7.)
-- Uploading or scheduling anywhere.
+- Uploading anywhere other than the ContentOS shorts board, or scheduling outside the noon queue
+  in Step 8.
