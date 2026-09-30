@@ -281,6 +281,9 @@ on every batch, so do them without being asked again.
    each lost one (50 units), then fetch the signed `i9.ytimg.com` URL from the "Thumbnail
    confirmed" log line and look at it. That shows what YouTube stored. The public
    `i.ytimg.com` URL is a gray placeholder for private drafts, so it proves nothing.
+   Once a short is live, its public `i.ytimg.com/vi/<id>/hqdefault.jpg` is the proof. Studio
+   keeps showing a blank "…" box for thumbnails set this way, even on live shorts
+   (2026-09-29). Tell Dan not to replace them by hand.
 
 ## Operational checks
 
