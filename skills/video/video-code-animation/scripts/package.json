@@ -1,8 +1,0 @@
-{
-  "name": "code-animation-build",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "shiki": "^3.13.0"
-  }
-}

@@ -101,25 +101,6 @@ Guest appearances and the Spring Office Hours episode workflow.
 - **[spring-office-hours-show-notes](./skills/podcast/spring-office-hours-show-notes/SKILL.md)**: assemble the episode title, description, and resource links
 - **[spring-office-hours-spring-io-pr](./skills/podcast/spring-office-hours-spring-io-pr/SKILL.md)**: prepare the spring.io post and PR after the episode is published on Transistor
 
-### video
-
-The workflow for my [YouTube channel](https://www.youtube.com/@DanVega), from idea
-development to editing and promotion.
-
-- **[video-ideation](./skills/video/video-ideation/SKILL.md)**: find and rank ideas using channel data, search demand, and community signals
-- **[video-develop-idea](./skills/video/video-develop-idea/SKILL.md)**: evaluate an idea, find its angle, and narrow its scope
-- **[video-demo-design](./skills/video/video-demo-design/SKILL.md)**: design the demo code, build a companion repo, and prepare a shot list
-- **[video-project](./skills/video/video-project/SKILL.md)**: create a project folder from my local video template
-- **[video-packaging](./skills/video/video-packaging/SKILL.md)**: develop titles, a thumbnail brief, and the opening hook
-- **[video-thumbnail](./skills/video/video-thumbnail/SKILL.md)**: compose thumbnail images from photos and HTML/CSS templates
-- **[video-rough-cut](./skills/video/video-rough-cut/SKILL.md)**: prepare a first cut from a recording
-- **[video-motion-graphics](./skills/video/video-motion-graphics/SKILL.md)**: add branded graphics and overlays to recorded footage
-- **[video-visual-story](./skills/video/video-visual-story/SKILL.md)**: plan and produce B-roll, request-flow diagrams, comparisons, and evidence inserts
-- **[video-code-animation](./skills/video/video-code-animation/SKILL.md)**: render animated code diffs, typing, and refactors from source files
-- **[video-teaser](./skills/video/video-teaser/SKILL.md)**: build a cinematic pre-release trailer with demo glimpses, selected dialogue, title cards, and sound design
-- **[video-shorts](./skills/video/video-shorts/SKILL.md)**: turn long-form footage into vertical clips with captions
-- **[video-social-campaign](./skills/video/video-social-campaign/SKILL.md)**: draft and schedule a social campaign for a published video
-
 ### contentos
 
 The glue that moves a video through [ContentOS](https://github.com/danvega/contentos):
@@ -148,5 +129,3 @@ authoring conventions.
 ## License
 
 Original material is licensed under [MIT](./LICENSE).
-The vendored HyperFrames animation blocks retain their
-[Apache 2.0 license and attribution](./skills/video/video-code-animation/assets/blocks/UPSTREAM.md).
