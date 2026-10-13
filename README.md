@@ -101,14 +101,6 @@ Guest appearances and the Spring Office Hours episode workflow.
 - **[spring-office-hours-show-notes](./skills/podcast/spring-office-hours-show-notes/SKILL.md)**: assemble the episode title, description, and resource links
 - **[spring-office-hours-spring-io-pr](./skills/podcast/spring-office-hours-spring-io-pr/SKILL.md)**: prepare the spring.io post and PR after the episode is published on Transistor
 
-### contentos
-
-The glue that moves a video through [ContentOS](https://github.com/danvega/contentos):
-capture an idea in one pass, then run it forward to the next point where I am needed.
-
-- **[contentos-capture](./skills/contentos/contentos-capture/SKILL.md)**: turn dictated notes, a repo, or a link into a saved idea and project
-- **[contentos-next](./skills/contentos/contentos-next/SKILL.md)**: run a project through every stage up to the next stop: record, edit, or publish
-
 ## Adapt these to your setup
 
 The `dev` and `shipit` skills can work with the conventions and tools in your project.
