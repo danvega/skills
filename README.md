@@ -93,9 +93,8 @@ The workflow behind danvega.dev, from choosing a topic to preparing a post and c
 
 ### podcast
 
-Guest appearances and the Spring Office Hours episode workflow.
+The Spring Office Hours episode workflow.
 
-- **[podcast-appearance](./skills/podcast/podcast-appearance/SKILL.md)**: record a guest appearance in ContentOS and on danvega.dev
 - **[spring-office-hours-prep](./skills/podcast/spring-office-hours-prep/SKILL.md)**: run the audio edit and show-notes steps for one episode
 - **[spring-office-hours-edit](./skills/podcast/spring-office-hours-edit/SKILL.md)**: edit a recording into a podcast MP3 and transcript
 - **[spring-office-hours-show-notes](./skills/podcast/spring-office-hours-show-notes/SKILL.md)**: assemble the episode title, description, and resource links
@@ -107,7 +106,7 @@ The `dev` and `shipit` skills can work with the conventions and tools in your pr
 The Spring skills provide guidance for their stated framework versions.
 
 The blog, newsletter, podcast, and video workflows include my paths, branding, and
-publishing conventions. Some rely on ContentOS, Search Console, Figma, local site repos,
+publishing conventions. Some rely on Search Console, Figma, local site repos,
 or media tools such as Node.js, ffmpeg, and transcription software. Read the selected
 skill's prerequisites and replace personal paths and account details before using it.
 Copying a skill does not install its tools or connect its accounts.

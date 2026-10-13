@@ -8,8 +8,7 @@ description: >-
   Hours recording and says "podcast edit this", "cut this down to an mp3", "edit this episode",
   "rough edit the podcast", or "prep this for the podcast feed". This skill is specific to Spring
   Office Hours; other shows get their own skills. Do NOT use for YouTube video cuts
-  (video-rough-cut), shorts (video-shorts), show notes (spring-office-hours-show-notes), or
-  logging guest spots on other people's shows (podcast-appearance).
+  (video-rough-cut), shorts (video-shorts), or show notes (spring-office-hours-show-notes).
 ---
 
 # Spring Office Hours: Episode Edit

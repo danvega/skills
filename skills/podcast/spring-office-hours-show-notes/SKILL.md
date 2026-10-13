@@ -7,8 +7,8 @@ description: >-
   Dan asks for "show notes", "episode description", "write up this episode", "notes for S5E18",
   or right after spring-office-hours-edit produced an episode transcript. Input is a transcript
   (preferred) or a recording/mp3 to transcribe first. Do NOT use for editing the audio itself
-  (spring-office-hours-edit), YouTube titles/thumbnails (video-packaging), blog posts
-  (blog-new-post), or other people's shows (podcast-appearance).
+  (spring-office-hours-edit), YouTube titles/thumbnails (video-packaging), or blog posts
+  (blog-new-post).
 ---
 
 # Spring Office Hours: Show Notes
