@@ -150,6 +150,18 @@ Append a dated line every time a run burns you.
   live on Transistor: a recipe link that had been ruled out, a GitHub repo, and no "The show:"
   footer. Never end the report with a bare link list. Label research sources plainly as "not
   for the episode page" and keep them short, or put them in the notes file's Notes for Dan.
+- 2026-09-16 (S5E23): blogs.oracle.com answers curl and WebFetch with 403 even with a browser
+  user agent. The built-in browser pane (navigate + get_page_text) reads it fine and showed the
+  post date, author and the "updated September 10" note. Use the browser for Oracle blog links.
+- 2026-09-16 (S5E23): the Java channel's launch-day replay ("Java 27 Launch Stream", 2h45m) only
+  shows up under youtube.com/@java/streams. It is absent from /videos and ytsearch surfaced only
+  the 3-minute recap and the Newscast. List the /streams tab when a guest mentions a live stream.
+- 2026-09-16 (S5E23): LinkedIn answers curl with 999 (bot block), not a dead link. WebFetch on the
+  profile URL from a web search returned the name, headline and employer, which is enough to
+  verify the guest's profile. Do not drop a LinkedIn link over the 999.
+- (2026-09-21, S5E24) The YouTube description was not in the house shape. No "Join Dan Vega and DaShaun Carter..." opener, no "...catch the replay..." closer, three original paragraphs instead. Still verbatim: render each paragraph as its own `<p>` before the Show Notes block, and tell Dan the opener and closer are missing so he can add them if he wants the feed consistent.
+- (2026-10-05, S5E25) The hosts named the wrong event on air. The DHH keynote was called "RubyConf", then "RailsConf". It was the Rails World 2026 opening keynote. Search for the quoted claim ("writing code by hand is over"), not the event name.
+- (2026-10-05, S5E25) The `HYPERLINK` hex check from S5E22 printed 0 on a good clipboard. osascript prints uppercase hex and the pattern was lowercase. Use `grep -o -i 48595045524c494e4b`.
 
 ## What this skill does NOT do
 

@@ -75,11 +75,29 @@ order: 1
 
 - Title separator is ` - ` after the episode token, matching the YouTube title.
 - `publishedAt` is the episode date (the Monday it streamed).
+- **The iframe must come before 800 characters of body text.** The Podcasts section on
+  spring.io/blog builds each card from `excerpt(pruneLength: 800, format: HTML)` and then
+  pulls the first `<iframe>` out of that excerpt (`PodcastsSection.tsx` and
+  `blogs-category-template.tsx` in spring-io/spring-website). If the player sits past 800
+  characters of text, the card renders with no player at all. A one-paragraph description
+  (300 to 650 characters) always fits. When the description runs longer than one paragraph,
+  put the iframe right after the FIRST paragraph and the remaining paragraphs after it.
+  Check before committing:
+
+  ```bash
+  python3 -c "import re;b=open('$F').read().split('---',2)[2];i=b.find('<iframe');print(len(re.sub(r'<[^>]+>','',b[:i]).strip()),'text chars before iframe (must be under 800)')"
+  ```
 - Show Notes are the episode's resource links; the "The show:" footer is fixed and identical
   every episode (same block the Transistor notes carry, added starting S5E19).
 - No blank line variations, no extra sections beyond these. Match the previous episode files.
 
 ## Step 3: Branch, commit, push, PR
+
+Publish only the episode description, public embed, and public resource links.
+Do not copy a show-notes file's "Notes for Dan", raw transcripts, local paths,
+debug output, account configuration, credentials, or signed/private share URLs
+into the post or PR. The public Transistor episode hash is an identifier, not
+an API token.
 
 Branch off up-to-date main; never commit to main directly:
 
@@ -87,7 +105,12 @@ Branch off up-to-date main; never commit to main directly:
 git fetch origin
 git checkout -b spring-office-hours-$EP origin/main
 git add blog/<yyyy>/<mm>/spring-office-hours-podcast-$EP.md
-git commit -s --no-gpg-sign -m "Adding Spring Office Hours $EP"
+git diff --cached --check
+git diff --cached -- blog/<yyyy>/<mm>/spring-office-hours-podcast-$EP.md
+# Review the staged episode content before committing. Commit only this file,
+# even if unrelated changes were already staged in the user's checkout.
+git commit --only -s --no-gpg-sign -m "Adding Spring Office Hours $EP" \
+  -- blog/<yyyy>/<mm>/spring-office-hours-podcast-$EP.md
 git push -u origin spring-office-hours-$EP
 gh pr create --repo spring-io/spring-website-content --base main \
   --title "Adding Spring Office Hours $EP" --body ""
@@ -99,8 +122,9 @@ gh pr create --repo spring-io/spring-website-content --base main \
   every previous episode PR.
 - No `Co-Authored-By: Claude` trailer, even if the session's attribution settings ask for one.
   Dan had it dropped from S5E22 (#1495). The DCO sign-off is the only trailer.
-- `-s` is required: the repo enforces DCO, and a commit without a
-  `Signed-off-by: danvega <danvega@gmail.com>` line blocks the PR.
+- `-s` is required: the repo enforces DCO. Let Git generate the `Signed-off-by`
+  trailer from the identity configured for this repository; do not hard-code an
+  email address in this skill. That identity and trailer are public commit metadata.
 - `--no-gpg-sign` matters: GPG signing hangs non-interactive commits on this machine, and the
   history is unsigned anyway. (DCO sign-off and GPG signing are different things; the repo wants
   the former.)
@@ -133,6 +157,12 @@ Append a dated line every time a run burns you.
   `<a href>`s and compare them to the file's links.
 - (2026-09-14, S5E22) `publishedAt` is the stream date, which is not always a Monday. The
   live-from-KCDC special streamed on a Wednesday, so it used 2026-09-09.
+- (2026-09-16, S5E23) Read the previous episode's post from origin, not the working tree:
+  `git show origin/main:blog/<yyyy>/<mm>/spring-office-hours-podcast-<prev>.md`. Local main was 3
+  commits behind and the S5E22 file did not exist locally, so a plain `cat` failed. The
+  shape-diff should use the same `git show` source.
+- (2026-09-21, S5E24) The verbatim description was three paragraphs (966 characters), and the post put all three before the iframe. The card in the Podcasts section on spring.io/blog then showed no player: the section reads the first `<iframe>` out of an 800-character HTML excerpt, and the player sat at character 966. S5E23, with a 367-character paragraph, was fine. Fixed by moving the iframe up to right after the first paragraph (#1511). Rule and check added to Step 2. The shape diff cannot catch this; only the character count can.
+- (2026-10-05, S5E25) The live-vs-file link check flagged 4 "differences" that were only trailing slashes. Transistor's editor adds `/` to bare domains (joshlong.com -> joshlong.com/). Strip trailing slashes before comparing.
 
 ## What this skill does NOT do
 

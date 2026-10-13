@@ -76,7 +76,7 @@ A **bare filename** (`cover: ralph-loop.jpg`), resolved against `public/images/b
 
 ## Write the full draft
 
-Write the complete post — intro, every section, conclusion. Dan edits rather than writes from blank. The bar is a draft he can ship after a pass, not an outline he has to fill in.
+Write the complete post, including an ending that fits the topic. Dan edits rather than writes from blank. The bar is a draft he can ship after a pass, not an outline he has to fill in.
 
 This only works if it sounds like him. Generic-AI-blog voice is the failure mode, and it's worse than no draft, because the uncanny-valley version has to be un-written before it can be rewritten.
 
@@ -101,6 +101,16 @@ Traits you can see in any recent post:
 - **Define acronyms at first mention.** Spell it out once with the acronym in parens — *"Large Language Models (LLMs)"*, *"Model Context Protocol (MCP)"* — then use the short form everywhere after, including headings. The definition goes at the first mention in the body, not wherever it happens to feel natural mid-draft.
 
 Avoid: "In today's fast-paced world", "Let's dive in", "It's important to note that", breathless adjectives, and paragraphs that restate the heading. If a sentence would survive being deleted, delete it.
+
+### Ending the post
+
+Dan dislikes "Wrapping Up": it sounds like the assistant, not him. Avoid generic closing headings such as "Conclusion", "Final Thoughts", and "Key Takeaways" too. Do not just swap one stock heading for another.
+
+Let the final substantive section finish the article when it already does the job. If another section is useful, give it a plain heading about its actual point. A heading is optional; every post does not need a separate conclusion.
+
+End with something specific to this article: a useful experiment with the demo, a decision the reader can now make, or a grounded personal observation. Choose what fits rather than applying the same closing formula to every post. Do not invent Dan's experiences or opinions to make the ending personal.
+
+Cut "In this post we covered..." recaps, repeated thesis statements, generic encouragement, and automatic requests to comment or subscribe. Read the ending on its own: if it could close an unrelated article after swapping the technology name, make it more concrete or remove it. Keep Dan's usual "Happy Coding" sign-off when it fits; it does not require a summary before it.
 
 ### Structure
 

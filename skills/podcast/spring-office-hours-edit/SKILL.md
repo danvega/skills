@@ -234,6 +234,17 @@ video-rough-cut:
   it!" before "Today is...". The outro matched no sign-off formula ("I think this is a fantastic
   episode... Thanks everyone"). Room noise also meant zero silences >= 2s, so nothing to trim.
   Expect all of this on any on-location episode.
+- (2026-09-16, S5E23) The built-in repetition scan printed "clean" again while whisper looped
+  MID-SHOW for ~85s (789-874s, "we had a lot of people come in... go to the conference" about
+  20 times), swallowing Billy's KCDC registration and organizer story. Boundaries were unaffected,
+  but the .srt/.txt would have shipped garbage. The 5-gram check caught it; the word-rate check
+  also flagged two short natural 8-9 word segments at 6.3-6.7 w/s after the splice, so treat rate
+  hits under ~10 words as noise and trust the 5-gram check. Fix was the usual slice-and-splice
+  (785.08-920.32 with `--condition-on-previous-text False`). Run both checks over the WHOLE
+  transcript every time, not just the sign-off region.
+- (2026-09-21, S5E24) The end-boundary `verify` slice ran past end of file (3710-3720s on a 3718.7s file) and whisper invented a plausible full-sentence reply, "See you next time.", after the real sign-off. The full-file pass and a fresh word-timestamped slice both stopped at "one.", and windowed RMS showed the stream going dead 0.8s later. A full-sentence reply is only part of the sign-off when the audio proves it: check RMS over the tail before extending the end, especially when the slice window runs past end of file.
+- (2026-10-05, S5E25) `analyze` proposed START at 2:22 ("It is a great day to be a Spring developer") with NO formula match, 18s past the real cold open at 124.60s. Whisper had split "Today is Monday, October 5th, 2026..." into 2-6 word segments, and `propose_start` skips segments under 8 words, so the hint never matched. A "NO formula match" START is a tell: print the segments from ~100s and look for "Today is" yourself. RMS showed the bumper ending at 123.9s, so the real cut was clean.
+- (2026-10-05, S5E25) The 1.0s END_PAD pulled a quiet off-mic "See ya" (-36dB, about 0.6s after "Have a good one.") into the render. Whisper word times ran about 0.45s late against windowed RMS here, so the gap looked bigger than it was. Before rendering, check RMS for the window [end, end+1.0]. If debris sits inside it, pass an earlier `--end` so end+1.0 lands before the debris. Then confirm the delivered .txt's last words.
 
 ## What this skill does NOT do
 

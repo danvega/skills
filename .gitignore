@@ -21,6 +21,29 @@ __pycache__/
 
 # Local agent settings
 .claude/settings.local.json
+.codex/config.toml
+.mcp.json
+claude_desktop_config.json
+
+# Local credentials and environment files (sanitized examples may be shared)
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+secrets.properties
+credentials.json
+*-credentials.json
+token.json
+tokens.json
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+*.keychain
+*.keychain-db
 
 # Logs / temp
 *.log

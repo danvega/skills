@@ -94,6 +94,10 @@ Append a dated line every time a run burns you.
   step 0 removes one chance to get it wrong. Do not let it drift back to two lookups.
 - (seed 2026-08-17) Do not collapse this into the PR step. The RSS embed hash does not exist
   until Transistor has published, and a PR built with a placeholder hash ships a broken player.
+- (2026-09-16, S5E23) `ytsearch8` returned two SpringDeveloper hits with the same title and
+  matching durations (3811s and 3810s). The second carried a 📱 suffix and is the vertical/mobile
+  duplicate stream. Duration alone does not disambiguate these; take the one without the emoji.
+- (2026-09-21, S5E24) `ls` in this shell is an alias (eza-style flags). `ls -lat` printed nothing for a raw folder that held a 2GB mp4, which looked like a missing recording. Use `/bin/ls -la` for the Step 0 folder checks.
 
 ## What this skill does NOT do
 

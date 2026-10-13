@@ -22,6 +22,7 @@ The post does not have to live in the site repo. Drafts generated elsewhere (Con
 2. Identify: core topic, subtopics, target audience level (beginner / intermediate / advanced), and the primary technology/version (e.g. "Spring AI 2.0", "Nuxt 3").
 3. Note keywords already present naturally in the prose and headings.
 4. Note the current `title`, `description`, and `keywords` (if any) — you're improving these, not replacing the post's substance.
+5. Check the ending against [Dan's closing style](../blog-new-post/SKILL.md#ending-the-post). Flag generic conclusion headings and recap paragraphs. Rewrite them when prose editing is in scope; otherwise include the finding in the report.
 
 ### Phase 2 — Keyword research (web search)
 
@@ -139,6 +140,7 @@ Title formulas that work: "How to [Action] with [Technology]", "[Technology] [To
 - Readability beats keyword density — every time.
 - Never add a keyword that reads unnaturally, and never keyword-stuff (developers notice and bounce).
 - Preserve Dan's voice and technical accuracy. Developer trust > search rankings.
+- Do not add "Wrapping Up", "Conclusion", or "Final Thoughts" to fit in another keyword. Prefer a topic-specific ending or let the final substantive section stand on its own.
 - One primary keyword focus per post.
 - Don't invent version numbers or claims to hit a keyword — accuracy first.
 - Show the keyword report before editing; summarize every change after.
