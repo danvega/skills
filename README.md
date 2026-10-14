@@ -95,6 +95,22 @@ The Spring Office Hours episode workflow.
 - **[spring-office-hours-show-notes](./skills/podcast/spring-office-hours-show-notes/SKILL.md)**: assemble the episode title, description, and resource links
 - **[spring-office-hours-spring-io-pr](./skills/podcast/spring-office-hours-spring-io-pr/SKILL.md)**: prepare the spring.io post and PR after the episode is published on Transistor
 
+### video
+
+The YouTube edit pipeline, from raw recordings to a Premiere timeline. These skills
+call the `vedit` tool in my video-editor project, so they need that project installed.
+
+- **[video-edit](./skills/video/video-edit/SKILL.md)**: run the whole edit pipeline from raw recordings to the Premiere XML
+- **[video-project](./skills/video/video-project/SKILL.md)**: create a new video project folder from the template
+- **[video-transcribe](./skills/video/video-transcribe/SKILL.md)**: transcribe recordings locally with parakeet-mlx, or transcribe a finished export for publishing
+- **[video-rough-cut](./skills/video/video-rough-cut/SKILL.md)**: remove dead air, fillers, and retakes, with a review page before rendering
+- **[video-zoom](./skills/video/video-zoom/SKILL.md)**: add punch-ins and slow pushes centered on my face
+- **[video-motion-graphics](./skills/video/video-motion-graphics/SKILL.md)**: add lower thirds, list reveals, link popups, and icon pops
+- **[video-broll-research](./skills/video/video-broll-research/SKILL.md)**: find cited sources and show them with a highlighter sweep
+- **[video-sfx](./skills/video/video-sfx/SKILL.md)**: add sound effects timed to the graphics
+- **[video-music](./skills/video/video-music/SKILL.md)**: add a ducked background music bed from Epidemic Sound
+- **[video-x-clips](./skills/video/video-x-clips/SKILL.md)**: cut 1 to 3 clips for X with ready-to-paste post copy
+
 ## Adapt these to your setup
 
 The `dev` and `shipit` skills can work with the conventions and tools in your project.
