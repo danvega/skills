@@ -48,11 +48,6 @@ for discovery and configuration. Other agents may use a different skill director
 General development skills with plain language and short instructions.
 
 - **[readme](./skills/dev/readme/SKILL.md)**: write a README that fits the project and its readers
-- **[pr-description](./skills/dev/pr-description/SKILL.md)**: turn a diff into a PR title and description with actual test results
-- **[bug-repro](./skills/dev/bug-repro/SKILL.md)**: reproduce a bug, capture it in a regression test, and verify a focused fix when requested
-- **[code-review](./skills/dev/code-review/SKILL.md)**: find actionable bugs and regressions, with evidence and file references
-- **[release-notes](./skills/dev/release-notes/SKILL.md)**: turn changes between versions into useful release notes
-- **[code-tour](./skills/dev/code-tour/SKILL.md)**: trace a real request or command through the code
 
 ### shipit
 

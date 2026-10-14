@@ -20,7 +20,7 @@ Workflow skills should describe the outcome and the decisions needed to reach it
 - Use lowercase letters, numbers, and hyphens.
 - Keep pipeline prefixes such as `shipit-`, `blog-`, `newsletter-`, and `video-`.
 - Podcast workflows may use the show name, such as `spring-office-hours-`.
-- General dev skills stay unprefixed, such as `readme` and `code-review`.
+- General dev skills stay unprefixed, such as `readme`.
 - Framework skill names describe the capability, such as `jackson-3`.
 
 A description says what the skill does and when to use it.

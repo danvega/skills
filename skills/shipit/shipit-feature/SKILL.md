@@ -67,7 +67,7 @@ dependency or environment that prevents verification. Continue unrelated work.
 Ask before crossing an unresolved scope boundary or a project stop.
 
 Run the appropriate broader checks before finishing. Report anything you could not run.
-For a substantial or risky diff, review it for concrete problems using code-review
+For a substantial or risky diff, review it for concrete problems using /code-review
 when available. Focus any security review on risks introduced by the change.
 Rerun relevant checks after fixes.
 
