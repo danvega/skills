@@ -60,7 +60,7 @@ Do not summarise or shortcut its report. The boundary quotes it prints are the o
 Dan can catch a bad cut without listening to the whole episode, so surface them verbatim.
 
 Stop the chain if the edit reports something Dan needs to rule on before notes are worth
-writing: a boundary that did not match its formula and reads wrong, a suspected whisper
+writing: a boundary that did not match its formula and reads wrong, a suspected
 repetition loop in the sign-off region, or a runtime far off the raw duration.
 
 ## Step 2: show notes

@@ -1,7 +1,7 @@
 ---
 name: blog-seo-optimize
 description: |
-  SEO keyword research and optimization for an existing blog post on Dan Vega's site. Use when the user wants to: (1) find keywords for a finished blog post, (2) optimize a post for search engines, (3) research what developers search for on a topic, (4) improve or add the `keywords` frontmatter, or when they mention "SEO", "keywords", "optimize for search", or "make this rank better". Works on posts in the site's content/blog/ AND on generated drafts anywhere on disk (e.g. a ContentOS-generated video post that hasn't been copied to the site yet). Research is web-search based (no paid APIs). Scope is optimizing a post that already exists — not writing new posts (use blog-new-post for that).
+  SEO keyword research and optimization for an existing blog post on Dan Vega's site. Use when the user wants to: (1) find keywords for a finished blog post, (2) optimize a post for search engines, (3) research what developers search for on a topic, (4) improve or add the `keywords` frontmatter, or when they mention "SEO", "keywords", "optimize for search", or "make this rank better". Works on posts in the site's content/blog/ AND on drafts anywhere on disk that haven't been copied to the site yet. Research is web-search based (no paid APIs). Scope is optimizing a post that already exists — not writing new posts (use blog-new-post for that).
 ---
 
 # SEO Optimize
@@ -12,7 +12,7 @@ Optimize an existing technical blog post for search visibility while keeping Dan
 
 The user points you at a post — a path, a slug, or "the latest post." If ambiguous, list recent candidates and confirm before editing. Never optimize a post you haven't been pointed at.
 
-The post does not have to live in the site repo. Drafts generated elsewhere (ContentOS turns a video's transcript + demo repo into a blog draft in that video's project) are in scope — optimize them in place via their absolute path, before they get copied into the site. The frontmatter conventions below apply either way, because the draft's destination is always `danvega-dev-nuxt/content/blog/`.
+The post does not have to live in the site repo. Drafts that live elsewhere, such as in a video's project folder, are in scope — optimize them in place via their absolute path, before they get copied into the site. The frontmatter conventions below apply either way, because the draft's destination is always `danvega-dev-nuxt/content/blog/`.
 
 ## Workflow
 

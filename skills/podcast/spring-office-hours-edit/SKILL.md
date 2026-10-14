@@ -64,7 +64,8 @@ behind for cheap revisions.
 
 ## The script
 
-`scripts/soh_audio.py` owns everything mechanical: extraction, transcription, the repetition
+`scripts/soh_audio.py` owns everything mechanical: extraction, transcription (parakeet through
+`vedit transcribe`, so it needs the video-editor project and shares its glossary), the repetition
 scan, RMS measurement, silence detection, the loudnorm passes, encoding, and the transcript
 remap. It runs the same way every time, which is the point. What it deliberately does NOT do is
 decide where the show starts and ends. It proposes, you confirm.
@@ -80,9 +81,11 @@ python3 <skill>/scripts/soh_audio.py analyze --ep $EP --src "$SRC"
 
 Read the output before touching anything. Two lines decide whether you can continue:
 
-- **"WHISPER REPETITION SUSPECTED"** means the transcript is degenerate somewhere. It shredded
-  the entire sign-off region on S5E19. Re-transcribe from just before the first bad segment as a
-  slice (that resets the conditioning) and use the slice for boundaries.
+- **"REPETITION SUSPECTED"** means the transcript may be degenerate somewhere. Whisper shredded
+  the entire sign-off region on S5E19. Re-transcribe that region as a slice with `verify` and
+  use the slice for boundaries.
+- **"loud stretch with no words ... near a boundary"** means speech may be missing next to a
+  proposed cut. Verify that spot before trusting the boundary.
 - **"NO sign-off formula"** on the END candidate. Sometimes correct and sometimes not. S5E20
   genuinely had no sign-off and ended on the guest goodbye; the fallback to last-sustained-speech
   was right. Confirm it in Step 2 rather than assuming either way.
@@ -100,7 +103,7 @@ python3 <skill>/scripts/soh_audio.py verify --ep $EP --at <start>
 python3 <skill>/scripts/soh_audio.py verify --ep $EP --at <end>
 ```
 
-Whisper invents words inside music and inside end-of-file silence, so a candidate drawn from the
+ASR can invent words inside music and inside end-of-file silence, so a candidate drawn from the
 full-file pass proves nothing on its own. The slice re-transcription is independent evidence. If
 it disagrees with the full-file transcript, or comes back empty, that candidate was debris: take
 the next sustained run and verify that one.
@@ -181,7 +184,10 @@ from the transcript now on disk. When both are wanted, `spring-office-hours-prep
 Append a dated line every time a run burns you. Seeded with lessons inherited from
 video-rough-cut:
 
-- (seed) `whisper` CLI is not installed on this machine. Use `mlx_whisper` (miniforge, on PATH).
+- (2026-10-14) Transcription moved from mlx_whisper to parakeet through `vedit transcribe`.
+  The whisper entries below are history. Their checks (verify slices, RMS at the edges) still
+  apply. On S5E25 parakeet found the right cold open and sign-off with no fixes. When a name
+  comes out wrong, add it to `/Users/vega/dev/projects/video-editor/style/glossary.txt`.
 - (seed) `aselect` desyncs audio on cuts. Always atrim+concat via a filter script.
 - (seed) The noise-floor+6dB threshold under-detects on Dan's bimodal setup. Detect about 15dB
   below the speech median (-35dB has worked).

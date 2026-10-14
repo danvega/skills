@@ -8,10 +8,10 @@ edit can really go wrong, so a human (or the model) stays in that loop.
 
 Three phases:
 
-  analyze   extract audio, transcribe, scan for whisper repetition loops, measure
-            the RMS distribution, list real silences, and propose show start/end.
-            Writes report.json and prints a summary.
-  verify    re-transcribe a short slice around a timestamp. Whisper hallucinates
+  analyze   extract audio, transcribe with parakeet (through vedit), scan for
+            repetition loops, measure the RMS distribution, list real silences, and
+            propose show start/end. Writes report.json and prints a summary.
+  verify    re-transcribe a short slice around a timestamp. ASR can invent words
             inside music and end-of-file silence, so every proposed boundary gets
             checked against a fresh slice before it is trusted.
   render    cut the confirmed span (minus any silence trims), normalize loudness
@@ -43,7 +43,10 @@ import sys
 
 WORKROOT = "/tmp/soh-edit"
 EXPORTS = os.path.expanduser("~/youtube/spring-office-hours/exports")
-MODEL = "mlx-community/whisper-small.en-mlx"
+# Transcription goes through vedit, which runs parakeet-mlx with the settings that do not drop
+# speech, recovers skipped passages, and applies the shared glossary.
+VEDIT = "/Users/vega/dev/projects/video-editor/tools/vedit/bin/vedit"
+SENTENCE_GAP = 1.0  # a pause this long also ends a transcript segment
 
 # Cold opens and sign-offs on this show are formulaic. Not guaranteed, though:
 # S5E20 had no sign-off phrase at all and simply ended on the guest goodbye.
@@ -67,9 +70,7 @@ def run(cmd, **kw):
 
 def need(tool):
     if not shutil.which(tool):
-        sys.exit(f"{tool} not found on PATH"
-                 + (" (whisper CLI is not installed here; mlx_whisper is, via miniforge)"
-                    if tool == "mlx_whisper" else ""))
+        sys.exit(f"{tool} not found on PATH")
 
 
 def workdir(ep):
@@ -106,12 +107,35 @@ def ensure_wav(src, wd):
     return wav
 
 
-def ensure_transcript(wav, wd, model):
-    js = os.path.join(wd, "analysis.json")
+def parakeet(wav, work):
+    """Transcribe one wav with vedit. Returns (words, summary). Reruns are cached by vedit."""
+    if not os.path.exists(VEDIT):
+        sys.exit(f"vedit not found at {VEDIT} (it lives in the video-editor project)")
+    p = run([VEDIT, "transcribe", wav, "--work", work])
+    (sid, summary), = json.loads(p.stdout)["sources"].items()  # vedit picks the id
+    doc = json.load(open(os.path.join(work, "transcript", f"{sid}.words.json")))
+    return doc["words"], summary
+
+
+def segments(words):
+    """Group vedit words ({w, s, e}) into sentence segments ({start, end, text})."""
+    segs, cur = [], []
+    for i, w in enumerate(words):
+        cur.append(w)
+        nxt = words[i + 1] if i + 1 < len(words) else None
+        if nxt is None or re.search(r"[.?!]$", w["w"]) or nxt["s"] - w["e"] >= SENTENCE_GAP:
+            segs.append({"start": cur[0]["s"], "end": cur[-1]["e"],
+                         "text": " ".join(x["w"] for x in cur)})
+            cur = []
+    return segs
+
+
+def ensure_transcript(wav, wd):
+    js = os.path.join(wd, "transcript.json")
     if not os.path.exists(js):
-        need("mlx_whisper")
-        run(["mlx_whisper", wav, "--model", model, "--word-timestamps", "True",
-             "--output-format", "json", "--output-dir", wd])
+        words, summary = parakeet(wav, os.path.join(wd, "vedit"))
+        json.dump({"segments": segments(words), "review": summary.get("review", [])},
+                  open(js, "w"))
     return json.load(open(js))
 
 
@@ -149,12 +173,13 @@ def silence_runs(vals, w, thresh, lo=None, hi=None):
 
 
 def repetition_scan(segs):
-    """Whisper can fall into a repeat loop and shred a whole region (S5E19)."""
+    """ASR can fall into a repeat loop and shred a whole region (whisper did on S5E19)."""
     texts = [s["text"].strip() for s in segs]
     counts = {}
     for t in texts:
         counts[t] = counts.get(t, 0) + 1
-    repeats = sorted(((n, t) for t, n in counts.items() if n >= 4 and len(t) > 8),
+    # Short replies ("Yeah, yeah.") repeat in any conversation. A loop repeats a whole line.
+    repeats = sorted(((n, t) for t, n in counts.items() if n >= 4 and len(t) > 20),
                      reverse=True)
     longest, run = 1, 1
     at = None
@@ -165,7 +190,7 @@ def repetition_scan(segs):
     return {"repeated_texts": [{"count": n, "text": t[:80]} for n, t in repeats[:5]],
             "longest_consecutive_run": longest,
             "longest_run_at": at,
-            "suspect": bool(repeats) or longest >= 4}
+            "suspect": bool(repeats) or longest >= 3}
 
 
 def propose_start(segs, limit=360):
@@ -213,7 +238,7 @@ def cmd_analyze(a):
         sys.exit(f"source not found: {a.src}")
     total = duration(a.src)
     wav = ensure_wav(a.src, wd)
-    tr = ensure_transcript(wav, wd, a.model)
+    tr = ensure_transcript(wav, wd)
     segs = [s for s in tr["segments"] if s["text"].strip()]
     if not segs:
         sys.exit("transcript has no segments")
@@ -226,7 +251,7 @@ def cmd_analyze(a):
     rep = repetition_scan(segs)
     start, end = propose_start(segs), propose_end(segs)
     if not start or not end:
-        sys.exit("could not propose boundaries; inspect analysis.json by hand")
+        sys.exit("could not propose boundaries; inspect transcript.json by hand")
 
     runs = silence_runs(vals, w, thresh, start["at"], end["at"])
     trims = [{"start": round(s, 2), "end": round(e, 2), "dur": round(e - s, 2)}
@@ -238,6 +263,7 @@ def cmd_analyze(a):
         "rms": {"window_ms": round(w * 1000, 1), "speech_median_db": round(speech_median, 1),
                 "silence_threshold_db": thresh, "quiet_runs": len(runs)},
         "repetition": rep,
+        "review": tr.get("review", []),
         "proposed_start": start, "proposed_end": end,
         "trim_candidates": trims,
         "proposed_cut_start": round(start["at"] - START_PAD, 2),
@@ -249,13 +275,19 @@ def cmd_analyze(a):
     print(f"  speech median {speech_median:.1f}dB -> silence threshold {thresh}dB "
           f"({len(runs)} quiet runs in show region)")
     if rep["suspect"]:
-        print("  !! WHISPER REPETITION SUSPECTED — re-transcribe the affected region as a")
+        print("  !! REPETITION SUSPECTED: re-transcribe the affected region as a")
         print(f"     slice before trusting boundaries. longest run {rep['longest_consecutive_run']}"
               + (f" at {rep['longest_run_at']:.1f}s" if rep["longest_run_at"] else ""))
         for r in rep["repeated_texts"]:
             print(f"     x{r['count']}  {r['text']!r}")
     else:
         print("  repetition scan clean")
+    # Loud stretches with no words are normal crosstalk and laughter mid-show. Near a
+    # boundary they can hide the real first or last words.
+    for r in tr.get("review", []):
+        if min(abs(r[0] - start["at"]), abs(r[0] - end["at"])) < 120:
+            print(f"  ?? loud stretch with no words at {r[0]:.1f}-{r[1]:.1f}s, near a boundary."
+                  " Verify it.")
     print()
     print(f"  START  {start['at']:.2f}s ({hms(start['at'])})"
           + ("  [matched cold-open formula]" if start["matched_formula"] else "  [NO formula match]"))
@@ -288,14 +320,12 @@ def cmd_verify(a):
     wav = os.path.join(wd, "analysis.wav")
     if not os.path.exists(wav):
         sys.exit(f"{wav} missing — run analyze first")
-    need("mlx_whisper")
     lo = max(0.0, a.at - a.window / 2)
     slice_wav = os.path.join(wd, f"slice_{int(a.at)}.wav")
     run(["ffmpeg", "-y", "-nostdin", "-v", "error", "-ss", f"{lo}",
          "-t", f"{a.window}", "-i", wav, slice_wav])
-    run(["mlx_whisper", slice_wav, "--model", a.model,
-         "--output-format", "txt", "--output-dir", wd])
-    txt = open(os.path.join(wd, f"slice_{int(a.at)}.txt")).read().strip()
+    words, _ = parakeet(slice_wav, os.path.join(wd, f"slice_{int(a.at)}"))
+    txt = " ".join(w["w"] for w in words)
     print(f"SLICE {lo:.2f}s -> {lo + a.window:.2f}s (around {a.at:.2f}s)")
     print(txt if txt else "  (silence — nothing transcribed; the candidate was debris)")
     print()
@@ -326,7 +356,7 @@ def keep_spans(start, end, cuts):
     Do NOT centre the removal on the gap's midpoint, and do not pad outward
     across the join. Both shrink the removal: on a 2.31s pause with TRIM_TO
     0.75 that combination removed 0.45s and left 1.86s, a trim that does
-    nothing. There is no whisper timing error to pad against here either, since
+    nothing. There is no ASR timing error to pad against here either, since
     these boundaries come from RMS measurement, not from word timestamps.
     """
     spans, cursor = [], start
@@ -377,7 +407,7 @@ def build_chain(spans, tail):
 
 
 def remap_transcript(wd, spans, out_srt, out_txt):
-    tr = json.load(open(os.path.join(wd, "analysis.json")))
+    tr = json.load(open(os.path.join(wd, "transcript.json")))
     segs = [s for s in tr["segments"] if s["text"].strip()]
 
     offsets, cum = [], 0.0
@@ -427,8 +457,8 @@ def cmd_render(a):
     wd = workdir(a.ep)
     if not os.path.exists(a.src):
         sys.exit(f"source not found: {a.src}")
-    if not os.path.exists(os.path.join(wd, "analysis.json")):
-        sys.exit(f"no analysis.json in {wd} — run analyze first")
+    if not os.path.exists(os.path.join(wd, "transcript.json")):
+        sys.exit(f"no transcript.json in {wd}, run analyze first")
     if a.end <= a.start:
         sys.exit(f"end ({a.end:.2f}) must be after start ({a.start:.2f})")
     cuts = parse_cuts(a.cut)
@@ -493,7 +523,6 @@ def main():
     an = sub.add_parser("analyze", help="extract, transcribe, measure, propose boundaries")
     an.add_argument("--ep", required=True, help="episode token, e.g. S5E20")
     an.add_argument("--src", required=True, help="raw recording (audio or video)")
-    an.add_argument("--model", default=MODEL)
     an.add_argument("--silence-thresh", type=float, default=None,
                     help="override the computed dB threshold")
     an.set_defaults(func=cmd_analyze)
@@ -502,7 +531,6 @@ def main():
     ve.add_argument("--ep", required=True)
     ve.add_argument("--at", type=float, required=True, help="timestamp to check (s)")
     ve.add_argument("--window", type=float, default=10.0)
-    ve.add_argument("--model", default=MODEL)
     ve.set_defaults(func=cmd_verify)
 
     re_ = sub.add_parser("render", help="cut, normalize, encode, remap transcript")

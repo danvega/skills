@@ -26,9 +26,9 @@ Show Notes link list, which comes from what was actually said in the episode.
 - Episode transcript, for the link list. spring-office-hours-edit leaves `$EP.txt` and `$EP.srt`
   in `/tmp/soh-edit/<episode>/` and next to the mp3 in
   `/Users/vega/youtube/spring-office-hours/exports/`. Look there first.
-- If only a recording or mp3 exists, transcribe it:
-  `mlx_whisper <audio> --model mlx-community/whisper-small.en-mlx --output-format txt`
-  (`whisper` CLI is not installed; `mlx_whisper` is, via miniforge).
+- If only a recording or mp3 exists, transcribe it with parakeet:
+  `/Users/vega/dev/projects/video-editor/tools/vedit/bin/vedit transcribe <audio> --work /tmp/soh-edit/<episode>/notes`
+  and read `transcript/<id>.phrases.md` in that folder.
 
 ## Fetch the planned title and description
 
@@ -65,7 +65,7 @@ content, no per-episode judgment:
 
 ## Finding the links (the part that needs care)
 
-The transcript gives you *names*, not URLs. Whisper also mangles names (it has produced
+The transcript gives you *names*, not URLs. Speech recognition also mangles names (it has produced
 "springofficesowers.io" for springofficehours.io). So:
 
 - Collect every resource the hosts mention or clearly screen-share. The phrases "I'll drop a
