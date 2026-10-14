@@ -47,7 +47,7 @@ for discovery and configuration. Other agents may use a different skill director
 
 General development skills with plain language and short instructions.
 
-- **[readme](./skills/dev/readme/SKILL.md)**: write a README that fits the project and its readers
+- **[readme](./skills/dev/readme/SKILL.md)**: write a README for a demo, library, CLI, or product, checked against the code
 
 ### shipit
 
